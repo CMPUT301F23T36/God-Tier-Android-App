@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_list_element, parent, false);
-        return new ItemViewHolder(view);
+        return new ItemViewHolder(context, view);
     }
 
     @Override
@@ -37,6 +38,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
         // Bind data to the TextViews in the list item layout
         holder.textViewDescription.setText(item.getDescription());
         holder.textViewEstimatedValue.setText("Estimated Value: $" + item.getEstimatedValue());
+        holder.tagViewListAdapter.setItem(item);
     }
 
     @Override
@@ -48,10 +50,24 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
         TextView textViewDescription;
         TextView textViewEstimatedValue;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        TagListViewAdapter tagViewListAdapter;
+        private RecyclerView tagViewList;
+
+        public ItemViewHolder(Context context, View itemView) {
             super(itemView);
+
+            // Initialize the RecyclerView
+            tagViewList = itemView.findViewById(R.id.tagList);
+            tagViewList.setLayoutManager(new LinearLayoutManager(
+                    context,
+                    RecyclerView.HORIZONTAL,
+                    false
+            ));
+
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             textViewEstimatedValue = itemView.findViewById(R.id.textViewEstimatedValue);
+            tagViewListAdapter = new TagListViewAdapter(context);
+            tagViewList.setAdapter(tagViewListAdapter);
         }
     }
 }

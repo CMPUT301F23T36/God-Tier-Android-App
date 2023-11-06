@@ -1,6 +1,8 @@
 package com.example.godtierandroidapp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Item {
     private Date dateOfAcquisition;
@@ -10,6 +12,7 @@ public class Item {
     private String serialNumber;
     private double estimatedValue;
     private String comment;
+    private List<Tag> tags;
 
     // Constructor
     public Item(
@@ -19,7 +22,8 @@ public class Item {
         String model,
         String serialNumber,
         double estimatedValue,
-        String comment
+        String comment,
+        List<Tag> tags
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -28,11 +32,13 @@ public class Item {
         this.serialNumber = serialNumber;
         this.estimatedValue = estimatedValue;
         this.comment = comment;
+        this.tags = tags;
     }
 
     public Item(
         String description,
-        double estimatedValue
+        double estimatedValue,
+        List<Tag> tags
     ) {
         this.dateOfAcquisition = new Date();
         this.description = description;
@@ -41,6 +47,19 @@ public class Item {
         this.serialNumber = "";
         this.estimatedValue = estimatedValue;
         this.comment = "";
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public boolean hasTag(Tag tag) {
+        return tags.contains(tag);
     }
 
     // Getter and Setter methods for dateOfAcquisition
