@@ -30,6 +30,19 @@ public class Item {
         this.comment = comment;
     }
 
+    public Item(
+        String description,
+        double estimatedValue
+    ) {
+        this.dateOfAcquisition = new Date();
+        this.description = description;
+        this.make = "";
+        this.model = "";
+        this.serialNumber = "";
+        this.estimatedValue = estimatedValue;
+        this.comment = "";
+    }
+
     // Getter and Setter methods for dateOfAcquisition
     public Date getDateOfAcquisition() {
         return dateOfAcquisition;
