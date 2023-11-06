@@ -1,10 +1,11 @@
 package com.example.godtierandroidapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Item {
+public class Item implements Serializable {
     private Date dateOfAcquisition;
     private String description;
     private String make;

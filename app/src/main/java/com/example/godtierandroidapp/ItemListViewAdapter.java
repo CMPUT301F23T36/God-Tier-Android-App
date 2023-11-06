@@ -1,5 +1,6 @@
 package com.example.godtierandroidapp;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
@@ -34,6 +36,12 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.get(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ItemDetailsView.class);
+            intent.putExtra("item", item);
+            context.startActivity(intent);
+        });
 
         // Bind data to the TextViews in the list item layout
         holder.textViewDescription.setText(item.getDescription());
