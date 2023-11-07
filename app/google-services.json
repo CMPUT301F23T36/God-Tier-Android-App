@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888902429665",
+    "project_id": "godapp-28b41",
+    "storage_bucket": "godapp-28b41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888902429665:android:ec932c4c232c20936340a0",
+        "android_client_info": {
+          "package_name": "com.example.godtierandroidapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBatc_-I2Cl0hKSxwvm5Ms4si7GLuEnc_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
