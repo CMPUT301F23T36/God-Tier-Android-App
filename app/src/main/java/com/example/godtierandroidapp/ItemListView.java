@@ -12,7 +12,7 @@ public class ItemListView extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ItemListViewAdapter itemAdapter;
-    private List<Item> itemList;
+    private ItemList itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +24,14 @@ public class ItemListView extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create a list of Item objects (you can replace this with your actual data)
-        itemList = new ArrayList<>();
+        itemList = new ItemList();
         ArrayList<Tag> tags = new ArrayList<>(Arrays.asList(
                 new Tag("tag1"),
                 new Tag("tag2"),
                 new Tag("tag3")
         ));
-        itemList.add(new Item("Test item 1", 100.0, tags));
-        itemList.add(new Item("Test item 2", 200.0, new ArrayList<>()));
+        itemList.addItem(new Item("Test item 1", 100.0, tags));
+        itemList.addItem(new Item("Test item 2", 200.0, new ArrayList<>()));
 
         // Initialize the custom adapter
         itemAdapter = new ItemListViewAdapter(this, itemList);
