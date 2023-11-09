@@ -40,11 +40,11 @@ public class FilterFragment extends DialogFragment {
         dialogView = inflater.inflate(R.layout.item_filter_fragment, null);
 
         builder.setView(dialogView)
-                .setMessage("Enter text:")
-                .setPositiveButton("OK", (dialog, which) -> {
+                .setMessage("Filter By:")
+                .setPositiveButton("Apply", (dialog, which) -> {
                     itemListView.setFilter(makeFilterFunction());
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
+                .setNegativeButton("Clear", (dialog, which) -> {
                     itemListView.setFilter(null);
                 });
 

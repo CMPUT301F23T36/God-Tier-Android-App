@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/descriptionFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Description"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/makeFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descriptionFilter"
+        android:inputType="text"
+        android:hint="Make"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/tagFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tag"/>
-</LinearLayout>
+        android:layout_below="@id/makeFilter"
+        android:inputType="text"
+        android:hint="Tag"
+        android:textSize="20sp" />
+
+</RelativeLayout>
