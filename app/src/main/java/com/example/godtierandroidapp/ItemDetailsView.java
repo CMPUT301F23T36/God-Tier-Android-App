@@ -29,6 +29,9 @@ public class ItemDetailsView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         item = (Item) intent.getSerializableExtra("item");
+        if (item == null) {
+            item = new Item();
+        }
         item_idx = intent.getIntExtra("item idx", -1);
 
         super.onCreate(savedInstanceState);
@@ -42,6 +45,7 @@ public class ItemDetailsView extends AppCompatActivity {
         tags_field = findViewById(R.id.tags_field);
         item_details_confirm = findViewById(R.id.item_detail_confirm);
         updateFields();
+
         item_details_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +59,7 @@ public class ItemDetailsView extends AppCompatActivity {
                 item.setSerialNumber(serial_no_field.getText().toString());
 
                 Intent retIntent = new Intent();
-                retIntent.putExtra("old item idx", item_idx);
+                retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
                 setResult(Activity.RESULT_OK, retIntent);
                 finish();

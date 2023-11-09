@@ -18,6 +18,18 @@ public class Item implements Serializable {
     private List<Tag> tags;
     private List<Bitmap> photo;
 
+    public Item() {
+        this.dateOfAcquisition = new Date();
+        this.description = "";
+        this.make = "";
+        this.model = "";
+        this.serialNumber = "";
+        this.estimatedValue = 0;
+        this.comment = "";
+        this.tags = new ArrayList<>();
+        this.photo = new ArrayList<>();
+    }
+
     // Constructor
     public Item(
         Date dateOfAcquisition,

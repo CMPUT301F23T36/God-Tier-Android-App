@@ -66,6 +66,11 @@ public class ItemListView extends AppCompatActivity {
             FilterFragment filterFragment = new FilterFragment(this);
             filterFragment.show(getSupportFragmentManager(), "FilterFragment");
         });
+
+        findViewById(R.id.add_item_button).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ItemDetailsView.class);
+            itemEditLauncher.launch(intent);
+        });
     }
 
     public void setFilter(ItemList.FilterCriteria filterFunction) {
