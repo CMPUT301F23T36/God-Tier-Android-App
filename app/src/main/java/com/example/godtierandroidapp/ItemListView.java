@@ -92,7 +92,18 @@ public class ItemListView extends AppCompatActivity {
                     Item newItem = (Item) intent.getSerializableExtra("new item");
 
                     if (newItem == null) {
-                        Log.d("ItemListView", "null Item returned from ItemDetailsView");
+                        if (oldItemIdx == -1) {
+                            Log.d(
+                                "ItemListView",
+                                "null Item returned from ItemDetailsView"
+                            );
+                            return;
+                        }
+
+                        itemList.removeItem(itemList.getItem(oldItemIdx));
+                        itemAdapter.notifyDataSetChanged();
+
+                        return;
                     }
 
                     if (oldItemIdx == -1) {
