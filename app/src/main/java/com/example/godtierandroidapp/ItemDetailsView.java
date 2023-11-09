@@ -24,18 +24,23 @@ public class ItemDetailsView extends AppCompatActivity {
     private EditText serial_no_field;
     private TextView tags_field;
     private Button item_details_confirm;
+    private Button item_details_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.item_details_view);
+
+        item_details_delete = findViewById(R.id.item_detail_delete);
+
         Intent intent = getIntent();
         item = (Item) intent.getSerializableExtra("item");
         if (item == null) {
             item = new Item();
+            item_details_delete.setVisibility(View.GONE);
         }
         item_idx = intent.getIntExtra("item idx", -1);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_details_view);
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
         estimated_value_field = findViewById(R.id.estimated_value_field);
@@ -61,6 +66,16 @@ public class ItemDetailsView extends AppCompatActivity {
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
+                setResult(Activity.RESULT_OK, retIntent);
+                finish();
+            }
+        });
+
+        item_details_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent retIntent = new Intent();
+                retIntent.putExtra("old item idx", item_idx);
                 setResult(Activity.RESULT_OK, retIntent);
                 finish();
             }

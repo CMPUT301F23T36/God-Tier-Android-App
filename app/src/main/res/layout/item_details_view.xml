@@ -233,6 +233,13 @@
             android:gravity="center"
             android:text="@string/confirm" />
 
+        <Button
+            android:id="@+id/item_detail_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Delete" />
+
 
     </LinearLayout>
 
