@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_type_entries">
+        <item>date</item>
+        <item>description</item>
+        <item>make</item>
+        <item>value</item>
+    </string-array>
+    <string-array name="sort_order_entries">
+        <item>ascending</item>
+        <item>descending</item>
+    </string-array>
+</resources>
