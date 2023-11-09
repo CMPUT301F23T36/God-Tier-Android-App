@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
+    private int item_idx;
 
     private TextView description_field;
     private TextView date_of_purchase_field;
@@ -21,6 +22,7 @@ public class ItemDetailsView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         item = (Item) intent.getSerializableExtra("item");
+        item_idx = intent.getIntExtra("item idx", -1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details_view);
@@ -49,8 +51,10 @@ public class ItemDetailsView extends AppCompatActivity {
             tags.append(item.getTags().get(0).getName());
         }
         for (int i = 1; i < item.getTags().size(); ++i) {
-            tags.append(item.getTags().get(i).getName()).append(" ");
+            tags.append(" ").append(item.getTags().get(i).getName());
         }
         tags_field.setText(tags.toString());
     }
+
+
 }

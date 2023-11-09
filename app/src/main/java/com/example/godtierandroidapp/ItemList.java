@@ -38,6 +38,11 @@ public class ItemList {
         }
     }
 
+    public void updateItem(int idx, Item item) {
+        baseItemList.set(idx, item);
+        remakeSortedFilteredList();
+    }
+
     public Item getItem(int index) {
         if (index < 0 || index >= itemListSortedFiltered.size()) {
             return null;

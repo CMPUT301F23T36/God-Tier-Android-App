@@ -1,9 +1,15 @@
 package com.example.godtierandroidapp;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,4 +71,22 @@ public class ItemListView extends AppCompatActivity {
         itemList.setSort(sortComparator);
         itemAdapter.notifyDataSetChanged();
     }
+
+    public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent intent = result.getData();
+                    int oldItemIdx = intent.getIntExtra("old item idx", -1);
+                    Item newItem = (Item) intent.getSerializableExtra("new item");
+
+                    if (oldItemIdx == -1) {
+                        itemList.addItem(newItem);
+                    } else {
+                        itemList.updateItem(oldItemIdx, newItem);
+                    }
+
+                    itemAdapter.notifyDataSetChanged();
+                }
+            });
 }

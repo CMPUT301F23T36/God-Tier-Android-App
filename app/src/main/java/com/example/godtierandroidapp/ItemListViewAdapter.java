@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +19,10 @@ import java.util.List;
 
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
 
-    private Context context;
+    private ItemListView context;
     private ItemList itemList;
 
-    public ItemListViewAdapter(Context context, ItemList itemList) {
+    public ItemListViewAdapter(ItemListView context, ItemList itemList) {
         this.context = context;
         this.itemList = itemList;
     }
@@ -40,7 +41,8 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ItemDetailsView.class);
             intent.putExtra("item", item);
-            context.startActivity(intent);
+            intent.putExtra("item idx", position);
+            context.itemEditLauncher.launch(intent);
         });
 
         // Bind data to the TextViews in the list item layout
