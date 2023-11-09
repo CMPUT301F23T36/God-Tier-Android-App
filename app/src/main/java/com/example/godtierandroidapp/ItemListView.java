@@ -1,9 +1,15 @@
 package com.example.godtierandroidapp;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +24,12 @@ public class ItemListView extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
+
+    public void updateList() {
+        if (itemAdapter != null) {
+            itemAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +66,11 @@ public class ItemListView extends AppCompatActivity {
             FilterFragment filterFragment = new FilterFragment(this);
             filterFragment.show(getSupportFragmentManager(), "FilterFragment");
         });
+
+        findViewById(R.id.add_item_button).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ItemDetailsView.class);
+            itemEditLauncher.launch(intent);
+        });
     }
 
     public void setFilter(ItemList.FilterCriteria filterFunction) {
@@ -64,5 +81,33 @@ public class ItemListView extends AppCompatActivity {
     public void setSort(Comparator<Item> sortComparator) {
         itemList.setSort(sortComparator);
         itemAdapter.notifyDataSetChanged();
+    }
+
+    public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent intent = result.getData();
+                    int oldItemIdx = intent.getIntExtra("old item idx", -1);
+                    Item newItem = (Item) intent.getSerializableExtra("new item");
+
+                    if (newItem == null) {
+                        Log.d("ItemListView", "null Item returned from ItemDetailsView");
+                    }
+
+                    if (oldItemIdx == -1) {
+                        itemList.addItem(newItem);
+                    } else {
+                        itemList.updateItem(oldItemIdx, newItem);
+                    }
+
+                    itemAdapter.notifyDataSetChanged();
+                }
+            });
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateList();
     }
 }
