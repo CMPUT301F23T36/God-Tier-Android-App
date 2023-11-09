@@ -19,9 +19,9 @@ import java.util.List;
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
 
     private Context context;
-    private List<Item> itemList;
+    private ItemList itemList;
 
-    public ItemListViewAdapter(Context context, List<Item> itemList) {
+    public ItemListViewAdapter(Context context, ItemList itemList) {
         this.context = context;
         this.itemList = itemList;
     }
@@ -35,7 +35,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Item item = itemList.get(position);
+        Item item = itemList.getItem(position);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ItemDetailsView.class);
