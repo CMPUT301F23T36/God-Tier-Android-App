@@ -1,5 +1,6 @@
 package com.example.godtierandroidapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -52,6 +53,11 @@ public class ItemDetailsView extends AppCompatActivity {
                 item.setMake(make_field.getText().toString());
                 item.setModel(model_field.getText().toString());
                 item.setSerialNumber(serial_no_field.getText().toString());
+
+                Intent retIntent = new Intent();
+                retIntent.putExtra("old item idx", item_idx);
+                retIntent.putExtra("new item", item);
+                setResult(Activity.RESULT_OK, retIntent);
                 finish();
             }
         });
