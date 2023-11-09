@@ -25,6 +25,12 @@ public class ItemListView extends AppCompatActivity {
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
 
+    public void updateList() {
+        if (itemAdapter != null) {
+            itemAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,4 +95,10 @@ public class ItemListView extends AppCompatActivity {
                     itemAdapter.notifyDataSetChanged();
                 }
             });
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateList();
+    }
 }

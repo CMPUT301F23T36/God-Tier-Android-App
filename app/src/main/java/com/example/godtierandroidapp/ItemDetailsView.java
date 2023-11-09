@@ -2,21 +2,27 @@ package com.example.godtierandroidapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.SimpleDateFormat;
 
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
     private int item_idx;
 
-    private TextView description_field;
+    private EditText description_field;
     private TextView date_of_purchase_field;
-    private TextView estimated_value_field;
-    private TextView make_field;
-    private TextView model_field;
-    private TextView serial_no_field;
+    private EditText estimated_value_field;
+    private EditText make_field;
+    private EditText model_field;
+    private EditText serial_no_field;
     private TextView tags_field;
+    private Button item_details_confirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +39,22 @@ public class ItemDetailsView extends AppCompatActivity {
         model_field = findViewById(R.id.model_field);
         serial_no_field = findViewById(R.id.serial_no_field);
         tags_field = findViewById(R.id.tags_field);
-
+        item_details_confirm = findViewById(R.id.item_detail_confirm);
         updateFields();
+        item_details_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.setDescription(description_field.getText().toString());
+                try{ item.setEstimatedValue(Double.parseDouble(estimated_value_field.getText().toString()));
+                } catch (NumberFormatException e) {
+                    // not valid double
+                }
+                item.setMake(make_field.getText().toString());
+                item.setModel(model_field.getText().toString());
+                item.setSerialNumber(serial_no_field.getText().toString());
+                finish();
+            }
+        });
     }
 
     protected void updateFields() {

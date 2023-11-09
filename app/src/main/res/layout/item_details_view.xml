@@ -10,7 +10,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:gravity="top|center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
             android:id='@+id/item_photo'
@@ -35,7 +40,7 @@
                 android:text="Description"
                 android:textSize="20sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/description_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,7 +97,7 @@
                 android:text="Estimated Value"
                 android:textSize="20sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/estimated_value_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,7 +126,7 @@
                 android:text="Make"
                 android:textSize="20sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/make_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -150,7 +155,7 @@
                 android:text="Model"
                 android:textSize="20sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/model_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -179,7 +184,7 @@
                 android:text="Serial no."
                 android:textSize="20sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/serial_no_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -221,6 +226,14 @@
                 android:textDirection="rtl"
                 android:textSize="20sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/item_detail_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/confirm" />
+
 
     </LinearLayout>
 
