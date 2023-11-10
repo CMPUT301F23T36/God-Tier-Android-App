@@ -1,29 +1,46 @@
 package com.example.godtierandroidapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
+
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
+    private int item_idx;
 
-    private TextView description_field;
+    private EditText description_field;
     private TextView date_of_purchase_field;
-    private TextView estimated_value_field;
-    private TextView make_field;
-    private TextView model_field;
-    private TextView serial_no_field;
+    private EditText estimated_value_field;
+    private EditText make_field;
+    private EditText model_field;
+    private EditText serial_no_field;
     private TextView tags_field;
+    private Button item_details_confirm;
+    private Button item_details_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        item = (Item) intent.getSerializableExtra("item");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details_view);
+
+        item_details_delete = findViewById(R.id.item_detail_delete);
+
+        Intent intent = getIntent();
+        item = (Item) intent.getSerializableExtra("item");
+        if (item == null) {
+            item = new Item();
+            item_details_delete.setVisibility(View.GONE);
+        }
+        item_idx = intent.getIntExtra("item idx", -1);
+
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
         estimated_value_field = findViewById(R.id.estimated_value_field);
@@ -31,8 +48,38 @@ public class ItemDetailsView extends AppCompatActivity {
         model_field = findViewById(R.id.model_field);
         serial_no_field = findViewById(R.id.serial_no_field);
         tags_field = findViewById(R.id.tags_field);
-
+        item_details_confirm = findViewById(R.id.item_detail_confirm);
         updateFields();
+
+        item_details_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.setDescription(description_field.getText().toString());
+                try{ item.setEstimatedValue(Double.parseDouble(estimated_value_field.getText().toString()));
+                } catch (NumberFormatException e) {
+                    // not valid double
+                }
+                item.setMake(make_field.getText().toString());
+                item.setModel(model_field.getText().toString());
+                item.setSerialNumber(serial_no_field.getText().toString());
+
+                Intent retIntent = new Intent();
+                retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
+                retIntent.putExtra("new item", item);
+                setResult(Activity.RESULT_OK, retIntent);
+                finish();
+            }
+        });
+
+        item_details_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent retIntent = new Intent();
+                retIntent.putExtra("old item idx", item_idx);
+                setResult(Activity.RESULT_OK, retIntent);
+                finish();
+            }
+        });
     }
 
     protected void updateFields() {
@@ -49,8 +96,10 @@ public class ItemDetailsView extends AppCompatActivity {
             tags.append(item.getTags().get(0).getName());
         }
         for (int i = 1; i < item.getTags().size(); ++i) {
-            tags.append(item.getTags().get(i).getName()).append(" ");
+            tags.append(" ").append(item.getTags().get(i).getName());
         }
         tags_field.setText(tags.toString());
     }
+
+
 }
