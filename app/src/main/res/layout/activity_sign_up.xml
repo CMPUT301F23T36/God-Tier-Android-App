@@ -5,12 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SignUpActivity"
+    android:background="@drawable/login_shape_bk"
     android:orientation="vertical">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_login_bk"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_gravity="bottom"
+        app:cardCornerRadius="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,11 +26,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
-                android:padding="8dp"
                 android:layout_marginLeft="25dp"
+                android:fontFamily="@font/baloo_bhaina"
+                android:padding="8dp"
+                android:text="Sign Up"
                 android:textSize="36sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -33,6 +40,7 @@
                 android:padding="5dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="30dp"
+                android:textColor="@color/textColor"
                 android:textSize="18sp" />
 
             <EditText
@@ -50,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
+                android:textColor="@color/textColor"
                 android:layout_marginLeft="25dp"
                 android:text="Password"
                 android:layout_marginTop="25dp"
@@ -71,6 +80,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:text="Re-enter password"
+                android:textColor="@color/textColor"
                 android:layout_marginTop="25dp"
                 android:layout_marginLeft="25dp"
                 android:padding="8dp"/>

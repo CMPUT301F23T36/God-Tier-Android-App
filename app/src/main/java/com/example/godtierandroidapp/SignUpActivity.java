@@ -44,13 +44,20 @@ public class SignUpActivity extends AppCompatActivity {
 
                 String username = signupUsername.getText().toString();
                 String userPassword = signupPassword.getText().toString();
+                String userRePassword = signupRePassword.getText().toString();
 
-                Users user = new Users(username, userPassword);
-                reference.child(username).setValue(user);
+                if (userPassword.equals(userRePassword)) {
+                    Users user = new Users(username, userPassword);
+                    reference.child(username).setValue(user);
 
-                Toast.makeText(SignUpActivity.this, "Sign Up Successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                startActivity(intent);
+                    Toast.makeText(SignUpActivity.this, "Sign Up Successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    signupRePassword.setError("Not match your password");
+                    signupRePassword.requestFocus();
+                }
             }
         });
 
