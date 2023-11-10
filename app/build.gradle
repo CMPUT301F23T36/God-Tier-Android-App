@@ -7,6 +7,12 @@ android {
     namespace 'com.example.godtierandroidapp'
     compileSdk 34
 
+    configurations {
+        implementation.exclude module:'proto-google-common-protos'
+        implementation.exclude module:'protolite-well-known-types'
+        implementation.exclude module:'protobuf-lite'
+    }
+
     defaultConfig {
         applicationId "com.example.godtierandroidapp"
         minSdk 24
