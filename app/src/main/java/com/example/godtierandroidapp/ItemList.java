@@ -84,7 +84,7 @@ public class ItemList {
         return baseItemList;
     }
 
-    public void clear(){
+    public void clear() {
         baseItemList.clear();
         itemListSortedFiltered.clear();
     }

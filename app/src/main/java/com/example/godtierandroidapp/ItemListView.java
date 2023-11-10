@@ -186,9 +186,7 @@ public class ItemListView extends AppCompatActivity {
                         Log.d(
                                 "ItemListView",
                                 "null Item returned from ItemDetailsView"
-                            );
-                            return;
-                        }
+                        );
 
                         itemList.removeItem(itemList.getItem(oldItemIdx));
                         updateList();
@@ -210,4 +208,3 @@ public class ItemListView extends AppCompatActivity {
             }
         });
     }
-
