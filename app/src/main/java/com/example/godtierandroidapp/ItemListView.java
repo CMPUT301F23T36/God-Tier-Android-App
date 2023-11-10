@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Date;
 
 public class ItemListView extends AppCompatActivity {
 
@@ -47,6 +48,79 @@ public class ItemListView extends AppCompatActivity {
         itemList.addItem(new Item("Test item 1", 100.0, tags));
         itemList.addItem(new Item("Test item 2", 200.0, new ArrayList<>()));
         itemList.addItem(new Item("Test item 3", 50.0, new ArrayList<>()));
+
+        itemList.addItem(new Item(new Date(2011, 2, 28),
+                "Printer 1",
+                "Samsung",
+                "T1000",
+                "1a57494ds9",
+                250.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2013, 9, 4),
+                "Printer 2",
+                "LG",
+                "ODR66",
+                "735hj27365d",
+                200.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2022, 5, 11),
+                "Laptop 1",
+                "ASUS",
+                "GPro 909",
+                "867378649",
+                1400.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2017, 11, 25),
+                "Laptop 2",
+                "Samsung",
+                "Mk 2319",
+                "98697868768",
+                900.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2017, 11, 25),
+                "Bicycle",
+                "Ghost",
+                "Interloper 5",
+                "1234567ababa",
+                600.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2017, 11, 25),
+                "Unicycle",
+                "Rasmataz",
+                "SR88",
+                "774466335re",
+                400.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2017, 11, 25),
+                "Scooter",
+                "Birdman Scoots",
+                "Mk 1235",
+                "545545",
+                120.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
+        itemList.addItem(new Item(new Date(2018, 12, 26),
+                "Laptop 3",
+                "Apple",
+                "Macbook Air 12",
+                "888888888888",
+                1800.00,
+                "Sample Comment",
+                new ArrayList<>(),
+                new ArrayList<>()));
 
         // init view and ItemListViewAdapter -------------------------------------------------------
 
