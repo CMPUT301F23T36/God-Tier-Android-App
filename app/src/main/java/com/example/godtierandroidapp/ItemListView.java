@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,11 +27,15 @@ public class ItemListView extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
+    private TextView totalValue;
 
     public void updateList() {
         if (itemAdapter != null) {
             itemAdapter.notifyDataSetChanged();
         }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        totalValue.setText("Total value: " + decimalFormat.format(itemList.getTotalValue()));
     }
 
 
@@ -37,6 +43,8 @@ public class ItemListView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_list_view);
+
+        totalValue = findViewById(R.id.totalValue);
 
         // init ItemList ---------------------------------------------------------------------------
 
@@ -178,13 +186,17 @@ public class ItemListView extends AppCompatActivity {
                         Log.d(
                                 "ItemListView",
                                 "null Item returned from ItemDetailsView"
-                        );
+                            );
+                            return;
+                        }
+
+                        itemList.removeItem(itemList.getItem(oldItemIdx));
+                        updateList();
                         return;
                     }
 
                     itemList.removeItem(itemList.getItem(oldItemIdx));
                     updateList();
-
                     return;
                 }
 
