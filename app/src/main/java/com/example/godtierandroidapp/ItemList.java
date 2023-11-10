@@ -70,6 +70,15 @@ public class ItemList {
         }
     }
 
+    public List<Item> getItems(){
+        return baseItemList;
+    }
+
+    public void clear(){
+        baseItemList.clear();
+        itemListSortedFiltered.clear();
+    }
+
     public void setFilter(FilterCriteria newCriteria) {
         filterCriteria = newCriteria;
         remakeSortedFilteredList();
