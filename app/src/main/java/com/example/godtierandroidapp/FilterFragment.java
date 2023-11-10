@@ -11,14 +11,29 @@ import androidx.fragment.app.DialogFragment;
 public class FilterFragment extends DialogFragment {
     public class FilterFunction implements ItemList.FilterCriteria {
         private Tag tag;
+        private String descString;
+        private String makeString;
 
-        FilterFunction(Tag tag) {
+
+        FilterFunction(Tag tag, String desc, String make) {
             this.tag = tag;
+            this.descString = desc.trim().toLowerCase();
+            this.makeString = make.trim().toLowerCase();
         }
 
         public boolean passesFilter(Item item) {
             if (tag != null && !item.hasTag(tag)) {
                 return false;
+            }
+            if (descString != null) {
+                if (!descString.isEmpty() && !item.getDescription().toLowerCase().contains(descString)) {
+                    return false;
+                }
+            }
+            if (makeString != null) {
+                if (!makeString.isEmpty() && !item.getMake().toLowerCase().contains(makeString)) {
+                    return false;
+                }
             }
 
             return true;
@@ -53,12 +68,17 @@ public class FilterFragment extends DialogFragment {
 
     private ItemList.FilterCriteria makeFilterFunction() {
         EditText tagEditText = dialogView.findViewById(R.id.tagFilter);
+        EditText descEditText = dialogView.findViewById(R.id.descriptionFilter);
+        EditText makeEditText = dialogView.findViewById(R.id.makeFilter);
         String tagText = tagEditText.getText().toString();
+        String descText = descEditText.getText().toString();
+        String makeText = makeEditText.getText().toString();
+
         Tag tag = null;
         if (!tagText.equals("")) {
             tag = new Tag(tagText);
         }
 
-        return new FilterFunction(tag);
+        return new FilterFunction(tag, descText, makeText);
     }
 }
