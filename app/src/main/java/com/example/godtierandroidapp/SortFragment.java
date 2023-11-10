@@ -13,6 +13,12 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Comparator;
 
+/**
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-09
+ */
 public class SortFragment extends DialogFragment {
     SortFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
