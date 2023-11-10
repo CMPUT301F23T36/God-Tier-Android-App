@@ -70,6 +70,16 @@ public class ItemList {
         }
     }
 
+    public float getTotalValue() {
+        float total = 0.0f;
+
+        for (int i = 0; i < itemListSortedFiltered.size(); ++i) {
+            total += itemListSortedFiltered.get(i).getEstimatedValue();
+        }
+
+        return total;
+    }
+
     public void setFilter(FilterCriteria newCriteria) {
         filterCriteria = newCriteria;
         remakeSortedFilteredList();

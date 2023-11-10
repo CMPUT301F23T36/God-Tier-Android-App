@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,17 +27,23 @@ public class ItemListView extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
+    private TextView totalValue;
 
     public void updateList() {
         if (itemAdapter != null) {
             itemAdapter.notifyDataSetChanged();
         }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        totalValue.setText("Total value: " + decimalFormat.format(itemList.getTotalValue()));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_list_view);
+
+        totalValue = findViewById(R.id.totalValue);
 
         // init ItemList ---------------------------------------------------------------------------
 
@@ -149,12 +157,12 @@ public class ItemListView extends AppCompatActivity {
 
     public void setFilter(ItemList.FilterCriteria filterFunction) {
         itemList.setFilter(filterFunction);
-        itemAdapter.notifyDataSetChanged();
+        updateList();
     }
 
     public void setSort(Comparator<Item> sortComparator) {
         itemList.setSort(sortComparator);
-        itemAdapter.notifyDataSetChanged();
+        updateList();
     }
 
     public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
@@ -175,7 +183,7 @@ public class ItemListView extends AppCompatActivity {
                         }
 
                         itemList.removeItem(itemList.getItem(oldItemIdx));
-                        itemAdapter.notifyDataSetChanged();
+                        updateList();
 
                         return;
                     }
@@ -186,7 +194,7 @@ public class ItemListView extends AppCompatActivity {
                         itemList.updateItem(oldItemIdx, newItem);
                     }
 
-                    itemAdapter.notifyDataSetChanged();
+                    updateList();
                 }
             });
 
