@@ -32,6 +32,7 @@ public class ItemListView extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,54 +146,56 @@ public class ItemListView extends AppCompatActivity {
             Intent intent = new Intent(this, ItemDetailsView.class);
             itemEditLauncher.launch(intent);
         });
+        findViewById(R.id.clear_item_button).setOnClickListener(v -> {
+            clearList();
+        });
+    }
+    public void clearList() {
+        itemList.clear();
+        updateList();
     }
 
     public void setFilter(ItemList.FilterCriteria filterFunction) {
         itemList.setFilter(filterFunction);
-        itemAdapter.notifyDataSetChanged();
+        updateList();
     }
 
     public void setSort(Comparator<Item> sortComparator) {
         itemList.setSort(sortComparator);
-        itemAdapter.notifyDataSetChanged();
+        updateList();
     }
 
     public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent intent = result.getData();
-                    int oldItemIdx = intent.getIntExtra("old item idx", -1);
-                    Item newItem = (Item) intent.getSerializableExtra("new item");
+        new ActivityResultContracts.StartActivityForResult(),
+        result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent intent = result.getData();
+                int oldItemIdx = intent.getIntExtra("old item idx", -1);
+                Item newItem = (Item) intent.getSerializableExtra("new item");
 
-                    if (newItem == null) {
-                        if (oldItemIdx == -1) {
-                            Log.d(
+                if (newItem == null) {
+                    if (oldItemIdx == -1) {
+                        Log.d(
                                 "ItemListView",
                                 "null Item returned from ItemDetailsView"
-                            );
-                            return;
-                        }
-
-                        itemList.removeItem(itemList.getItem(oldItemIdx));
-                        itemAdapter.notifyDataSetChanged();
-
+                        );
                         return;
                     }
 
-                    if (oldItemIdx == -1) {
-                        itemList.addItem(newItem);
-                    } else {
-                        itemList.updateItem(oldItemIdx, newItem);
-                    }
+                    itemList.removeItem(itemList.getItem(oldItemIdx));
+                    updateList();
 
-                    itemAdapter.notifyDataSetChanged();
+                    return;
                 }
-            });
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateList();
+                if (oldItemIdx == -1) {
+                    itemList.addItem(newItem);
+                } else {
+                    itemList.updateItem(oldItemIdx, newItem);
+                }
+
+                updateList();
+            }
+        });
     }
-}
+
