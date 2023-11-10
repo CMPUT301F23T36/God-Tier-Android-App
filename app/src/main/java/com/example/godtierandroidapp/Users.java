@@ -1,10 +1,13 @@
 package com.example.godtierandroidapp;
 
-public class User {
+public class Users {
     private String username;
     private String pwd;
 
-    public User(String username, String pwd) {
+    public Users() {
+    }
+
+    public Users(String username, String pwd) {
         this.username = username;
         this.pwd = pwd;
     }

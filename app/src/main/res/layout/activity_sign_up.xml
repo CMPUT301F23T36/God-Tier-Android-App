@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpActivity"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:padding="8dp"
+                android:layout_marginLeft="25dp"
+                android:textSize="36sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:padding="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/edtSignUpUsername"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="25dp"
+                android:drawableLeft="@drawable/baseline_person_pin_24"
+                android:drawablePadding="8dp"
+
+                android:hint="Your Username"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginLeft="25dp"
+                android:text="Password"
+                android:layout_marginTop="25dp"
+                android:padding="8dp"/>
+
+            <EditText
+                android:id="@+id/edtSignUpPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="25dp"
+                android:inputType="textPassword"
+                android:drawableLeft="@drawable/baseline_lock_24"
+                android:drawablePadding="8dp"
+                android:hint="Your Password"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Re-enter password"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="25dp"
+                android:padding="8dp"/>
+
+            <EditText
+                android:id="@+id/edtSignupRePassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:drawableLeft="@drawable/baseline_lock_24"
+                android:drawablePadding="8dp"
+                android:hint="Re-enter Password"
+                android:inputType="textPassword"
+                android:layout_marginHorizontal="25dp"
+                android:layout_gravity="center"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I agree to the Terms of Services and Privacy Policy."
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginTop="60dp"/>
+
+            <Button
+                android:id="@+id/btnSignUp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="25dp"
+                android:text="Continue"
+                android:textSize="20sp"
+                app:cornerRadius="20dp"/>
+
+            <TextView
+                android:id="@+id/loginRedirect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Have an Account? Sign in"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"/>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
