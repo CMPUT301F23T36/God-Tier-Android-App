@@ -107,7 +107,21 @@ public class ItemList {
         }
     }
 
-    /**
+  /**
+  * Retrieves sum of value of items in list view
+  * @return total float sum of item values
+  */
+    public float getTotalValue() {
+        float total = 0.0f;
+
+        for (int i = 0; i < itemListSortedFiltered.size(); ++i) {
+            total += itemListSortedFiltered.get(i).getEstimatedValue();
+        }
+
+        return total;
+    }
+
+      /**
      * retrieves the base list of items (no sorting and filtering)
      * @return list of items
      */
@@ -115,10 +129,10 @@ public class ItemList {
         return baseItemList;
     }
 
-    /**
+      /**
      * Clears both lists of items
      */
-    public void clear(){
+    public void clear() {
         baseItemList.clear();
         itemListSortedFiltered.clear();
     }
