@@ -12,6 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * Contains an expaned detailed view of the item including all its properties
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-05
+ */
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
     private int item_idx;
@@ -26,6 +33,16 @@ public class ItemDetailsView extends AppCompatActivity {
     private Button item_details_confirm;
     private Button item_details_delete;
 
+    /**
+     * Called when an item is selected to show its detailed view with all fields. Initializes
+     * activity, and then retrieves the selected item and updates it with all its field info. Sets
+     * up confirm and delete buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +50,7 @@ public class ItemDetailsView extends AppCompatActivity {
 
         item_details_delete = findViewById(R.id.item_detail_delete);
 
+        // Get selected item from ItemList activity
         Intent intent = getIntent();
         item = (Item) intent.getSerializableExtra("item");
         if (item == null) {
@@ -41,6 +59,7 @@ public class ItemDetailsView extends AppCompatActivity {
         }
         item_idx = intent.getIntExtra("item idx", -1);
 
+        //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
         estimated_value_field = findViewById(R.id.estimated_value_field);
@@ -51,6 +70,7 @@ public class ItemDetailsView extends AppCompatActivity {
         item_details_confirm = findViewById(R.id.item_detail_confirm);
         updateFields();
 
+        // Set click listener for confirm button
         item_details_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +91,7 @@ public class ItemDetailsView extends AppCompatActivity {
             }
         });
 
+        // Set click listener for delete button
         item_details_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +103,9 @@ public class ItemDetailsView extends AppCompatActivity {
         });
     }
 
+    /**
+     * Updates item fields
+     */
     protected void updateFields() {
         description_field.setText(item.getDescription());
         date_of_purchase_field.setText(String.valueOf(item.getDateOfAcquisition()));

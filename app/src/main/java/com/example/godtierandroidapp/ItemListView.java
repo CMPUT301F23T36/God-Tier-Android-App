@@ -22,6 +22,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
 
+/**
+ * AppCompatActivity of a list view of items. Allows for users to view, add, and manage items,
+ * alongside sorting and filtering functionality.
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-06
+ */
 public class ItemListView extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -29,6 +37,9 @@ public class ItemListView extends AppCompatActivity {
     private ItemList itemList;
     private TextView totalValue;
 
+    /**
+     * Updates list view adapter with changes in item list
+     */
     public void updateList() {
         if (itemAdapter != null) {
             itemAdapter.notifyDataSetChanged();
@@ -38,7 +49,14 @@ public class ItemListView extends AppCompatActivity {
         totalValue.setText("Total value: " + decimalFormat.format(itemList.getTotalValue()));
     }
 
-
+    /**
+     * Called on activity start. Initializes activity, sets up list and associated view. Sets up
+     * buttons for adding, clearing, filtering, and sorting
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,21 +176,36 @@ public class ItemListView extends AppCompatActivity {
             clearList();
         });
     }
+
+    /**
+     * Clears item list and updates list view
+     */
     public void clearList() {
         itemList.clear();
         updateList();
     }
 
+    /**
+     * Sets filter criteria for items and updates list with filtered list
+     * @param filterFunction filter criteria
+     */
     public void setFilter(ItemList.FilterCriteria filterFunction) {
         itemList.setFilter(filterFunction);
         updateList();
     }
 
+    /**
+     * Sets sort criteria for items and updates list with sorted list
+     * @param sortComparator sort criteria
+     */
     public void setSort(Comparator<Item> sortComparator) {
         itemList.setSort(sortComparator);
         updateList();
     }
 
+    /**
+     * Launches activity result when adding or editing items in list.
+     */
     public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
         result -> {

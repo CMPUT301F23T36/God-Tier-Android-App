@@ -14,6 +14,14 @@ import com.google.firebase.Firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Application signup screen. Users will create a unique username and then enter a password twice.
+ * If password matches confirmed and username unique, user data will be added to the Firestore
+ * database.
+ * @author Luke
+ * @version 1.0
+ * @since 2023-11-10
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     EditText signupUsername, signupPassword, signupRePassword;
@@ -22,7 +30,14 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference reference;
 
-
+    /**
+     * Called when activity started through login page. Initializes activity and sets up UI. Sets up
+     * signup and login buttons.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

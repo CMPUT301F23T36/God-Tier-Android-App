@@ -10,7 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-06
+ */
 public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.TagViewHolder> {
     private Context context;
     private Item item;
