@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
@@ -172,16 +173,15 @@ public class ItemListView extends AppCompatActivity {
             Intent intent = new Intent(this, ItemDetailsView.class);
             itemEditLauncher.launch(intent);
         });
-        findViewById(R.id.clear_item_button).setOnClickListener(v -> {
-            clearList();
-        });
     }
 
     /**
      * Clears item list and updates list view
      */
-    public void clearList() {
-        itemList.clear();
+    public void clearList(ArrayList<Item> itemsToRemove) {
+        for (Item i : itemsToRemove){
+            itemList.removeItem(i);
+        }
         updateList();
     }
 
