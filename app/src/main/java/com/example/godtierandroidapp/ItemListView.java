@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,11 @@ public class ItemListView extends AppCompatActivity {
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
     private TextView totalValue;
+    private ArrayList<Tag> tags = new ArrayList<>(Arrays.asList(
+            new Tag("tag1"),
+            new Tag("tag2"),
+            new Tag("tag3")
+    ));
 
     /**
      * Updates list view adapter with changes in item list
@@ -68,11 +74,7 @@ public class ItemListView extends AppCompatActivity {
         // init ItemList ---------------------------------------------------------------------------
 
         itemList = new ItemList();
-        ArrayList<Tag> tags = new ArrayList<>(Arrays.asList(
-                new Tag("tag1"),
-                new Tag("tag2"),
-                new Tag("tag3")
-        ));
+
         itemList.addItem(new Item("Test item 1", 100.0, tags));
         itemList.addItem(new Item("Test item 2", 200.0, new ArrayList<>()));
         itemList.addItem(new Item("Test item 3", 50.0, new ArrayList<>()));
@@ -171,6 +173,7 @@ public class ItemListView extends AppCompatActivity {
 
         findViewById(R.id.add_item_button).setOnClickListener(v -> {
             Intent intent = new Intent(this, ItemDetailsView.class);
+            intent.putExtra("tag_list",(Serializable) tags);
             itemEditLauncher.launch(intent);
         });
     }

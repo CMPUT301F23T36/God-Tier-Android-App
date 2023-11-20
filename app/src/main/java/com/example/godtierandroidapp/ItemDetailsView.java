@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
@@ -19,9 +21,10 @@ import java.text.SimpleDateFormat;
  * @version 1.0
  * @since 2023-11-05
  */
-public class ItemDetailsView extends AppCompatActivity {
+public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
+    private ArrayList<Tag> tag_list;
 
     private EditText description_field;
     private TextView date_of_purchase_field;
@@ -32,6 +35,7 @@ public class ItemDetailsView extends AppCompatActivity {
     private TextView tags_field;
     private Button item_details_confirm;
     private Button item_details_delete;
+    private Button item_add_tag;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -68,7 +72,18 @@ public class ItemDetailsView extends AppCompatActivity {
         serial_no_field = findViewById(R.id.serial_no_field);
         tags_field = findViewById(R.id.tags_field);
         item_details_confirm = findViewById(R.id.item_detail_confirm);
+        item_add_tag = findViewById(R.id.add_tags);
         updateFields();
+
+        // Set click listener for add tag button
+        item_add_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Tag> tag_list = (ArrayList<Tag>) intent.getExtras().getSerializable("tag_list");
+                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) tag_list);
+                fragment.show(getSupportFragmentManager(), "ADD TAG");
+            }
+        });
 
         // Set click listener for confirm button
         item_details_confirm.setOnClickListener(new View.OnClickListener() {
@@ -125,5 +140,10 @@ public class ItemDetailsView extends AppCompatActivity {
         tags_field.setText(tags.toString());
     }
 
+    @Override
+    public void onConfirmPressed(ArrayList<Tag> tag_list) {
 
+    }
+
+    public void onConfirmPressed(){}
 }
