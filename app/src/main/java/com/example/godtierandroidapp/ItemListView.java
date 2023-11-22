@@ -38,7 +38,7 @@ public class ItemListView extends AppCompatActivity {
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
     private TextView totalValue;
-    private ArrayList<Tag> tags = new ArrayList<>(Arrays.asList(
+    public ArrayList<Tag> tags = new ArrayList<Tag>(Arrays.asList(
             new Tag("tag1"),
             new Tag("tag2"),
             new Tag("tag3")
@@ -173,7 +173,7 @@ public class ItemListView extends AppCompatActivity {
 
         findViewById(R.id.add_item_button).setOnClickListener(v -> {
             Intent intent = new Intent(this, ItemDetailsView.class);
-            intent.putExtra("tag_list",(Serializable) tags);
+            intent.putExtra("tag_list", tags);
             itemEditLauncher.launch(intent);
         });
     }

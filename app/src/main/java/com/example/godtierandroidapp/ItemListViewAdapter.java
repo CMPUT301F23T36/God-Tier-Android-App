@@ -98,6 +98,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
                 Intent intent = new Intent(context, ItemDetailsView.class);
                 intent.putExtra("item", item);
                 intent.putExtra("item idx", position);
+                intent.putExtra("tag_list", itemListView.tags);
                 itemListView.itemEditLauncher.launch(intent);
             }
         });

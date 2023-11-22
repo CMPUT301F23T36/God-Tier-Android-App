@@ -1,6 +1,8 @@
 package com.example.godtierandroidapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,8 +13,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
-    private ArrayList<Tag> tag_list;
+    private ArrayList<Tag> listOfTagObjects;
 
     private EditText description_field;
     private TextView date_of_purchase_field;
@@ -36,6 +38,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Button item_details_confirm;
     private Button item_details_delete;
     private Button item_add_tag;
+    private ArrayList<Integer> tagList = new ArrayList<>();
+
+    private ArrayList<String> tagStrings = new ArrayList<>();
+    private boolean[] selectedTags;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -53,6 +59,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         setContentView(R.layout.item_details_view);
 
         item_details_delete = findViewById(R.id.item_detail_delete);
+        listOfTagObjects = (ArrayList<Tag>) getIntent().getSerializableExtra("tag_list");
+
+        for(int i=0; i<listOfTagObjects.size();++i){
+            tagStrings.add(listOfTagObjects.get(i).getName());
+        }
+        selectedTags = new boolean[tagStrings.size()];
 
         // Get selected item from ItemList activity
         Intent intent = getIntent();
@@ -75,12 +87,84 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_add_tag = findViewById(R.id.add_tags);
         updateFields();
 
+
+
+        tags_field.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                // Initialize alert dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetailsView.this);
+
+                // set title
+                builder.setTitle("Select Tags");
+
+                // set dialog non cancelable
+                builder.setCancelable(false);
+
+                builder.setMultiChoiceItems(tagStrings.toArray(new String[tagStrings.size()]),selectedTags,new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        if (b) {
+                            tagList.add(i);
+
+                            Collections.sort(tagList);
+                        } else {
+                            tagList.remove(Integer.valueOf(i));
+                        }
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Initialize string builder
+                        StringBuilder stringBuilder = new StringBuilder();
+                        // use for loop
+                        for (int j = 0; j < tagList.size(); j++) {
+                            // concat array value
+                            stringBuilder.append(tagStrings.get(tagList.get(i)));
+                            // check condition
+                            if (j != tagList.size() - 1) {
+                                // When j value  not equal
+                                // to lang list size - 1
+                                // add comma
+                                stringBuilder.append(", ");
+                            }
+                        }
+                        // set text on textView
+                        tags_field.setText(stringBuilder.toString());
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // dismiss dialog
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // use for loop
+                        for (int j = 0; j < selectedTags.length; j++) {
+                            // remove all selection
+                            selectedTags[j] = false;
+                            // clear language list
+                            tagList.clear();
+                            // clear text view value
+                            tags_field.setText("");
+                        }
+                    }
+                });
+                // show dialog
+                builder.show();
+            }
+        });
+
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Tag> tag_list = (ArrayList<Tag>) intent.getExtras().getSerializable("tag_list");
-                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) tag_list);
+                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) listOfTagObjects);
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
             }
         });
@@ -138,6 +222,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             tags.append(" ").append(item.getTags().get(i).getName());
         }
         tags_field.setText(tags.toString());
+    }
+
+    public Item getItem(){
+        return item;
     }
 
     @Override
