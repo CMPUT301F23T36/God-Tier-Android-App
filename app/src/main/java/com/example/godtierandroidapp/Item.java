@@ -1,6 +1,7 @@
 package com.example.godtierandroidapp;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ public class Item implements Serializable {
     private double estimatedValue;
     private String comment;
     private List<Tag> tags;
-    private List<Bitmap> photo;
+    private List<Uri> photo;
+
 
     public Item() {
         this.dateOfAcquisition = new Date();
@@ -40,7 +42,7 @@ public class Item implements Serializable {
         double estimatedValue,
         String comment,
         List<Tag> tags,
-        List<Bitmap> photo
+        List<Uri> photo
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -69,6 +71,13 @@ public class Item implements Serializable {
         this.photo = new ArrayList<>();
     }
 
+    public List<Uri> getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(List<Uri> photo) {
+        this.photo = photo;
+    }
     public void addTag(Tag tag) {
         tags.add(tag);
     }
