@@ -64,18 +64,16 @@ public class AddTagFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_tag_fragment_layout, null);
         tag_name = view.findViewById(R.id.tag_name);
         tag_create = view.findViewById(R.id.create_tag);
-        /*
-        CURRENTLY DOES NOT WORK
-
         tag_clear = view.findViewById(R.id.clear_tag);
         if (getArguments() != null) {
+            System.out.println(getArguments());
             tag_list = (ArrayList<Tag>) getArguments().getSerializable("tag_list");
             assert tag_list != null;
         }
         tag_list_recycler = view.findViewById(R.id.tag_list);
         tagAdapter = new TagListViewAdapter(context, tag_list);
         tag_list_recycler.setAdapter(tagAdapter);
-        */
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
