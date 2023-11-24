@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +72,10 @@ public class Item implements Serializable {
 
     public void addTag(Tag tag) {
         tags.add(tag);
+    }
+
+    public void setTags(ArrayList<Tag> newTags){
+        tags = newTags;
     }
 
     public List<Tag> getTags() {

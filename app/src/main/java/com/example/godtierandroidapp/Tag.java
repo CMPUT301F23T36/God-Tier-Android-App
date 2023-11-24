@@ -8,8 +8,13 @@ import java.io.Serializable;
  * @version 1.0
  * @since 2023-11-06
  */
-public class Tag implements Serializable {
+public class Tag implements Serializable, Comparable<Tag> {
     private String name;
+
+    @Override
+    public int compareTo(Tag otherTag){
+        return this.name.compareTo(otherTag.getName());
+    }
 
     @Override
     public boolean equals(Object other) {

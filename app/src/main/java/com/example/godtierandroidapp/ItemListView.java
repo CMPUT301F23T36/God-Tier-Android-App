@@ -44,6 +44,13 @@ public class ItemListView extends AppCompatActivity {
             new Tag("tag3")
     ));
 
+
+    public void updateTagList(ArrayList<Tag> newTagList) {
+        tags = newTagList;
+        Collections.sort(tags);
+    }
+
+
     /**
      * Updates list view adapter with changes in item list
      */

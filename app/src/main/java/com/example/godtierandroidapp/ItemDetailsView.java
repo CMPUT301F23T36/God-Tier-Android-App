@@ -1,10 +1,14 @@
 package com.example.godtierandroidapp;
 
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
@@ -26,7 +29,9 @@ import java.util.Collections;
 public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
+    private ArrayList<Pair> tagPairList;
     private ArrayList<Tag> listOfTagObjects;
+    private boolean[] selectedTags;
 
     private EditText description_field;
     private TextView date_of_purchase_field;
@@ -38,10 +43,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Button item_details_confirm;
     private Button item_details_delete;
     private Button item_add_tag;
-    private ArrayList<Integer> tagList = new ArrayList<>();
-
-    private ArrayList<String> tagStrings = new ArrayList<>();
-    private boolean[] selectedTags;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -59,12 +60,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         setContentView(R.layout.item_details_view);
 
         item_details_delete = findViewById(R.id.item_detail_delete);
-        listOfTagObjects = (ArrayList<Tag>) getIntent().getSerializableExtra("tag_list");
-
-        for(int i=0; i<listOfTagObjects.size();++i){
-            tagStrings.add(listOfTagObjects.get(i).getName());
-        }
-        selectedTags = new boolean[tagStrings.size()];
 
         // Get selected item from ItemList activity
         Intent intent = getIntent();
@@ -74,6 +69,17 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             item_details_delete.setVisibility(View.GONE);
         }
         item_idx = intent.getIntExtra("item idx", -1);
+
+        this.listOfTagObjects = (ArrayList<Tag>) getIntent().getSerializableExtra("tag_list");
+        this.tagPairList = new ArrayList<>();
+        for(int i = 0; i< this.listOfTagObjects.size(); ++i){
+            if(item.hasTag(this.listOfTagObjects.get(i))){
+                this.tagPairList.add(new Pair<Tag,Boolean>(this.listOfTagObjects.get(i), TRUE));
+            } else {
+                this.tagPairList.add(new Pair<Tag,Boolean>(this.listOfTagObjects.get(i), FALSE));
+            }
+
+        }
 
         //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
@@ -100,16 +106,22 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
                 // set dialog non cancelable
                 builder.setCancelable(false);
-
-                builder.setMultiChoiceItems(tagStrings.toArray(new String[tagStrings.size()]),selectedTags,new DialogInterface.OnMultiChoiceClickListener() {
+                String[] choices = new String[listOfTagObjects.size()];
+                selectedTags = new boolean[listOfTagObjects.size()];
+                int iter=0;
+                for(Pair tagPair : tagPairList){
+                    choices[iter] = ((Tag)tagPair.first).getName();
+                    selectedTags[iter] = ((Boolean) tagPair.second).booleanValue();
+                    ++iter;
+                }
+                builder.setMultiChoiceItems(choices,selectedTags,new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                         if (b) {
-                            tagList.add(i);
+                            tagPairList.set(i,new Pair<>(listOfTagObjects.get(i), TRUE));
 
-                            Collections.sort(tagList);
                         } else {
-                            tagList.remove(Integer.valueOf(i));
+                            tagPairList.set(i,new Pair<>(listOfTagObjects.get(i), FALSE));
                         }
                     }
                 });
@@ -118,16 +130,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // Initialize string builder
                         StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append("| ");
                         // use for loop
-                        for (int j = 0; j < tagList.size(); j++) {
+                        for (int j = 0; j < tagPairList.size(); j++) {
                             // concat array value
-                            stringBuilder.append(tagStrings.get(tagList.get(i)));
-                            // check condition
-                            if (j != tagList.size() - 1) {
-                                // When j value  not equal
-                                // to lang list size - 1
-                                // add comma
-                                stringBuilder.append(", ");
+                            if((boolean)tagPairList.get(j).second){
+                                stringBuilder.append(((Tag)tagPairList.get(j).first).getName());
+                                stringBuilder.append(" | ");
                             }
                         }
                         // set text on textView
@@ -145,14 +154,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // use for loop
-                        for (int j = 0; j < selectedTags.length; j++) {
-                            // remove all selection
-                            selectedTags[j] = false;
+                        for (int j = 0; j < listOfTagObjects.size(); j++) {
                             // clear language list
-                            tagList.clear();
-                            // clear text view value
-                            tags_field.setText("");
+                            tagPairList.set(j,new Pair(listOfTagObjects.get(j),FALSE));
                         }
+                        // clear text view value
+                        tags_field.setText("");
                     }
                 });
                 // show dialog
@@ -164,7 +171,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_add_tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) listOfTagObjects);
+                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) ItemDetailsView.this.listOfTagObjects);
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
             }
         });
@@ -181,6 +188,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 item.setMake(make_field.getText().toString());
                 item.setModel(model_field.getText().toString());
                 item.setSerialNumber(serial_no_field.getText().toString());
+                ArrayList<Tag> newTags = new ArrayList<>();
+                for(Pair p : tagPairList){
+                    if((boolean)p.second) {
+                        newTags.add((Tag) p.first);
+                    }
+                }
+                item.setTags(newTags);
 
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
