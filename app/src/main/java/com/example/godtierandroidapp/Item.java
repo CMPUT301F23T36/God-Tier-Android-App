@@ -1,6 +1,8 @@
 package com.example.godtierandroidapp;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class Item implements Serializable {
     private double estimatedValue;
     private String comment;
     private List<Tag> tags;
-    private List<Bitmap> photo;
+    private ArrayList<Bitmap> photo;
 
     public Item() {
         this.dateOfAcquisition = new Date();
@@ -27,7 +29,7 @@ public class Item implements Serializable {
         this.estimatedValue = 0;
         this.comment = "";
         this.tags = new ArrayList<>();
-        this.photo = new ArrayList<>();
+        this.photo = new ArrayList<Bitmap>();
     }
 
     // Constructor
@@ -40,7 +42,7 @@ public class Item implements Serializable {
         double estimatedValue,
         String comment,
         List<Tag> tags,
-        List<Bitmap> photo
+        ArrayList<Bitmap> photo
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -142,5 +144,21 @@ public class Item implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public ArrayList<Bitmap> getPhoto() { return photo; }
+
+    public void setPhoto(ArrayList<Bitmap> photo) { this.photo = photo; }
+
+    public void addPhoto(Bitmap photo) { this.photo.add(photo); }
+
+    public Bitmap getPhoto(int index) {
+        try {
+            Log.d("GET PHOTO", "Retrieving photo at index" + index);
+            return photo.get(index);
+        } catch (Exception e) {
+            return null;
+            // Toast.makeText(this, "Failure: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
