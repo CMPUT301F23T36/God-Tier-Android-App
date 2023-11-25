@@ -1,5 +1,8 @@
 package com.example.godtierandroidapp;
 
+import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -58,6 +61,10 @@ public class ItemDetailsView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details_view);
+
+        ActivityCompat.requestPermissions(ItemDetailsView.this,
+                new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
 
         item_details_delete = findViewById(R.id.item_detail_delete);
 
@@ -127,11 +134,17 @@ public class ItemDetailsView extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
+
                             // Handle the result
                             Intent data = result.getData();
                             if (data != null) {
                                 Uri selectedImageUri = data.getData();
                                 if (selectedImageUri != null) {
+                                    getContentResolver().takePersistableUriPermission(
+                                            selectedImageUri,
+                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    );
+
                                     // Set the selected image URI to the second ImageView
                                     item.addPhoto(selectedImageUri);
                                     item_photo.setImageURI(selectedImageUri);
@@ -179,7 +192,9 @@ public class ItemDetailsView extends AppCompatActivity {
 
     private void openGallery() {
         // Create an intent to pick an image from the gallery
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         galleryIntent.setType("image/*");
 
         // Launch the gallery activity with the intent using the ActivityResultLauncher

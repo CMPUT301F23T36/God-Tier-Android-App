@@ -142,7 +142,7 @@ public class ItemListView extends AppCompatActivity {
         });
 
         findViewById(R.id.add_item_button).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ItemDetailsView.class);
+            Intent intent = new Intent(this,  ItemDetailsView.class);
             itemEditLauncher.launch(intent);
         });
     }
