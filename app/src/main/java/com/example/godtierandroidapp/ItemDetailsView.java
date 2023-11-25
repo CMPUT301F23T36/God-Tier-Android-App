@@ -2,6 +2,7 @@ package com.example.godtierandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,21 +11,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.Manifest;
+
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.util.Log;
+import android.widget.Toast;
+
 
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
     private int item_idx;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     private EditText description_field;
     private TextView date_of_purchase_field;
@@ -37,8 +49,10 @@ public class ItemDetailsView extends AppCompatActivity {
     private Button item_details_delete;
     private ImageView edit_item_photo;
     private ImageView item_photo;
-    private ArrayList<Uri> itemImage;
     private ActivityResultLauncher<Intent> galleryLauncher;
+    private List<Uri> item_uris;
+    private static final String TAG = "ItemDetailsView";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +77,8 @@ public class ItemDetailsView extends AppCompatActivity {
         serial_no_field = findViewById(R.id.serial_no_field);
         tags_field = findViewById(R.id.tags_field);
         item_details_confirm = findViewById(R.id.item_detail_confirm);
+        edit_item_photo = findViewById(R.id.edit_photo);
+        item_photo = findViewById(R.id.item_photo);
         updateFields();
 
 
@@ -82,7 +98,14 @@ public class ItemDetailsView extends AppCompatActivity {
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
                 setResult(Activity.RESULT_OK, retIntent);
-                finish();
+                try {
+                    // Your code here
+                    finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error in onClick: " + e.getMessage());
+
+                }
             }
         });
 
@@ -96,8 +119,6 @@ public class ItemDetailsView extends AppCompatActivity {
             }
         });
 
-        edit_item_photo = findViewById(R.id.edit_photo);
-        item_photo = findViewById(R.id.item_photo);
 
 
         galleryLauncher = registerForActivityResult(
@@ -112,9 +133,8 @@ public class ItemDetailsView extends AppCompatActivity {
                                 Uri selectedImageUri = data.getData();
                                 if (selectedImageUri != null) {
                                     // Set the selected image URI to the second ImageView
+                                    item.addPhoto(selectedImageUri);
                                     item_photo.setImageURI(selectedImageUri);
-                                    itemImage.add(selectedImageUri);
-                                    item.setPhoto(itemImage);
                                 }
 
                             }
@@ -126,9 +146,34 @@ public class ItemDetailsView extends AppCompatActivity {
         edit_item_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                // Check if the READ_EXTERNAL_STORAGE permission is granted
+                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // Permission is not granted, request it
+                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                } else {
+                    // Permission is already granted, proceed with opening the gallery
+                    openGallery();
+                }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            // Check if the permission is granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with opening the gallery
+                openGallery();
+            } else {
+                // Permission denied, show a message or handle accordingly
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -149,7 +194,10 @@ public class ItemDetailsView extends AppCompatActivity {
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         serial_no_field.setText(item.getSerialNumber());
-        item_photo.setImageURI(item.getPhoto().get(0));
+        item_uris = item.getUri();
+        if (item_uris != null && item_uris.size() > 0) {
+            item_photo.setImageURI(item_uris.get(0));
+        }
 
         // TODO
         StringBuilder tags = new StringBuilder(new String());

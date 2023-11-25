@@ -3,6 +3,9 @@ package com.example.godtierandroidapp;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +20,7 @@ public class Item implements Serializable {
     private double estimatedValue;
     private String comment;
     private List<Tag> tags;
-    private List<Uri> photo;
+    public transient List<Uri> photo;
 
 
     public Item() {
@@ -71,12 +74,40 @@ public class Item implements Serializable {
         this.photo = new ArrayList<>();
     }
 
-    public List<Uri> getPhoto() {
-        return photo;
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+
+        // Convert Uri objects to strings and store them
+        List<String> uriStrings = new ArrayList<>();
+        for (Uri uri : photo) {
+            uriStrings.add(uri.toString());
+        }
+        out.writeObject(uriStrings);
     }
 
-    public void setPhoto(List<Uri> photo) {
-        this.photo = photo;
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
+        // Initialize the transient field after deserialization
+        photo = new ArrayList<>();
+
+        // Reconstruct Uri objects from stored strings
+        List<String> uriStrings = (List<String>) in.readObject();
+        for (String uriString : uriStrings) {
+            photo.add(Uri.parse(uriString));
+        }
+    }
+
+
+    public void addPhoto(Uri newPhoto) {
+        if (photo == null) {
+            photo = new ArrayList<>();
+        }
+        photo.add(newPhoto);
+    }
+
+    public List<Uri> getUri() {
+        return photo;
     }
     public void addTag(Tag tag) {
         tags.add(tag);
