@@ -93,8 +93,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_add_tag = findViewById(R.id.add_tags);
         updateFields();
 
-
-
         tags_field.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
@@ -128,19 +126,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // Initialize string builder
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append("| ");
-                        // use for loop
-                        for (int j = 0; j < tagPairList.size(); j++) {
-                            // concat array value
-                            if((boolean)tagPairList.get(j).second){
-                                stringBuilder.append(((Tag)tagPairList.get(j).first).getName());
-                                stringBuilder.append(" | ");
-                            }
-                        }
-                        // set text on textView
-                        tags_field.setText(stringBuilder.toString());
+                        updateTagField();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -199,6 +185,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
+                retIntent.putExtra("new tag list", listOfTagObjects);
                 setResult(Activity.RESULT_OK, retIntent);
                 finish();
             }
@@ -226,26 +213,39 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         serial_no_field.setText(item.getSerialNumber());
-
-        // TODO
-        StringBuilder tags = new StringBuilder(new String());
-        if (item.getTags().size() > 0) {
-            tags.append(item.getTags().get(0).getName());
-        }
-        for (int i = 1; i < item.getTags().size(); ++i) {
-            tags.append(" ").append(item.getTags().get(i).getName());
-        }
-        tags_field.setText(tags.toString());
+        updateTagField();
     }
 
+    protected void updateTagField(){
+        // Initialize string builder
+        boolean isEmpty = true;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("| ");
+        // use for loop
+        for (int j = 0; j < tagPairList.size(); j++) {
+            // concat array value
+            if((boolean)tagPairList.get(j).second){
+                stringBuilder.append(((Tag)tagPairList.get(j).first).getName());
+                stringBuilder.append(" | ");
+                isEmpty = false;
+            }
+        }
+        if(isEmpty){ tags_field.setText(""); }
+        else { tags_field.setText(stringBuilder.toString()); }
+        // set text on textView
+
+
+    }
     public Item getItem(){
         return item;
     }
 
     @Override
-    public void onConfirmPressed(ArrayList<Tag> tag_list) {
+    public void onConfirmPressed(Tag newTag){
+        listOfTagObjects.add(newTag);
+        item.addTag(newTag);
+        tagPairList.add(new Pair(newTag,true));
+        updateTagField();
 
     }
-
-    public void onConfirmPressed(){}
 }

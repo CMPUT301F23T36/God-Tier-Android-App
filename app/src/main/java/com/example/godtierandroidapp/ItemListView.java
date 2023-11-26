@@ -223,6 +223,7 @@ public class ItemListView extends AppCompatActivity {
                 Intent intent = result.getData();
                 int oldItemIdx = intent.getIntExtra("old item idx", -1);
                 Item newItem = (Item) intent.getSerializableExtra("new item");
+                tags = (ArrayList<Tag>) intent.getSerializableExtra("new tag list");
 
                 if (newItem == null) {
                     if (oldItemIdx == -1) {

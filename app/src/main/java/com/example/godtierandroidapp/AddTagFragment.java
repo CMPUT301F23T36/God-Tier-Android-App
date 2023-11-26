@@ -21,13 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AddTagFragment extends DialogFragment {
-    private ArrayList<Integer> tagList = new ArrayList<>();
-    private ArrayList<Tag> listOfTagsObjects= new ArrayList<>();
-    private ArrayList<String> tagStrings = new ArrayList<>();
-    private TextView tag_text_view;
-    private boolean[] selectedTags;
     private EditText tag_name;
-    private Button tag_create;
     private Button tag_clear;
     private OnFragmentInteractionListener listener;
     private Context context;
@@ -56,8 +50,7 @@ public class AddTagFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onConfirmPressed(ArrayList<Tag> tag_list);
-        void onConfirmPressed();
+        void onConfirmPressed(Tag newTag);
     }
 
     @NonNull
@@ -65,50 +58,27 @@ public class AddTagFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_tag_fragment_layout, null);
         tag_name = view.findViewById(R.id.tag_name);
-        tag_create = view.findViewById(R.id.create_tag);
-        tag_clear = view.findViewById(R.id.clear_tag);
-        tag_text_view = view.findViewById((R.id.tag_list));
-        if (getArguments() != null) {
-            listOfTagsObjects = (ArrayList<Tag>) getArguments().getSerializable("tag_list");
-            assert listOfTagsObjects != null;
-        }
-        for(int i=0; i<listOfTagsObjects.size();++i){
-            tagStrings.add(listOfTagsObjects.get(i).getName());
-        }
-        selectedTags = new boolean[tagStrings.size()];
-
-
+        tag_clear = view.findViewById(R.id.clear_button);
+        tag_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                tag_name.setText("");
+            }
+        });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         return builder
                 .setView(view)
-                .setTitle("Add/Edit Tags")
-                .setMultiChoiceItems(tagStrings.toArray(new String[tagStrings.size()]),selectedTags,new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        if (b) {
-                            tagList.add(i);
-
-                            Collections.sort(tagList);
-                        } else {
-                            tagList.remove(Integer.valueOf(i));
-                        }
-                    }
-                })
+                .setTitle("Add Tags")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (int i=0;i<tagList.size();++i){
-                            stringBuilder.append(tagStrings.get(tagList.get(i)));
-                            if (i != tagList.size() -1) {
-                                stringBuilder.append(", ");
-                            }
+                        if(!tag_name.getText().toString().isEmpty()) {
+                            Tag newTag = new Tag(tag_name.getText().toString());
+                            listener.onConfirmPressed(newTag);
                         }
-                        tag_text_view.setText(stringBuilder.toString());
-                        listener.onConfirmPressed();
                     }
                 }).create();
         }
