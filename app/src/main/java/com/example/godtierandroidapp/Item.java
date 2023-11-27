@@ -29,7 +29,7 @@ public class Item implements Serializable {
         this.estimatedValue = 0;
         this.comment = "";
         this.tags = new ArrayList<>();
-        this.photo = new ArrayList<Bitmap>();
+        this.photo = new ArrayList<Bitmap>(6);
     }
 
     // Constructor
@@ -41,8 +41,7 @@ public class Item implements Serializable {
         String serialNumber,
         double estimatedValue,
         String comment,
-        List<Tag> tags,
-        ArrayList<Bitmap> photo
+        List<Tag> tags
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -52,7 +51,7 @@ public class Item implements Serializable {
         this.estimatedValue = estimatedValue;
         this.comment = comment;
         this.tags = tags;
-        this.photo = photo;
+        //this.photo = photo;
     }
 
     public Item(
@@ -68,7 +67,7 @@ public class Item implements Serializable {
         this.estimatedValue = estimatedValue;
         this.comment = "";
         this.tags = tags;
-        this.photo = new ArrayList<>();
+        //this.photo = new ArrayList<>();
     }
 
     public void addTag(Tag tag) {

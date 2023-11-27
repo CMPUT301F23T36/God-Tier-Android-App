@@ -86,7 +86,6 @@ public class ItemListView extends AppCompatActivity {
                 "1a57494ds9",
                 250.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2013, 9, 4),
                 "Printer 2",
@@ -95,7 +94,6 @@ public class ItemListView extends AppCompatActivity {
                 "735hj27365d",
                 200.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2022, 5, 11),
                 "Laptop 1",
@@ -104,7 +102,6 @@ public class ItemListView extends AppCompatActivity {
                 "867378649",
                 1400.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Laptop 2",
@@ -113,7 +110,6 @@ public class ItemListView extends AppCompatActivity {
                 "98697868768",
                 900.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Bicycle",
@@ -122,7 +118,6 @@ public class ItemListView extends AppCompatActivity {
                 "1234567ababa",
                 600.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Unicycle",
@@ -131,7 +126,6 @@ public class ItemListView extends AppCompatActivity {
                 "774466335re",
                 400.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Scooter",
@@ -140,7 +134,6 @@ public class ItemListView extends AppCompatActivity {
                 "545545",
                 120.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2018, 12, 26),
                 "Laptop 3",
@@ -149,7 +142,6 @@ public class ItemListView extends AppCompatActivity {
                 "888888888888",
                 1800.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
 
         // init view and ItemListViewAdapter -------------------------------------------------------
