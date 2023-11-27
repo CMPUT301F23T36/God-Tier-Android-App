@@ -36,6 +36,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Button item_details_confirm;
     private Button item_details_delete;
     private Button item_add_tag;
+    private Button item_add_photo;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -73,7 +74,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         tags_field = findViewById(R.id.tags_field);
         item_details_confirm = findViewById(R.id.item_detail_confirm);
         item_add_tag = findViewById(R.id.add_tags);
+        item_add_photo = findViewById(R.id.add_photo);
         updateFields();
+
 
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +85,20 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 ArrayList<Tag> tag_list = (ArrayList<Tag>) intent.getExtras().getSerializable("tag_list");
                 AddTagFragment fragment = AddTagFragment.newInstance((Serializable) tag_list);
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
+            }
+        });
+
+        // Set click listener for add photo button
+        item_add_photo.setOnClickListener(new View.OnClickListener()  {
+            /**
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
+                i.putExtra("Edit", true);
+                startActivity(i);
             }
         });
 
