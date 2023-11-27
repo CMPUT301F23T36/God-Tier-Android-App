@@ -57,8 +57,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/item_photo_4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat='@drawable/add_image' />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/item_photo_3"
@@ -70,8 +69,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/photo_count"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat='@drawable/add_image' />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/item_photo_4"
@@ -83,8 +81,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat='@drawable/add_image' />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/item_photo_5"
@@ -96,8 +93,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/photo_count"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_photo_3"
-                app:srcCompat='@drawable/add_image' />
+                app:layout_constraintTop_toBottomOf="@+id/item_photo_3"/>
 
             <ImageView
                 android:id="@+id/item_photo_6"
@@ -109,8 +105,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toBottomOf="@+id/item_photo_4"
-                app:srcCompat='@drawable/add_image' />
+                app:layout_constraintTop_toBottomOf="@+id/item_photo_4" />
 
             <TextView
                 android:id="@+id/photo_count"
