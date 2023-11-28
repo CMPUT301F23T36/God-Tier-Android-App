@@ -65,7 +65,7 @@ public class PhotoFragment extends DialogFragment {
                             listener.selectDelete();
                         }
                     })
-                    .setNegativeButton("No", null)
+                    .setNeutralButton("Cancel", null)
                     .create();
         }
     }
