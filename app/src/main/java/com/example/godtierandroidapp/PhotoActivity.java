@@ -6,7 +6,6 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 
-import android.app.ListActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,12 +50,12 @@ public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
-    ArrayList<ImageView> photo;
+    ArrayList<ImageView> album;
     ArrayList<Bitmap> photo_bit = new ArrayList<Bitmap>(6);;
     int photo_index = 0, total_photos = 0, camera_animation;
     TextView curr_photo_count;
     ImageCapture ic;
-    ImageView item_photo_1, item_photo_2, item_photo_3, item_photo_4, item_photo_5, item_photo_6;
+    ImageView item_photo_1, item_photo_2, item_photo_3, item_photo_4;
     private static final int CAMERA_REQUEST_CODE = 100;
     PreviewView camera_preview;
     ProcessCameraProvider camera_process;
@@ -95,33 +94,21 @@ public class PhotoActivity extends AppCompatActivity implements
         item_photo_4 = findViewById(R.id.item_photo_4);
         item_photo_4.setOnClickListener(this);
 
-        item_photo_5 = findViewById(R.id.item_photo_5);
-        item_photo_5.setOnClickListener(this);
-
-        item_photo_6 = findViewById(R.id.item_photo_6);
-        item_photo_6.setOnClickListener(this);
-
         curr_photo_count = findViewById(R.id.photo_count);
 
-        photo = new ArrayList<ImageView>();
+        album = new ArrayList<ImageView>();
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bit = Bitmap.createBitmap(1,1,conf);
-        photo.add(item_photo_1);
+        album.add(item_photo_1);
         photo_bit.add(bit);
 
-        photo.add(item_photo_2);
+        album.add(item_photo_2);
         photo_bit.add(bit);
 
-        photo.add(item_photo_3);
+        album.add(item_photo_3);
         photo_bit.add(bit);
 
-        photo.add(item_photo_4);
-        photo_bit.add(bit);
-
-        photo.add(item_photo_5);
-        photo_bit.add(bit);
-
-        photo.add(item_photo_6);
+        album.add(item_photo_4);
         photo_bit.add(bit);
 
         camera_preview = findViewById(R.id.camera_preview);
@@ -222,12 +209,12 @@ public class PhotoActivity extends AppCompatActivity implements
             } else if (vID == R.id.item_photo_4) {
                 photo_index = 3;
                 deletePhoto();
-            } else if (vID == R.id.item_photo_5) {
-                photo_index = 4;
-                deletePhoto();
-            } else if (vID == R.id.item_photo_6) {
-                photo_index = 5;
-                deletePhoto();
+//            } else if (vID == R.id.item_photo_5) {
+//                photo_index = 4;
+//                deletePhoto();
+//            } else if (vID == R.id.item_photo_6) {
+//                photo_index = 5;
+//                deletePhoto();
             }
         }
     }
@@ -243,7 +230,7 @@ public class PhotoActivity extends AppCompatActivity implements
      * @param photoBM
      */
     private void linkPhoto (Bitmap photoBM) {
-        ImageView image = photo.get(photo_index);
+        ImageView image = album.get(photo_index);
         if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
             photo_bit.add(photoBM);
         }
@@ -260,19 +247,19 @@ public class PhotoActivity extends AppCompatActivity implements
      *
      */
     public void selectDelete() {
-        for (int i = photo_index; i < photo.size()-1;++i) {
+        for (int i = photo_index; i < album.size()-1; ++i) {
 
-            if (photo.get(i+1).getVisibility() == View.INVISIBLE) {
-                photo.get(i).setVisibility(View.INVISIBLE);
+            if (album.get(i+1).getVisibility() == View.INVISIBLE) {
+                album.get(i).setVisibility(View.INVISIBLE);
                 break;
             } else {
-                photo.get(i).setImageBitmap(photo_bit.get(i+1));
+                album.get(i).setImageBitmap(photo_bit.get(i+1));
                 photo_bit.set(i, photo_bit.get(i+1));
             }
         }
 
         total_photos -= 1;
-        String curr_count = total_photos + "/6 Images";
+        String curr_count = total_photos + "/4 Images";
         curr_photo_count.setText(curr_count);
     }
 
@@ -378,7 +365,7 @@ public class PhotoActivity extends AppCompatActivity implements
      * @param image_bit
      */
     private void savePhotoItem(Bitmap image_bit) {
-        ImageView image = photo.get(photo_index);
+        ImageView image = album.get(photo_index);
         if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
             photo_bit.add(image_bit);
         }
@@ -387,7 +374,7 @@ public class PhotoActivity extends AppCompatActivity implements
         image.setVisibility(View.VISIBLE);
         String name = "image" + photo_index;
         total_photos += 1;
-        String curr_count = total_photos + "/6 Images";
+        String curr_count = total_photos + "/4 Images";
         curr_photo_count.setText(curr_count);
 
         // send to firebase storage
