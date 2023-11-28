@@ -144,15 +144,17 @@ public class PhotoActivity extends AppCompatActivity implements
                      */
                     @Override
                     public void onActivityResult(Uri o) {
+                        if (o == null) {
+                            return;
+                        }
                         try {
                             Bitmap photoBM = BitmapFactory.decodeStream(getApplicationContext()
                                     .getContentResolver().openInputStream(o));
                             Bitmap bitmap = Bitmap.createScaledBitmap(photoBM, photoBM.getWidth(), photoBM.getHeight(), true);
-                            linkPhoto(bitmap);
+                            addPhotoToAlbum(bitmap);
                         } catch (FileNotFoundException e) { throw new RuntimeException(e); }
                     }
                 });
-
     }
 
     /**
@@ -164,7 +166,7 @@ public class PhotoActivity extends AppCompatActivity implements
         int vID = v.getId();
         if (vID == R.id.add_photo_btn) {
             if (total_photos == 4) {
-                Toast.makeText(getApplicationContext(),"4 photos max allowable",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Album Full (4/4)",Toast.LENGTH_LONG).show();
                 return;
             }
             photo_index = total_photos;
@@ -230,7 +232,7 @@ public class PhotoActivity extends AppCompatActivity implements
      *
      * @param photoBM
      */
-    private void linkPhoto (Bitmap photoBM) {
+    private void addPhotoToAlbum(Bitmap photoBM) {
         ImageView image = album.get(photo_index);
         if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
             photo_bit.add(photoBM);
@@ -298,7 +300,7 @@ public class PhotoActivity extends AppCompatActivity implements
             }, ContextCompat.getMainExecutor(this));
 
         }  else {
-            EasyPermissions.requestPermissions(this, "Must allow access to camera to take photos", CAMERA_REQUEST_CODE, camera_permission);
+            EasyPermissions.requestPermissions(this, "This feature requires access to camera", CAMERA_REQUEST_CODE, camera_permission);
         }
     }
     /**
