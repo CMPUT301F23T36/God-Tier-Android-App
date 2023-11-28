@@ -160,16 +160,16 @@ public class PhotoActivity extends AppCompatActivity implements
     public void onClick(View v) {
         int vID = v.getId();
         if (vID == R.id.add_photo_btn) {
-            if (total_photos == 6) {
-                Toast.makeText(getApplicationContext(),"6 photos max allowable",Toast.LENGTH_LONG).show();
+            if (total_photos == 4) {
+                Toast.makeText(getApplicationContext(),"4 photos max allowable",Toast.LENGTH_LONG).show();
                 return;
             }
             photo_index = total_photos;
             Bundle bundle = new Bundle();
-            bundle.putBoolean("onImage",false);
+            bundle.putBoolean("image",false);
             PhotoFragment pf = new PhotoFragment();
             pf.setArguments(bundle);
-            pf.show(getSupportFragmentManager(), "CAP_CHOOSE");
+            pf.show(getSupportFragmentManager(), "Add_photo");
 
         } else if (vID == R.id.cancel_photo_edit) {
             finish();
@@ -209,12 +209,6 @@ public class PhotoActivity extends AppCompatActivity implements
             } else if (vID == R.id.item_photo_4) {
                 photo_index = 3;
                 deletePhoto();
-//            } else if (vID == R.id.item_photo_5) {
-//                photo_index = 4;
-//                deletePhoto();
-//            } else if (vID == R.id.item_photo_6) {
-//                photo_index = 5;
-//                deletePhoto();
             }
         }
     }
