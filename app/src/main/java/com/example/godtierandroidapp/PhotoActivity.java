@@ -51,7 +51,7 @@ public class PhotoActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     ArrayList<ImageView> album;
-    ArrayList<Bitmap> photo_bit = new ArrayList<Bitmap>(6);;
+    ArrayList<Bitmap> photo_bit = new ArrayList<Bitmap>(4);;
     int photo_index = 0, total_photos = 0, camera_animation;
     TextView curr_photo_count;
     ImageCapture ic;
