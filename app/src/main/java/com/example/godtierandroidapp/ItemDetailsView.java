@@ -2,10 +2,12 @@ package com.example.godtierandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +39,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Button item_details_delete;
     private Button item_add_tag;
     private Button item_add_photo;
+    Button item_scan_barcode;
+    ImageView iv;
+    int photo_index = 0;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -75,7 +80,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_details_confirm = findViewById(R.id.item_detail_confirm);
         item_add_tag = findViewById(R.id.add_tags);
         item_add_photo = findViewById(R.id.add_photo);
+        item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
+
+        // temp attempt at displaying photos
+        iv = findViewById(R.id.item_photo);
+        updatePhoto();
 
 
         // Set click listener for add tag button
@@ -133,6 +143,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 finish();
             }
         });
+
+        item_scan_barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     /**
@@ -155,6 +172,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             tags.append(" ").append(item.getTags().get(i).getName());
         }
         tags_field.setText(tags.toString());
+    }
+
+    protected void updatePhoto() {
+        Bitmap bm = item.getPhoto(photo_index);
+        if (bm != null) {
+            iv.setImageBitmap(bm);
+        }
     }
 
     @Override

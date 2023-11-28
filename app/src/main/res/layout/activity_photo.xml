@@ -15,6 +15,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/photo_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="620dp"
+            android:text="0/4 Item Album"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/gallery_constraint"
             android:layout_width="match_parent"
@@ -26,19 +38,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
 
-            <!--            <Space-->
-            <!--                android:id="@+id/space2"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"-->
-            <!--                app:layout_constraintTop_toTopOf="parent" />-->
-
             <ImageView
                 android:id="@+id/item_photo_1"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
+                android:layout_width="190dp"
+                android:layout_height="150dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="invisible"
@@ -49,75 +52,43 @@
 
             <ImageView
                 android:id="@+id/item_photo_2"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
+                android:layout_width="190dp"
+                android:layout_height="150dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/item_photo_4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/item_photo_3"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
+                android:layout_width="190dp"
+                android:layout_height="150dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/photo_count"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.829" />
 
             <ImageView
                 android:id="@+id/item_photo_4"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
+                android:layout_width="190dp"
+                android:layout_height="150dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <ImageView
-                android:id="@+id/item_photo_5"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/photo_count"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_photo_3"/>
-
-            <ImageView
-                android:id="@+id/item_photo_6"
-                android:layout_width="153dp"
-                android:layout_height="124dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/photo_count"
-                app:layout_constraintTop_toBottomOf="@+id/item_photo_4" />
-
-            <TextView
-                android:id="@+id/photo_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="620dp"
-                android:text="0/6 Images"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.827" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -139,7 +110,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
-                android:id="@+id/save_photo_edit"
+                android:id="@+id/save_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -149,7 +120,7 @@
                 app:layout_constraintTop_toTopOf="@+id/footer" />
 
             <Button
-                android:id="@+id/cancel_photo_edit"
+                android:id="@+id/cancel_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -203,7 +174,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
-                android:id="@+id/capture_camera_button"
+                android:id="@+id/capture_photo_button"
                 android:layout_width="148dp"
                 android:layout_height="58dp"
                 android:text="Capture"
