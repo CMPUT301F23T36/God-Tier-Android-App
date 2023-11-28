@@ -29,7 +29,7 @@ public class Item implements Serializable {
         this.estimatedValue = 0;
         this.comment = "";
         this.tags = new ArrayList<>();
-        this.photo = new ArrayList<Bitmap>(4);
+        this.photo = new ArrayList<>(4);
     }
 
     // Constructor

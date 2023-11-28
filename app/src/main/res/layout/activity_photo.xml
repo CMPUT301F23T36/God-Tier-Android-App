@@ -110,7 +110,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
-                android:id="@+id/save_photo_edit"
+                android:id="@+id/save_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -120,7 +120,7 @@
                 app:layout_constraintTop_toTopOf="@+id/footer" />
 
             <Button
-                android:id="@+id/cancel_photo_edit"
+                android:id="@+id/cancel_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -174,7 +174,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
-                android:id="@+id/capture_camera_button"
+                android:id="@+id/capture_photo_button"
                 android:layout_width="148dp"
                 android:layout_height="58dp"
                 android:text="Capture"

@@ -51,7 +51,7 @@ public class PhotoActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     ArrayList<ImageView> album;
-    ArrayList<Bitmap> photo_bit = new ArrayList<Bitmap>(4);;
+    ArrayList<Bitmap> photo_bit = new ArrayList<>(4);
     int photo_index = 0, total_photos = 0, camera_animation;
     TextView curr_photo_count;
     ImageCapture ic;
@@ -61,7 +61,7 @@ public class PhotoActivity extends AppCompatActivity implements
     ProcessCameraProvider camera_process;
     ConstraintLayout camera_layout, gallery_layout;
     boolean existing_photo;
-    Button cancel_btn, save_btn, capture_cam_btn, close_capture, capture_btn;
+    Button cancel_btn, save_btn, capture_photo_btn, exit_camera_btn, add_photo_btn;
     String date, description, make, model, serialNo, estValue, comment;
     ActivityResultLauncher<String> gallery;
 
@@ -71,9 +71,10 @@ public class PhotoActivity extends AppCompatActivity implements
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        // here implement an image layout or sm
         setContentView(R.layout.activity_photo);
+
         this.date = getIntent().getStringExtra("dateOfAcquisition");
         this.description = getIntent().getStringExtra("description");
         this.make = getIntent().getStringExtra("make");
@@ -82,6 +83,7 @@ public class PhotoActivity extends AppCompatActivity implements
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);
+
         item_photo_1 = findViewById(R.id.item_photo_1);
         item_photo_1.setOnClickListener(this);
 
@@ -96,9 +98,10 @@ public class PhotoActivity extends AppCompatActivity implements
 
         curr_photo_count = findViewById(R.id.photo_count);
 
-        album = new ArrayList<ImageView>();
+        album = new ArrayList<>();
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bit = Bitmap.createBitmap(1,1,conf);
+
         album.add(item_photo_1);
         photo_bit.add(bit);
 
@@ -117,20 +120,20 @@ public class PhotoActivity extends AppCompatActivity implements
         gallery_layout = findViewById(R.id.gallery_constraint);
         camera_animation = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        cancel_btn = findViewById(R.id.cancel_photo_edit);
+        cancel_btn = findViewById(R.id.cancel_edit);
         cancel_btn.setOnClickListener(this);
 
-        save_btn = findViewById(R.id.save_photo_edit);
+        save_btn = findViewById(R.id.save_edit);
         save_btn.setOnClickListener(this);
 
-        capture_btn = findViewById(R.id.add_photo_btn);
-        capture_btn.setOnClickListener(this);
+        add_photo_btn = findViewById(R.id.add_photo_btn);
+        add_photo_btn.setOnClickListener(this);
 
-        capture_cam_btn = findViewById(R.id.capture_camera_button);
-        capture_cam_btn.setOnClickListener(this);
+        capture_photo_btn = findViewById(R.id.capture_photo_button);
+        capture_photo_btn.setOnClickListener(this);
 
-        close_capture = findViewById(R.id.exit_camera_button);
-        close_capture.setOnClickListener(this);
+        exit_camera_btn = findViewById(R.id.exit_camera_button);
+        exit_camera_btn.setOnClickListener(this);
 
         gallery = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -170,13 +173,11 @@ public class PhotoActivity extends AppCompatActivity implements
             PhotoFragment pf = new PhotoFragment();
             pf.setArguments(bundle);
             pf.show(getSupportFragmentManager(), "Add_photo");
+        } else if (vID == R.id.cancel_edit) { finish(); }
 
-        } else if (vID == R.id.cancel_photo_edit) {
-            finish();
-        } else if (vID == R.id.save_photo_edit && existing_photo) {
-            finish();
+        else if (vID == R.id.save_edit && existing_photo) { finish();}
 
-        } else if (vID == R.id.save_photo_edit) {
+        else if (vID == R.id.save_edit) {
 
             Map<String, Object> item_hash = new HashMap<String, Object>();
             item_hash.put("dateOfAcquisition",this.date);
@@ -189,24 +190,30 @@ public class PhotoActivity extends AppCompatActivity implements
 
             Intent i = new Intent(this, ItemListView.class);
             startActivity(i);
-        } else if (vID == R.id.capture_camera_button) {
+        } else if (vID == R.id.capture_photo_button) {
+
             capturePhoto();
             camera_layout.setVisibility(View.GONE);
         } else if (vID == R.id.exit_camera_button) {
+
             camera_layout.setVisibility(View.GONE);
             controlCameraView(false);
         }
         if (v.getVisibility() != View.INVISIBLE) {
             if (vID == R.id.item_photo_1) {
+
                 photo_index = 0;
                 deletePhoto();
             } else if (vID == R.id.item_photo_2) {
+
                 photo_index = 1;
                 deletePhoto();
             } else if (vID == R.id.item_photo_3) {
+
                 photo_index = 2;
                 deletePhoto();
             } else if (vID == R.id.item_photo_4) {
+
                 photo_index = 3;
                 deletePhoto();
             }
@@ -251,7 +258,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 photo_bit.set(i, photo_bit.get(i+1));
             }
         }
-
         total_photos -= 1;
         String curr_count = total_photos + "/4 Images";
         curr_photo_count.setText(curr_count);
@@ -304,8 +310,8 @@ public class PhotoActivity extends AppCompatActivity implements
         CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
         Preview preview = new Preview.Builder().build();
         preview.setSurfaceProvider(camera_preview.getSurfaceProvider());
-
         ic = new ImageCapture.Builder().build();
+
         try {
             cameraProvider.unbindAll();
             cameraProvider.bindToLifecycle(this,cameraSelector,preview, ic);
@@ -328,7 +334,6 @@ public class PhotoActivity extends AppCompatActivity implements
             public void onCaptureSuccess(@NonNull ImageProxy image) {
                 super.onCaptureSuccess(image);
                 Bitmap image_bit = image.toBitmap();
-
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(image_bit, image.getWidth(), image.getHeight(), true);
@@ -405,7 +410,7 @@ public class PhotoActivity extends AppCompatActivity implements
                     }
                 });
     }
-    
+
     /**
      *
      */
