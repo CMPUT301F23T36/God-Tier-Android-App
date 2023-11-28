@@ -47,7 +47,6 @@ public class ItemListView extends AppCompatActivity {
 
     public void updateTagList(ArrayList<Tag> newTagList) {
         tags = newTagList;
-        Collections.sort(tags);
     }
 
 
@@ -195,6 +194,13 @@ public class ItemListView extends AppCompatActivity {
         updateList();
     }
 
+    public void updateTags(ArrayList<Item> itemsToChange) {
+        for (Item i : itemsToChange){
+            itemList.updateTags(i);
+        }
+        updateList();
+    }
+
     /**
      * Sets filter criteria for items and updates list with filtered list
      * @param filterFunction filter criteria
@@ -223,7 +229,7 @@ public class ItemListView extends AppCompatActivity {
                 Intent intent = result.getData();
                 int oldItemIdx = intent.getIntExtra("old item idx", -1);
                 Item newItem = (Item) intent.getSerializableExtra("new item");
-                tags = (ArrayList<Tag>) intent.getSerializableExtra("new tag list");
+                updateTagList((ArrayList<Tag>) intent.getSerializableExtra("new tag list"));
 
                 if (newItem == null) {
                     if (oldItemIdx == -1) {

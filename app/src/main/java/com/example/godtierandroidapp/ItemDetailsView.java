@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
@@ -157,7 +158,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_add_tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) ItemDetailsView.this.listOfTagObjects);
+                AddTagFragment fragment = new AddTagFragment();
+
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
             }
         });
@@ -219,6 +221,24 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     protected void updateTagField(){
         // Initialize string builder
         boolean isEmpty = true;
+        List<Tag> tagList = item.getTags();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("| ");
+        // use for loop
+        for (int j = 0; j < tagList.size(); j++) {
+            // concat array value
+            stringBuilder.append(tagList.get(j).getName());
+            stringBuilder.append(" | ");
+            isEmpty = false;
+        }
+        if(isEmpty){ tags_field.setText(""); }
+        else { tags_field.setText(stringBuilder.toString()); }
+        // set text on textView
+    }
+    /*
+    protected void updateTagField(){
+        // Initialize string builder
+        boolean isEmpty = true;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("| ");
         // use for loop
@@ -233,9 +253,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         if(isEmpty){ tags_field.setText(""); }
         else { tags_field.setText(stringBuilder.toString()); }
         // set text on textView
-
-
     }
+     */
     public Item getItem(){
         return item;
     }

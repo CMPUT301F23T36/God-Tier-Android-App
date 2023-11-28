@@ -74,8 +74,13 @@ public class Item implements Serializable {
         tags.add(tag);
     }
 
-    public void setTags(ArrayList<Tag> newTags){
+    public void setTags(List<Tag> newTags){
         tags = newTags;
+    }
+    public void removeTag(Tag tag) {
+        if(tags.contains(tag)){
+            tags.remove(tag);
+        }
     }
 
     public List<Tag> getTags() {

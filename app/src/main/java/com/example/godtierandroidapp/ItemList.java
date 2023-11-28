@@ -1,6 +1,7 @@
 package com.example.godtierandroidapp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -85,6 +86,15 @@ public class ItemList {
      */
     public int size() {
         return itemListSortedFiltered.size();
+    }
+
+    /**
+     * Updates tags for provided item from both base, and sorted and filtered list
+     * @param item item to have its tags updated
+     */
+    public void updateTags(Item item){
+        baseItemList.get(baseItemList.indexOf(item)).setTags(item.getTags());
+        itemListSortedFiltered.get(itemListSortedFiltered.indexOf(item)).setTags(item.getTags());
     }
 
     /**

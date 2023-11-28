@@ -54,12 +54,19 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             itemListView.clearList(selectedItems);
             isSelectMode = false;
             itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+            itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
+        });
+        itemListView.findViewById(R.id.add_tags_button).setOnClickListener(v -> {
+            SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) itemListView.tags,(Serializable) selectedItems);
+
+            fragment.show(itemListView.getSupportFragmentManager(), "Select Tags");
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 isSelectMode = true;
                 itemListView.findViewById(R.id.clear_item_button).setVisibility(View.VISIBLE);
+                itemListView.findViewById(R.id.add_tags_button).setVisibility(View.VISIBLE);
                 if (selectedItems.contains(item)) {
                     holder.itemView.setBackgroundColor(Color.TRANSPARENT);
                     views.remove(holder);
@@ -73,6 +80,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
                 if (selectedItems.size() == 0) {
                     isSelectMode = false;
                     itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+                    itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
                 };
                 return true;
             }
@@ -92,6 +100,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
                 if (selectedItems.size() == 0){
                     isSelectMode = false;
                     itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+                    itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
                 }
             }
             else {

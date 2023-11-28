@@ -40,15 +40,6 @@ public class AddTagFragment extends DialogFragment {
         }
     }
 
-    public static AddTagFragment newInstance(Serializable tag_list) {
-        Bundle args = new Bundle();
-        args.putSerializable("tag_list", tag_list);
-
-        AddTagFragment fragment = new AddTagFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public interface OnFragmentInteractionListener {
         void onConfirmPressed(Tag newTag);
     }
