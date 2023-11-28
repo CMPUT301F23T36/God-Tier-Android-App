@@ -53,7 +53,7 @@ public class PhotoActivity extends AppCompatActivity implements
 
     ArrayList<ImageView> photo;
     ArrayList<Bitmap> photo_bit = new ArrayList<Bitmap>(6);;
-    int photo_index = 0, total_photos = 0, animationDuration;
+    int photo_index = 0, total_photos = 0, camera_animation;
     TextView curr_photo_count;
     ImageCapture ic;
     ImageView item_photo_1, item_photo_2, item_photo_3, item_photo_4, item_photo_5, item_photo_6;
@@ -128,7 +128,7 @@ public class PhotoActivity extends AppCompatActivity implements
         camera_layout = findViewById(R.id.camera_view);
         camera_layout.setVisibility(View.GONE);
         gallery_layout = findViewById(R.id.gallery_constraint);
-        animationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        camera_animation = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         cancel_btn = findViewById(R.id.cancel_photo_edit);
         cancel_btn.setOnClickListener(this);
@@ -174,7 +174,6 @@ public class PhotoActivity extends AppCompatActivity implements
         int vID = v.getId();
         if (vID == R.id.add_photo_btn) {
             if (total_photos == 6) {
-                // no available image slots
                 Toast.makeText(getApplicationContext(),"6 photos max allowable",Toast.LENGTH_LONG).show();
                 return;
             }
@@ -186,12 +185,12 @@ public class PhotoActivity extends AppCompatActivity implements
             pf.show(getSupportFragmentManager(), "CAP_CHOOSE");
 
         } else if (vID == R.id.cancel_photo_edit) {
-            // Go back to add activity
             finish();
         } else if (vID == R.id.save_photo_edit && existing_photo) {
             finish();
+
         } else if (vID == R.id.save_photo_edit) {
-            // return to list activity
+
             Map<String, Object> item_hash = new HashMap<String, Object>();
             item_hash.put("dateOfAcquisition",this.date);
             item_hash.put("description",this.description);
@@ -201,14 +200,12 @@ public class PhotoActivity extends AppCompatActivity implements
             item_hash.put("estimatedValue",this.estValue);
             item_hash.put("comment",this.comment);
 
-            Intent i = new Intent(this, ListActivity.class);
+            Intent i = new Intent(this, ItemListView.class);
             startActivity(i);
         } else if (vID == R.id.capture_camera_button) {
-            // The button that appears with the camera preview
             capturePhoto();
             camera_layout.setVisibility(View.GONE);
         } else if (vID == R.id.exit_camera_button) {
-            // The close button that appears with the camera preview
             camera_layout.setVisibility(View.GONE);
             controlCameraView(false);
         }
@@ -264,7 +261,7 @@ public class PhotoActivity extends AppCompatActivity implements
      */
     public void selectDelete() {
         for (int i = photo_index; i < photo.size()-1;++i) {
-            // loop for each photo past the deleted one
+
             if (photo.get(i+1).getVisibility() == View.INVISIBLE) {
                 photo.get(i).setVisibility(View.INVISIBLE);
                 break;
@@ -273,7 +270,7 @@ public class PhotoActivity extends AppCompatActivity implements
                 photo_bit.set(i, photo_bit.get(i+1));
             }
         }
-        // change total
+
         total_photos -= 1;
         String curr_count = total_photos + "/6 Images";
         curr_photo_count.setText(curr_count);
@@ -352,7 +349,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(),"Capture successful",Toast.LENGTH_SHORT).show();
                 Bitmap image_bit = image.toBitmap();
 
-                // must rotate bitmap 90 degrees to get correct orientation
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(image_bit, image.getWidth(), image.getHeight(), true);
@@ -382,7 +378,6 @@ public class PhotoActivity extends AppCompatActivity implements
      * @param image_bit
      */
     private void savePhotoItem(Bitmap image_bit) {
-        // img_idx is set on view click, either equal to the total or the index of the clicked ImageView
         ImageView image = photo.get(photo_index);
         if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
             photo_bit.add(image_bit);
@@ -415,11 +410,11 @@ public class PhotoActivity extends AppCompatActivity implements
         open.setVisibility(View.VISIBLE);
         open.animate()
                 .alpha(1f)
-                .setDuration(animationDuration)
+                .setDuration(camera_animation)
                 .setListener(null);
         close.animate()
                 .alpha(0f)
-                .setDuration(animationDuration)
+                .setDuration(camera_animation)
                 .setListener(new AnimatorListenerAdapter() {
                     /**
                      * @param animation The animation which reached its end.
