@@ -272,7 +272,7 @@ public class PhotoActivity extends AppCompatActivity implements
      *
      */
     @Override
-    public void selectCamera() {
+    public void startCamera() {
         String camera_permission = Manifest.permission.CAMERA;
 
         if (EasyPermissions.hasPermissions(this, camera_permission)) {
@@ -284,7 +284,7 @@ public class PhotoActivity extends AppCompatActivity implements
                 public void run() {
                     try {
                         camera_process = cameraProviderListenableFuture.get();
-                        startCamera(camera_process);
+                        selectCamera(camera_process);
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -299,7 +299,7 @@ public class PhotoActivity extends AppCompatActivity implements
      *
      * @param cameraProvider
      */
-    private void startCamera(ProcessCameraProvider cameraProvider) {
+    private void selectCamera(ProcessCameraProvider cameraProvider) {
 
         CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
         Preview preview = new Preview.Builder().build();
@@ -327,7 +327,6 @@ public class PhotoActivity extends AppCompatActivity implements
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
                 super.onCaptureSuccess(image);
-                Toast.makeText(getApplicationContext(),"Capture successful",Toast.LENGTH_SHORT).show();
                 Bitmap image_bit = image.toBitmap();
 
                 Matrix matrix = new Matrix();
@@ -347,11 +346,10 @@ public class PhotoActivity extends AppCompatActivity implements
             public void onError(@NonNull ImageCaptureException exception) {
                 super.onError(exception);
                 exception.printStackTrace();
-                Toast.makeText(getApplicationContext(),"Capture Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Failed to capture photo",Toast.LENGTH_SHORT).show();
                 controlCameraView(false);
             }
         });
-
     }
 
     /**
@@ -407,7 +405,7 @@ public class PhotoActivity extends AppCompatActivity implements
                     }
                 });
     }
-
+    
     /**
      *
      */

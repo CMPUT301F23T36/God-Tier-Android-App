@@ -17,7 +17,7 @@ public class PhotoFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
 
     public interface OnFragmentInteractionListener {
-        void selectCamera();
+        void startCamera();
         void selectDelete();
         void selectGallery();
     }
@@ -43,7 +43,7 @@ public class PhotoFragment extends DialogFragment {
                     .setNegativeButton("Camera", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int which) {
-                            listener.selectCamera();
+                            listener.startCamera();
                         }
                     })
                     .setPositiveButton("Gallery", new DialogInterface.OnClickListener() {

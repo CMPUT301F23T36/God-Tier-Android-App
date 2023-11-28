@@ -51,7 +51,6 @@ public class Item implements Serializable {
         this.estimatedValue = estimatedValue;
         this.comment = comment;
         this.tags = tags;
-        //this.photo = photo;
     }
 
     public Item(
