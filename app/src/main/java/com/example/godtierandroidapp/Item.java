@@ -77,6 +77,8 @@ public class Item implements Serializable {
         return tags;
     }
 
+    public int getTagCount() { return tags.size(); }
+
     public boolean hasTag(Tag tag) {
         return tags.contains(tag);
     }
