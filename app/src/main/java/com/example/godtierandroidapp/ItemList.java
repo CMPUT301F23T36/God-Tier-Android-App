@@ -1,9 +1,20 @@
 package com.example.godtierandroidapp;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+
 
 /**
  * Manages and stores a list of items. Allows for items to be added, removed , retrieved or updated
@@ -22,11 +33,18 @@ public class ItemList {
         boolean passesFilter(Item item);
     }
 
+    public interface DatabaseReadFinish {
+        void onFinish();
+    }
+
     private Comparator<Item> sortCriteria;
     private FilterCriteria filterCriteria;
 
     private List<Item> baseItemList;
     private List<Item> itemListSortedFiltered;
+
+    DatabaseReference database;
+
 
     /**
      * Constructs an ItemList without filter or sort criteria
@@ -36,6 +54,35 @@ public class ItemList {
         itemListSortedFiltered = new ArrayList<>();
         sortCriteria = null;
         filterCriteria = null;
+        database = null;
+    }
+
+    /**
+     *
+     * @param database a reference to the "Items" database under the current user
+     */
+    public ItemList(DatabaseReference database, DatabaseReadFinish onFinish) {
+        baseItemList = new ArrayList<>();
+        itemListSortedFiltered = new ArrayList<>();
+        sortCriteria = null;
+        filterCriteria = null;
+
+        this.database = database;
+        database.get().addOnSuccessListener((DataSnapshot data) -> {
+            baseItemList = new ArrayList<>();
+            Object items = data.getValue();
+            if (items != null) {
+                ArrayList l = (ArrayList) data.getValue();
+                for (int i = 0; i < l.size(); ++i) {
+                    baseItemList.add(new Item((HashMap) l.get(i)));
+                }
+                remakeSortedFilteredList();
+            }
+
+            if (onFinish != null) {
+                onFinish.onFinish();
+            }
+        });
     }
 
     /**
@@ -55,6 +102,7 @@ public class ItemList {
                 itemListSortedFiltered.add(item);
             }
         }
+        updateDatabase();
     }
 
     /**
@@ -65,7 +113,9 @@ public class ItemList {
     public void updateItem(int idx, Item item) {
         baseItemList.set(idx, item);
         remakeSortedFilteredList();
+        updateDatabase();
     }
+
 
     /**
      * Retrieves item at index of sorted and filtered list
@@ -105,6 +155,7 @@ public class ItemList {
                 break;
             }
         }
+        updateDatabase();
     }
 
   /**
@@ -135,6 +186,7 @@ public class ItemList {
     public void clear() {
         baseItemList.clear();
         itemListSortedFiltered.clear();
+        updateDatabase();
     }
 
     /**
@@ -197,6 +249,21 @@ public class ItemList {
             return filterCriteria.passesFilter(item);
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Update the database if it exists
+     */
+    private void updateDatabase() {
+        if (database != null) {
+            Log.d("ItemList", "Updated database");
+            database.setValue((List<Item>) baseItemList)
+                    .addOnSuccessListener((Void v) -> {
+                        Log.d("ItemList", "write items success");
+                    }).addOnFailureListener((Exception e) -> {
+                        Log.d("ItemList", e.getMessage());
+                    });
         }
     }
 }

@@ -11,9 +11,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -73,8 +80,20 @@ public class ItemListView extends AppCompatActivity {
 
         // init ItemList ---------------------------------------------------------------------------
 
-        itemList = new ItemList();
+        String username = getIntent().getStringExtra("username");
+        if (username == null) {
+            Log.d("ItemListView", "Username was null!");
+            itemList = new ItemList();
+        } else {
+            DatabaseReference items = FirebaseDatabase.getInstance()
+                    .getReference("Users")
+                    .child(username)
+                    .child("items");
 
+            itemList = new ItemList(items, this::updateList);
+        }
+
+/*
         itemList.addItem(new Item("Test item 1", 100.0, tags));
         itemList.addItem(new Item("Test item 2", 200.0, new ArrayList<>()));
         itemList.addItem(new Item("Test item 3", 50.0, new ArrayList<>()));
@@ -143,7 +162,7 @@ public class ItemListView extends AppCompatActivity {
                 1800.00,
                 "Sample Comment",
                 new ArrayList<>()));
-
+*/
         // init view and ItemListViewAdapter -------------------------------------------------------
 
         recyclerView = findViewById(R.id.recyclerView);

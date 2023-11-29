@@ -7,7 +7,9 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class Item implements Serializable {
     private Date dateOfAcquisition;
@@ -67,6 +69,38 @@ public class Item implements Serializable {
         this.comment = "";
         this.tags = tags;
         //this.photo = new ArrayList<>();
+    }
+
+    // database returns data in hashmap format
+    public Item(HashMap map) {
+        Log.d("ITEM", String.valueOf(map));
+        estimatedValue = ((Number) map.get("estimatedValue")).doubleValue();
+        serialNumber = (String) map.get("serialNumber");
+        description = (String) map.get("description");
+        comment = (String) map.get("comment");
+        model = (String) map.get("model");
+
+        tags = new ArrayList<>();
+        long tagCount = (long) map.get("tagCount");
+        if (tagCount != 0) {
+            ArrayList tagsMap = (ArrayList) map.get("tags");
+            for (int i = 0; i < tagCount; ++i) {
+                HashMap tagsStruct = (HashMap) tagsMap.get(i);
+                tags.add(new Tag((String) tagsStruct.get("name")));
+            }
+        }
+
+        HashMap<String, Object> dateAq = (HashMap<String, Object>) map.get("dateOfAcquisition");
+        long date = (long) dateAq.get("date");
+        long hours = (long) dateAq.get("hours");
+        long seconds = (long) dateAq.get("seconds");
+        long month = (long) dateAq.get("month");
+        long year = (long) dateAq.get("year");
+        long minutes = (long) dateAq.get("minutes");
+
+        dateOfAcquisition = new Date((int)year, (int)month, (int)date,
+                (int)hours, (int)minutes, (int)seconds);
+        make = (String) map.get("make");
     }
 
     public void addTag(Tag tag) {
