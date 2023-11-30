@@ -40,7 +40,7 @@ import java.util.List;
 public class ItemDetailsView extends AppCompatActivity {
     private Item item;
     private int item_idx;
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private EditText description_field;
     private TextView date_of_purchase_field;
@@ -167,24 +167,33 @@ public class ItemDetailsView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 item_photo.setVisibility(View.GONE);
-                // Check if the READ_EXTERNAL_STORAGE permission is granted
-                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // Permission is not granted, request it
-                    ActivityCompat.requestPermissions(ItemDetailsView.this,
-                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
-                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                } else {
-                    // Permission is already granted, proceed with opening the gallery
-                    openGallery();
-                }
+                openGallery();
+//                // Check if the READ_EXTERNAL_STORAGE permission is granted
+//                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    // Permission is not granted, request it
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else {
+//                    // Permission is already granted, proceed with opening the gallery
+//                    openGallery();
+//                }
             }
         });
+
+
 
         viewPager = findViewById(R.id.viewPager);
         myPagerAdapter = new PagerAdapter(this, item);
         viewPager.setAdapter(myPagerAdapter);
     }
+
 
     // Call this method when you want to update the data set
     private void updateImages() {
