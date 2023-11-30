@@ -33,13 +33,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-public class ItemDetailsView extends AppCompatActivity {
+/**
+ * Contains an expaned detailed view of the item including all its properties
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-05
+ */
+public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
+    private ArrayList<Tag> tag_list;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private EditText description_field;
@@ -58,7 +66,22 @@ public class ItemDetailsView extends AppCompatActivity {
     private PagerAdapter myPagerAdapter;
     private static final String TAG = "ItemDetailsView";
 
+    private Button item_add_tag;
+    private Button item_add_photo;
+    Button item_scan_barcode;
+    ImageView iv;
+    int photo_index = 0;
 
+    /**
+     * Called when an item is selected to show its detailed view with all fields. Initializes
+     * activity, and then retrieves the selected item and updates it with all its field info. Sets
+     * up confirm and delete buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +93,7 @@ public class ItemDetailsView extends AppCompatActivity {
 
         item_details_delete = findViewById(R.id.item_detail_delete);
 
+        // Get selected item from ItemList activity
         Intent intent = getIntent();
         item = (Item) intent.getSerializableExtra("item");
         if (item == null) {
@@ -78,6 +102,7 @@ public class ItemDetailsView extends AppCompatActivity {
         }
         item_idx = intent.getIntExtra("item idx", -1);
 
+        //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
         estimated_value_field = findViewById(R.id.estimated_value_field);
@@ -88,9 +113,42 @@ public class ItemDetailsView extends AppCompatActivity {
         item_details_confirm = findViewById(R.id.item_detail_confirm);
         edit_item_photo = findViewById(R.id.edit_photo);
         item_photo = findViewById(R.id.item_photo);
+
+        item_add_tag = findViewById(R.id.add_tags);
+        item_add_photo = findViewById(R.id.add_photo);
+        item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
 
+        // temp attempt at displaying photos
+        iv = findViewById(R.id.item_photo);
+        updatePhoto();
 
+
+        // Set click listener for add tag button
+        item_add_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Tag> tag_list = (ArrayList<Tag>) intent.getExtras().getSerializable("tag_list");
+                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) tag_list);
+                fragment.show(getSupportFragmentManager(), "ADD TAG");
+            }
+        });
+
+        // Set click listener for add photo button
+        item_add_photo.setOnClickListener(new View.OnClickListener()  {
+            /**
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
+                i.putExtra("Edit", true);
+                startActivity(i);
+            }
+        });
+
+        // Set click listener for confirm button
         item_details_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +176,7 @@ public class ItemDetailsView extends AppCompatActivity {
             }
         });
 
+        // Set click listener for delete button
         item_details_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,10 +186,10 @@ public class ItemDetailsView extends AppCompatActivity {
                 finish();
             }
         });
+
         if (item.getUri().size() != 0) {
             item_photo.setVisibility(View.GONE);
         }
-
 
         // open gallery to get data of the image
         galleryLauncher = registerForActivityResult(
@@ -187,7 +246,12 @@ public class ItemDetailsView extends AppCompatActivity {
             }
         });
 
+        item_scan_barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+        });
 
         viewPager = findViewById(R.id.viewPager);
         myPagerAdapter = new PagerAdapter(this, item);
@@ -215,7 +279,9 @@ public class ItemDetailsView extends AppCompatActivity {
         galleryLauncher.launch(galleryIntent);
     }
 
-
+    /**
+     * Updates item fields
+     */
     protected void updateFields() {
         description_field.setText(item.getDescription());
         date_of_purchase_field.setText(String.valueOf(item.getDateOfAcquisition()));
@@ -237,6 +303,17 @@ public class ItemDetailsView extends AppCompatActivity {
 
     }
 
+    protected void updatePhoto() {
+        Bitmap bm = item.getPhoto(photo_index);
+        if (bm != null) {
+            iv.setImageBitmap(bm);
+        }
+    }
 
+    @Override
+    public void onConfirmPressed(ArrayList<Tag> tag_list) {
 
+    }
+
+    public void onConfirmPressed(){}
 }

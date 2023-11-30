@@ -13,6 +13,12 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Comparator;
 
+/**
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-09
+ */
 public class SortFragment extends DialogFragment {
     SortFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
@@ -64,6 +70,9 @@ public class SortFragment extends DialogFragment {
                 break;
             case "value":
                 comparator = Comparator.comparing(Item::getEstimatedValue);
+                break;
+            case "tag":
+                comparator = Comparator.comparing(Item::getTagCount).reversed();
                 break;
             default:
                 Log.d("SortFragment", "Invalid type dropdown: " + selectedText);

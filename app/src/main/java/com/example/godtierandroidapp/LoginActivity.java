@@ -18,12 +18,29 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Application login screen that starts on app open. Users must enter valid credentials, which will
+ * be checked against Firebase data, to enter and use the main app functionality.
+ *
+ * @author Luke
+ * @version 1.0
+ * @since 2023-11-10
+ */
 public class LoginActivity extends AppCompatActivity {
 
     EditText loginUsername, loginPassword;
     TextView signupRedirect;
     Button loginButton;
 
+    /**
+     * Called when app is first opened, or a user logs out. Initializes activity and sets up login
+     * UI. Sets up login and signup buttons
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates user input username. Empty inputs result in error message.
+     * @return boolean if the username is not empty.
+     */
     private boolean validationUsername() {
         String username = loginUsername.getText().toString();
         if (username.isEmpty()) {
@@ -68,6 +89,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates user input password. Empty inputs result in error messages.
+     * @return boolean if password is not empty
+     */
     private boolean validationPassword() {
         String password = loginPassword.getText().toString();
         if (password.isEmpty()) {
@@ -81,6 +106,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks user input username and password are valid with Firestore database to authenticate.
+     * Authenticated users are navigated to ItemListView activity. If check fails, error message
+     * displayed.
+     */
     private void checkUser() {
         String username = loginUsername.getText().toString().trim();
         String password = loginPassword.getText().toString().trim();
@@ -98,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (password.equals(passwordFromDB)) {
                         loginUsername.setError(null);
                         Intent intent = new Intent(LoginActivity.this, ItemListView.class);
+                        intent.putExtra("username", username);
                         startActivity(intent);
                     }
                     else {

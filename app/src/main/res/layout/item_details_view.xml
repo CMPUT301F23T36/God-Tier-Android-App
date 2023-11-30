@@ -7,8 +7,9 @@
     tools:context=".ItemDetailsView">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="top|center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -254,22 +255,63 @@
                 android:textDirection="rtl"
                 android:textSize="20sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/item_detail_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/confirm" />
-
-        <Button
-            android:id="@+id/item_detail_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Delete" />
-
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/item_detail_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_detail_delete"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@id/add_photo"
+        />
+
+    <Button
+        android:id="@+id/item_detail_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_detail_confirm"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@id/add_tags"/>
+
+    <Button
+        android:id="@+id/add_tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Add Tags"
+        app:layout_constraintEnd_toStartOf="@id/scan_barcode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_detail_delete"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/add_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Add Photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scan_barcode"
+        app:layout_constraintTop_toBottomOf="@+id/item_detail_confirm" />
+
+    <Button
+        android:id="@+id/scan_barcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="68dp"
+        android:gravity="center"
+        android:text="Scan Barcode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_photo"
+        app:layout_constraintStart_toEndOf="@+id/add_tags" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

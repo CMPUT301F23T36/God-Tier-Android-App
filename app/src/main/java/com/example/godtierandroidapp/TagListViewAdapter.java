@@ -10,14 +10,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 
+/**
+ *
+ * @author Alex
+ * @version 1.0
+ * @since 2023-11-06
+ */
 public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.TagViewHolder> {
     private Context context;
     private Item item;
+    private ArrayList<Tag> tag_list;
 
     public TagListViewAdapter(Context context) {
         this.context = context;
         this.item = null;
+        this.tag_list = null;
+    }
+    public TagListViewAdapter(Context context, ArrayList<Tag> tagList) {
+        this.context = context;
+        this.item = null;
+        this.tag_list = tagList;
     }
 
     public void setItem(Item item) {
@@ -34,13 +48,19 @@ public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TagListViewAdapter.TagViewHolder holder, int position) {
-        if (item != null) {
-            Tag tag = item.getTags().get(position);
+        if(tag_list == null) {
+            if (item != null) {
+                Tag tag = item.getTags().get(position);
 
-            // Bind data to the TextViews in the list item layout
-            holder.textViewTagName.setText(tag.getName());
+                // Bind data to the TextViews in the list item layout
+                holder.textViewTagName.setText(tag.getName());
+            } else {
+                holder.textViewTagName.setText("ERROR: null item");
+            }
         } else {
-            holder.textViewTagName.setText("ERROR: null item");
+            for (Tag tag : tag_list) {
+                holder.textViewTagName.setText(tag.getName());
+            }
         }
     }
 
