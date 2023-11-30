@@ -27,13 +27,19 @@
                 android:layout_height="match_parent"
                 android:padding="20dp">
 
-                <!-- First ImageView at the top -->
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
                 <ImageView
                     android:id="@+id/item_photo"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_android_black_24dp" />
+                    android:src="@drawable/ic_android_black_24dp"
+                    android:visibility="visible"/>
+
 
                 <!-- Second ImageView at the bottom -->
                 <ImageView
@@ -43,7 +49,7 @@
                     android:layout_gravity="bottom|end"
                     android:scaleType="centerCrop"
                     android:src="@drawable/photo_gallery" />
-            </FrameLayout>x
+            </FrameLayout>
         </androidx.cardview.widget.CardView>
 
 

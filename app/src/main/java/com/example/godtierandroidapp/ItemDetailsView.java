@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -53,7 +54,8 @@ public class ItemDetailsView extends AppCompatActivity {
     private ImageView edit_item_photo;
     private ImageView item_photo;
     private ActivityResultLauncher<Intent> galleryLauncher;
-    private List<Uri> item_uris;
+    private ViewPager viewPager;
+    private PagerAdapter myPagerAdapter;
     private static final String TAG = "ItemDetailsView";
 
 
@@ -125,9 +127,12 @@ public class ItemDetailsView extends AppCompatActivity {
                 finish();
             }
         });
+        if (item.getUri().size() != 0) {
+            item_photo.setVisibility(View.GONE);
+        }
 
 
-
+        // open gallery to get data of the image
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -140,6 +145,7 @@ public class ItemDetailsView extends AppCompatActivity {
                             if (data != null) {
                                 Uri selectedImageUri = data.getData();
                                 if (selectedImageUri != null) {
+                                    // TO ensure the permission exist for later needs.
                                     getContentResolver().takePersistableUriPermission(
                                             selectedImageUri,
                                             Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -147,7 +153,8 @@ public class ItemDetailsView extends AppCompatActivity {
 
                                     // Set the selected image URI to the second ImageView
                                     item.addPhoto(selectedImageUri);
-                                    item_photo.setImageURI(selectedImageUri);
+                                    myPagerAdapter.notifyDataSetChanged();
+                                    updateImages();
                                 }
 
                             }
@@ -159,6 +166,7 @@ public class ItemDetailsView extends AppCompatActivity {
         edit_item_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                item_photo.setVisibility(View.GONE);
                 // Check if the READ_EXTERNAL_STORAGE permission is granted
                 if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -172,23 +180,20 @@ public class ItemDetailsView extends AppCompatActivity {
                 }
             }
         });
+
+        viewPager = findViewById(R.id.viewPager);
+        myPagerAdapter = new PagerAdapter(this, item);
+        viewPager.setAdapter(myPagerAdapter);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            // Check if the permission is granted
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with opening the gallery
-                openGallery();
-            } else {
-                // Permission denied, show a message or handle accordingly
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+    // Call this method when you want to update the data set
+    private void updateImages() {
+        // New image resources
+        List<Uri> newImageResources = item.getUri();
 
+        // Update the adapter's data set
+        myPagerAdapter.updateData(newImageResources);
+    }
 
     private void openGallery() {
         // Create an intent to pick an image from the gallery
@@ -209,10 +214,6 @@ public class ItemDetailsView extends AppCompatActivity {
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         serial_no_field.setText(item.getSerialNumber());
-        item_uris = item.getUri();
-        if (item_uris != null && item_uris.size() > 0) {
-            item_photo.setImageURI(item_uris.get(0));
-        }
 
         // TODO
         StringBuilder tags = new StringBuilder(new String());

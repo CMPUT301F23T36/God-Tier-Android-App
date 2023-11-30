@@ -1,7 +1,11 @@
 package com.example.godtierandroidapp;
 
+
+
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.net.Uri;
+
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -108,6 +112,9 @@ public class Item implements Serializable {
 
     public List<Uri> getUri() {
         return photo;
+    }
+    public void setUri(List<Uri> photo) {
+        this.photo = photo;
     }
     public void addTag(Tag tag) {
         tags.add(tag);
