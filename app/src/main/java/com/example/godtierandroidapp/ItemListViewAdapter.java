@@ -1,5 +1,8 @@
 package com.example.godtierandroidapp;
 
+import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -45,6 +48,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.getItem(position);
+
         itemListView.findViewById(R.id.clear_item_button).setOnClickListener(v -> {
             itemListView.clearList(selectedItems);
             isSelectMode = false;
@@ -87,6 +91,8 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             }
             else {
                 Intent intent = new Intent(context, ItemDetailsView.class);
+                intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 intent.putExtra("item", item);
                 intent.putExtra("item idx", position);
                 itemListView.itemEditLauncher.launch(intent);
