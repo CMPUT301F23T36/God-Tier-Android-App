@@ -62,14 +62,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Button item_details_delete;
     private ImageView edit_item_photo;
     private ImageView item_photo;
-    private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<String> galleryLauncher;
     private ViewPager viewPager;
     private PagerAdapter myPagerAdapter;
     private static final String TAG = "ItemDetailsView";
 
     private Button item_add_tag;
     private Button item_add_photo;
-    int ACTIVITY_REQUEST_CODE = 1;
     Button item_scan_barcode;
     ImageView iv;
 
@@ -194,35 +193,46 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         }
 
         // open gallery to get data of the image
+//        galleryLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                new ActivityResultCallback<ActivityResult>() {
+//                    @Override
+//                    public void onActivityResult(ActivityResult result) {
+//                        if (result.getResultCode() == RESULT_OK) {
+//
+//                            // Handle the result
+//                            Intent data = result.getData();
+//                            if (data != null) {
+//                                Uri selectedImageUri = data.getData();
+//                                if (selectedImageUri != null) {
+//                                    // TO ensure the permission exist for later needs.
+//                                    getContentResolver().takePersistableUriPermission(
+//                                            selectedImageUri,
+//                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                                    );
+//
+//                                    // Set the selected image URI to the second ImageView
+//                                    item.addPhoto(selectedImageUri);
+//                                    myPagerAdapter.notifyDataSetChanged();
+//                                    updateImages();
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                });
+
         galleryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
+                new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
                     @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-
-                            // Handle the result
-                            Intent data = result.getData();
-                            if (data != null) {
-                                Uri selectedImageUri = data.getData();
-                                if (selectedImageUri != null) {
-                                    // TO ensure the permission exist for later needs.
-                                    getContentResolver().takePersistableUriPermission(
-                                            selectedImageUri,
-                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                    );
-
-                                    // Set the selected image URI to the second ImageView
-                                    item.addPhoto(selectedImageUri);
-                                    myPagerAdapter.notifyDataSetChanged();
-                                    updateImages();
-                                }
-
+                    public void onActivityResult(Uri uri) {
+                        if (uri == null) { return; }
+                        item.addPhoto(uri);
+                        myPagerAdapter.notifyDataSetChanged();
+                        updateImages();
                             }
-                        }
-                    }
-                });
-
+                        });
         // Set OnClickListener for the second ImageView to open the gallery
         edit_item_photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,11 +275,13 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
-                        assert i != null;
-                        item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
-                        myPagerAdapter.notifyDataSetChanged();
-                        updateImages();
-                    // item.photosSet(getIntent().getParcelableArrayListExtra("updatedPhotoUri"));
+                    assert i != null;
+                    if (item.photos().size() == 0) {
+                        item_photo.setVisibility(View.GONE);
+                    }
+                    item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
+                    myPagerAdapter.notifyDataSetChanged();
+                    updateImages();
                     }
                 });
 
@@ -284,14 +296,15 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     }
 
     private void openGallery() {
-        // Create an intent to pick an image from the gallery
-        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        galleryIntent.setType("image/*");
-
-        // Launch the gallery activity with the intent using the ActivityResultLauncher
-        galleryLauncher.launch(galleryIntent);
+//        // Create an intent to pick an image from the gallery
+//        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+//        galleryIntent.setType("image/*");
+//
+//        // Launch the gallery activity with the intent using the ActivityResultLauncher
+//        galleryLauncher.launch(galleryIntent);
+        galleryLauncher.launch("image/*");
     }
 
     /**

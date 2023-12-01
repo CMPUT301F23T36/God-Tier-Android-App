@@ -172,11 +172,19 @@ public class PhotoActivity extends AppCompatActivity implements
         if (photo_uri != null && !photo_uri.isEmpty()) {
             for (int i = 0; i < Math.min(album.size(), photo_uri.size()); i++) {
                 Uri photoUri = photo_uri.get(i);
+                ImageView imageView = album.get(i);
                 if (photoUri != null) {
+                    RequestOptions requestOptions = new RequestOptions()
+                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
+                            .error(R.drawable.error_image); // Image to show in case of error
                     Glide.with(this)
                             .load(photoUri)
+                            .apply(requestOptions)
                             .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(album.get(i));
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                } else {
+                    imageView.setVisibility(View.INVISIBLE);
                 }
             }
         }
