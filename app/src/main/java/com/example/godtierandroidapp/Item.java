@@ -124,8 +124,10 @@ public class Item implements Serializable {
         // Convert Uri objects to strings and store them
         ArrayList<byte[]> uriStrings = new ArrayList<>();
         for (Uri uri : photo) {
-            Log.d("uri", uri.toString());
-            uriStrings.add(uri.toString().getBytes());
+            if (uri != null) {
+                Log.d("uri", uri.toString());
+                uriStrings.add(uri.toString().getBytes());
+            } else { continue; }
         }
         out.writeObject(uriStrings);
     }
@@ -140,12 +142,16 @@ public class Item implements Serializable {
         ArrayList<byte[]> uriStrings = (ArrayList<byte[]>) in.readObject();
         for (byte[] uriString : uriStrings) {
             try {
-                photo.add(Uri.parse(uriString.toString()));
-            } catch (Exception e) {}
+                if (uriString != null) {
+                    photo.add(Uri.parse(uriString.toString()));
+                } else {
+                    continue;
+                }
+            }
+            catch (Exception e) {}
         }
         //photo = (ArrayList<Uri>) in.readObject();
     }
-
 
     public void addPhoto(Uri newPhoto) {
         if (photo == null) {

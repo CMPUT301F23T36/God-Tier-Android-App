@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 
  import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -49,6 +51,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private Item item;
     private int item_idx;
     private ArrayList<Tag> tag_list;
+    ArrayList<ImageView> album;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private EditText description_field;
@@ -57,6 +60,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private EditText make_field;
     private EditText model_field;
     private EditText serial_no_field;
+    ArrayList<Uri> photo_field;
     private TextView tags_field;
     private Button item_details_confirm;
     private Button item_details_delete;
@@ -119,10 +123,23 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
 
+        viewPager = findViewById(R.id.viewPager);
+        myPagerAdapter = new PagerAdapter(this, item);
+        viewPager.setAdapter(myPagerAdapter);
+
         // temp attempt at displaying photos
         iv = findViewById(R.id.item_photo);
-        //updatePhoto();
 
+        if (item.photos().size() != 0) {
+            item_photo.setVisibility(View.GONE);
+            myPagerAdapter.notifyDataSetChanged();
+            updateImages();
+        }
+
+//        if (item.photos().size() > 0) {
+//            loadImageView();
+//        }
+        //updatePhoto();
 
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +179,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 item.setModel(model_field.getText().toString());
                 item.setSerialNumber(serial_no_field.getText().toString());
 
+//                if (photo_field!=null && !photo_field.isEmpty()) {
+//                    item.photosSet(photo_field);
+//                }
+
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
@@ -169,7 +190,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 try {
                     // Your code here
                     finish();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "Error in onClick: " + e.getMessage());
 
@@ -187,10 +209,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 finish();
             }
         });
-
-        if (item.photos().size() != 0) {
-            item_photo.setVisibility(View.GONE);
-        }
 
         // open gallery to get data of the image
 //        galleryLauncher = registerForActivityResult(
@@ -265,9 +283,30 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             }
         });
 
-        viewPager = findViewById(R.id.viewPager);
-        myPagerAdapter = new PagerAdapter(this, item);
-        viewPager.setAdapter(myPagerAdapter);
+    }
+
+    private void loadImageView() {
+        if (item.photos() != null && !item.photos().isEmpty()) {
+            album.clear();
+            for (int i = 0; i < item.photos().size(); i++) {
+                Uri photoUri = item.photos().get(i);
+                ImageView imageView = new ImageView(this);
+                album.add(imageView);
+                if (photoUri != null) {
+                    RequestOptions requestOptions = new RequestOptions()
+                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
+                            .error(R.drawable.error_image); // Image to show in case of error
+                    Glide.with(this)
+                            .load(photoUri)
+                            .apply(requestOptions)
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
+            myPagerAdapter.updateData(item.photos());
+            viewPager.setAdapter(myPagerAdapter);
+        }
     }
 
     public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
@@ -279,6 +318,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                     if (item.photos().size() == 0) {
                         item_photo.setVisibility(View.GONE);
                     }
+//                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
                     item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
                     myPagerAdapter.notifyDataSetChanged();
                     updateImages();

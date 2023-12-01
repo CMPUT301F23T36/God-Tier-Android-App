@@ -61,6 +61,7 @@ public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
+    final static int max_array_size = 4;
     ArrayList<ImageView> album;
     ArrayList<Uri> photo_uri;
     int photo_index = 0, camera_animation;
@@ -112,7 +113,7 @@ public class PhotoActivity extends AppCompatActivity implements
         String text = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(text);
 
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < max_array_size; i ++) {
             try {
                 photo_uri.get(i);
             }catch (IndexOutOfBoundsException e) {
@@ -277,7 +278,7 @@ public class PhotoActivity extends AppCompatActivity implements
      */
     private void addPhotoToAlbum(Uri photoUri) {
         ImageView image = album.get(photo_index);
-        if (photo_uri.size() < 4 && photo_uri.size() == photo_index) {
+        if (photo_uri.size() < max_array_size && photo_uri.size() == photo_index) {
             photo_uri.add(photoUri);
         }
         photo_uri.set(photo_index,photoUri);
