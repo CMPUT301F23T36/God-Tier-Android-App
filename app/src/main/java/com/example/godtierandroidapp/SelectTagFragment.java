@@ -26,6 +26,8 @@ public class SelectTagFragment extends DialogFragment {
     private boolean[] selectedTags;
     private Context context;
 
+    private ArrayList<Tag> tagsToAdd;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -47,6 +49,7 @@ public class SelectTagFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         listOfTagObjects = (ArrayList<Tag>) getArguments().getSerializable("tag_list");
         listOfItemObjects = (ArrayList<Item>) getArguments().getSerializable("item_array");
+        tagsToAdd = new ArrayList<>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // set title
@@ -71,22 +74,32 @@ public class SelectTagFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                 if (b) {
-                    for(Item item : listOfItemObjects) {
-                        Tag newtag = listOfTagObjects.get(i);
-                        if(!item.getTags().contains(newtag)){  // item does not have tag
-                            item.addTag(newtag);
-                        }
-                    }
+                    tagsToAdd.add(listOfTagObjects.get(i));
+//                    for(Item item : listOfItemObjects) {
+//                        Tag newtag = listOfTagObjects.get(i);
+//                        if(!item.getTags().contains(newtag)){  // item does not have tag
+//                            item.addTag(newtag);
+//                        }
+//                    }
                 } else {
-                    for (Item item : listOfItemObjects) {
-                        item.removeTag(listOfTagObjects.get(i));
-                    }
+                    tagsToAdd.remove(listOfTagObjects.get(i));
+//                    for (Item item : listOfItemObjects) {
+//                        item.removeTag(listOfTagObjects.get(i));
+//                    }
                 }
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                for (Tag tag : tagsToAdd) {
+                    for (Item item : listOfItemObjects) {
+                        if (!item.hasTag(tag)) {
+                            item.addTag(tag);
+                        }
+                    }
+                }
+
                 if(context.getClass() == ItemListView.class){
                     ItemListView itemListView = (ItemListView) context;
                     itemListView.updateTags(listOfItemObjects);
