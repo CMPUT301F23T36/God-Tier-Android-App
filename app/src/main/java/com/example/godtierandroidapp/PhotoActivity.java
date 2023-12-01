@@ -1,11 +1,16 @@
 package com.example.godtierandroidapp;
 
+import androidx.activity.result.ActivityResult;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 
+import android.app.Activity;
+import android.content.Context;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +44,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,13 +52,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firestore.admin.v1.Index;
+
 public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     ArrayList<ImageView> album;
-    ArrayList<Bitmap> photo_bit = new ArrayList<>(4);
-    int photo_index = 0, total_photos = 0, camera_animation;
+    ArrayList<Uri> photo_uri;
+    int photo_index = 0, camera_animation;
     TextView curr_photo_count;
     ImageCapture ic;
     ImageView item_photo_1, item_photo_2, item_photo_3, item_photo_4;
@@ -82,6 +93,7 @@ public class PhotoActivity extends AppCompatActivity implements
         this.serialNo = getIntent().getStringExtra("serialNumber");
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
+        this.photo_uri = getIntent().getParcelableArrayListExtra("photoUri");
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);
 
         item_photo_1 = findViewById(R.id.item_photo_1);
@@ -97,22 +109,21 @@ public class PhotoActivity extends AppCompatActivity implements
         item_photo_4.setOnClickListener(this);
 
         curr_photo_count = findViewById(R.id.photo_count);
+        String text = countNonEmptyUris(photo_uri) + "/4 Images";
+        curr_photo_count.setText(text);
 
+        for (int i = 0; i < 4; i ++) {
+            try {
+                photo_uri.get(i);
+            }catch (IndexOutOfBoundsException e) {
+                photo_uri.add(i, null);
+            }
+        }
         album = new ArrayList<>();
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap bit = Bitmap.createBitmap(1,1,conf);
-
         album.add(item_photo_1);
-        photo_bit.add(bit);
-
         album.add(item_photo_2);
-        photo_bit.add(bit);
-
         album.add(item_photo_3);
-        photo_bit.add(bit);
-
         album.add(item_photo_4);
-        photo_bit.add(bit);
 
         camera_preview = findViewById(R.id.camera_preview);
         camera_layout = findViewById(R.id.camera_view);
@@ -147,14 +158,28 @@ public class PhotoActivity extends AppCompatActivity implements
                         if (o == null) {
                             return;
                         }
-                        try {
-                            Bitmap photoBM = BitmapFactory.decodeStream(getApplicationContext()
-                                    .getContentResolver().openInputStream(o));
-                            Bitmap bitmap = Bitmap.createScaledBitmap(photoBM, photoBM.getWidth(), photoBM.getHeight(), true);
-                            addPhotoToAlbum(bitmap);
-                        } catch (FileNotFoundException e) { throw new RuntimeException(e); }
+                        addPhotoToAlbum(o);
                     }
                 });
+
+        if (existing_photo) {
+            Log.d("PHOTOS", "Loading photos from database");
+            loadPhotos();
+        }
+    }
+
+    private void loadPhotos() {
+        if (photo_uri != null && !photo_uri.isEmpty()) {
+            for (int i = 0; i < Math.min(album.size(), photo_uri.size()); i++) {
+                Uri photoUri = photo_uri.get(i);
+                if (photoUri != null) {
+                    Glide.with(this)
+                            .load(photoUri)
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(album.get(i));
+                }
+            }
+        }
     }
 
     /**
@@ -165,11 +190,11 @@ public class PhotoActivity extends AppCompatActivity implements
     public void onClick(View v) {
         int vID = v.getId();
         if (vID == R.id.add_photo_btn) {
-            if (total_photos == 4) {
+            if (countNonEmptyUris(photo_uri)== 4) {
                 Toast.makeText(getApplicationContext(),"Album Full (4/4)",Toast.LENGTH_LONG).show();
                 return;
             }
-            photo_index = total_photos;
+            photo_index = countNonEmptyUris(photo_uri);
             Bundle bundle = new Bundle();
             bundle.putBoolean("image",false);
             PhotoFragment pf = new PhotoFragment();
@@ -177,22 +202,33 @@ public class PhotoActivity extends AppCompatActivity implements
             pf.show(getSupportFragmentManager(), "Add_photo");
         } else if (vID == R.id.cancel_edit) { finish(); }
 
-        else if (vID == R.id.save_edit && existing_photo) { finish();}
-
+        // && existing_photo
         else if (vID == R.id.save_edit) {
+            Intent retIntent = new Intent();
+            retIntent.putParcelableArrayListExtra("updatedPhotoUri", photo_uri);
+            setResult(Activity.RESULT_OK, retIntent);
+            finish();}
 
-            Map<String, Object> item_hash = new HashMap<String, Object>();
-            item_hash.put("dateOfAcquisition",this.date);
-            item_hash.put("description",this.description);
-            item_hash.put("make",this.make);
-            item_hash.put("model",this.model);
-            item_hash.put("serialNumber",this.serialNo);
-            item_hash.put("estimatedValue",this.estValue);
-            item_hash.put("comment",this.comment);
+//        else if (vID == R.id.save_edit) {
+//
+//            HashMap<String, Object> item_hash = new HashMap<String, Object>();
+//            item_hash.put("dateOfAcquisition",this.date);
+//            item_hash.put("description",this.description);
+//            item_hash.put("make",this.make);
+//            item_hash.put("model",this.model);
+//            item_hash.put("serialNumber",this.serialNo);
+//            item_hash.put("estimatedValue",this.estValue);
+//            item_hash.put("comment",this.comment);
+//            item_hash.put("photo", this.photo_uri);
+//
+//            Intent retIntent = new Intent();
+//            retIntent.putExtra("editedItem", item_hash);
+//            setResult(Activity.RESULT_OK, retIntent);
+//            finish();
 
-            Intent i = new Intent(this, ItemListView.class);
-            startActivity(i);
-        } else if (vID == R.id.capture_photo_button) {
+//            Intent i = new Intent(this, ItemListView.class);
+//            startActivity(i); }
+         else if (vID == R.id.capture_photo_button) {
 
             capturePhoto();
             camera_layout.setVisibility(View.GONE);
@@ -221,7 +257,6 @@ public class PhotoActivity extends AppCompatActivity implements
             }
         }
     }
-
     /**
      *
      */
@@ -230,20 +265,29 @@ public class PhotoActivity extends AppCompatActivity implements
 
     /**
      *
-     * @param photoBM
+     * @param photoUri
      */
-    private void addPhotoToAlbum(Bitmap photoBM) {
+    private void addPhotoToAlbum(Uri photoUri) {
         ImageView image = album.get(photo_index);
-        if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
-            photo_bit.add(photoBM);
+        if (photo_uri.size() < 4 && photo_uri.size() == photo_index) {
+            photo_uri.add(photoUri);
         }
-        photo_bit.set(photo_index,photoBM);
-        image.setImageBitmap(photoBM);
+        photo_uri.set(photo_index,photoUri);
+        image.setImageURI(photoUri);
         image.setVisibility(View.VISIBLE);
         String name = "image" + photo_index;
-        total_photos += 1;
-        String text = total_photos + "/6 Images";
+        String text = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(text);
+    }
+
+    private int countNonEmptyUris(List<Uri> uris) {
+        int count = 0;
+        for (Uri uri : uris) {
+            if (uri != null) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -254,14 +298,14 @@ public class PhotoActivity extends AppCompatActivity implements
 
             if (album.get(i+1).getVisibility() == View.INVISIBLE) {
                 album.get(i).setVisibility(View.INVISIBLE);
+                photo_uri.set(i, null);
                 break;
             } else {
-                album.get(i).setImageBitmap(photo_bit.get(i+1));
-                photo_bit.set(i, photo_bit.get(i+1));
+                album.get(i).setImageURI(photo_uri.get(i+1));
+                photo_uri.set(i, photo_uri.get(i+1));
             }
         }
-        total_photos -= 1;
-        String curr_count = total_photos + "/4 Images";
+        String curr_count = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(curr_count);
     }
 
@@ -364,19 +408,21 @@ public class PhotoActivity extends AppCompatActivity implements
      * @param image_bit
      */
     private void savePhotoItem(Bitmap image_bit) {
+        Uri photoUri = getImageUri(this, image_bit);
+        addPhotoToAlbum(photoUri);
         ImageView image = album.get(photo_index);
-        if (photo_bit.size() < 6 && photo_bit.size() == photo_index) {
-            photo_bit.add(image_bit);
+        if (photo_uri.size() < 4 && photo_uri.size() == photo_index) {
+            photo_uri.add(photoUri);
         }
-        photo_bit.set(photo_index,image_bit);
-        image.setImageBitmap(image_bit);
+        photo_uri.set(photo_index,photoUri);
+        image.setImageURI(photoUri);
         image.setVisibility(View.VISIBLE);
         String name = "image" + photo_index;
-        total_photos += 1;
-        String curr_count = total_photos + "/4 Images";
+        String curr_count = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(curr_count);
 
         // send to firebase storage
+
     }
 
     /**
@@ -423,6 +469,13 @@ public class PhotoActivity extends AppCompatActivity implements
             camera_process.unbindAll();
             camera_process = null;
         }
+    }
+
+    private Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
     }
 
     /**
