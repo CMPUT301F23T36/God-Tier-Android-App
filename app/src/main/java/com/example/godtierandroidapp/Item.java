@@ -95,8 +95,10 @@ public class Item implements Serializable {
     public Item(HashMap map) {
         photo = new ArrayList<>();
         ArrayList<String> uris = (ArrayList<String>) map.get("uriStrings");
-        for (String uri : uris) {
-            photo.add(Uri.parse(uri));
+        if (uris != null) {
+            for (String uri : uris) {
+                photo.add(Uri.parse(uri));
+            }
         }
 
         Log.d("ITEM", String.valueOf(map));
