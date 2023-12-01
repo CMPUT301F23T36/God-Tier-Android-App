@@ -1,10 +1,27 @@
 package com.example.godtierandroidapp;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+
 
 /**
  * Manages and stores a list of items. Allows for items to be added, removed , retrieved or updated
@@ -23,11 +40,18 @@ public class ItemList {
         boolean passesFilter(Item item);
     }
 
+    public interface DatabaseReadFinish {
+        void onFinish();
+    }
+
     private Comparator<Item> sortCriteria;
     private FilterCriteria filterCriteria;
 
-    private List<Item> baseItemList;
-    private List<Item> itemListSortedFiltered;
+    private ArrayList<Item> baseItemList;
+    private ArrayList<Item> itemListSortedFiltered;
+
+    DatabaseReference database;
+
 
     /**
      * Constructs an ItemList without filter or sort criteria
@@ -37,6 +61,42 @@ public class ItemList {
         itemListSortedFiltered = new ArrayList<>();
         sortCriteria = null;
         filterCriteria = null;
+        database = null;
+    }
+
+    /**
+     *
+     * @param database a reference to the "Items" database under the current user
+     */
+    public ItemList(DatabaseReference database, DatabaseReadFinish onFinish) {
+        baseItemList = new ArrayList<>();
+        itemListSortedFiltered = new ArrayList<>();
+        sortCriteria = null;
+        filterCriteria = null;
+
+        this.database = database;
+        database.get().addOnSuccessListener((DataSnapshot data) -> {
+            baseItemList = new ArrayList<>();
+            try {
+                Object value = data.getValue();
+                if (value != null) {
+                    ArrayList<HashMap> items = (ArrayList<HashMap>) value;
+                    Log.d("Database items", items.toString());
+
+                    for (HashMap item : items) {
+                        baseItemList.add(new Item(item));
+                    }
+
+                    remakeSortedFilteredList();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (onFinish != null) {
+                onFinish.onFinish();
+            }
+        });
     }
 
     /**
@@ -56,6 +116,7 @@ public class ItemList {
                 itemListSortedFiltered.add(item);
             }
         }
+        updateDatabase();
     }
 
     /**
@@ -66,7 +127,9 @@ public class ItemList {
     public void updateItem(int idx, Item item) {
         baseItemList.set(idx, item);
         remakeSortedFilteredList();
+        updateDatabase();
     }
+
 
     /**
      * Retrieves item at index of sorted and filtered list
@@ -115,6 +178,7 @@ public class ItemList {
                 break;
             }
         }
+        updateDatabase();
     }
 
   /**
@@ -145,6 +209,7 @@ public class ItemList {
     public void clear() {
         baseItemList.clear();
         itemListSortedFiltered.clear();
+        updateDatabase();
     }
 
     /**
@@ -207,6 +272,25 @@ public class ItemList {
             return filterCriteria.passesFilter(item);
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Update the database if it exists
+     */
+    private void updateDatabase() {
+        if (database != null) {
+            Log.d("ItemList", "Updated database");
+            try {
+                database.setValue(baseItemList)
+                        .addOnSuccessListener((Void v) -> {
+                            Log.d("ItemList", "write items success");
+                        }).addOnFailureListener((Exception e) -> {
+                            Log.d("ItemList", e.getMessage());
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 }

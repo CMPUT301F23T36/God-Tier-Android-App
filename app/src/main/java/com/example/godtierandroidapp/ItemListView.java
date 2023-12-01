@@ -11,9 +11,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -79,8 +86,20 @@ public class ItemListView extends AppCompatActivity {
 
         // init ItemList ---------------------------------------------------------------------------
 
-        itemList = new ItemList();
+        String username = getIntent().getStringExtra("username");
+        if (username == null) {
+            Log.d("ItemListView", "Username was null!");
+            itemList = new ItemList();
+        } else {
+            DatabaseReference items = FirebaseDatabase.getInstance()
+                    .getReference("Users")
+                    .child(username)
+                    .child("items");
 
+            itemList = new ItemList(items, this::updateList);
+        }
+
+/*
         itemList.addItem(new Item("Test item 1", 100.0, tags));
         itemList.addItem(new Item("Test item 2", 200.0, new ArrayList<>()));
         itemList.addItem(new Item("Test item 3", 50.0, new ArrayList<>()));
@@ -92,7 +111,6 @@ public class ItemListView extends AppCompatActivity {
                 "1a57494ds9",
                 250.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2013, 9, 4),
                 "Printer 2",
@@ -101,7 +119,6 @@ public class ItemListView extends AppCompatActivity {
                 "735hj27365d",
                 200.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2022, 5, 11),
                 "Laptop 1",
@@ -110,7 +127,6 @@ public class ItemListView extends AppCompatActivity {
                 "867378649",
                 1400.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Laptop 2",
@@ -119,7 +135,6 @@ public class ItemListView extends AppCompatActivity {
                 "98697868768",
                 900.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Bicycle",
@@ -128,7 +143,6 @@ public class ItemListView extends AppCompatActivity {
                 "1234567ababa",
                 600.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Unicycle",
@@ -137,7 +151,6 @@ public class ItemListView extends AppCompatActivity {
                 "774466335re",
                 400.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2017, 11, 25),
                 "Scooter",
@@ -146,7 +159,6 @@ public class ItemListView extends AppCompatActivity {
                 "545545",
                 120.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
         itemList.addItem(new Item(new Date(2018, 12, 26),
                 "Laptop 3",
@@ -155,9 +167,8 @@ public class ItemListView extends AppCompatActivity {
                 "888888888888",
                 1800.00,
                 "Sample Comment",
-                new ArrayList<>(),
                 new ArrayList<>()));
-
+*/
         // init view and ItemListViewAdapter -------------------------------------------------------
 
         recyclerView = findViewById(R.id.recyclerView);

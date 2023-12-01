@@ -71,6 +71,9 @@ public class SortFragment extends DialogFragment {
             case "value":
                 comparator = Comparator.comparing(Item::getEstimatedValue);
                 break;
+            case "tag":
+                comparator = Comparator.comparing(Item::getTagCount).reversed();
+                break;
             default:
                 Log.d("SortFragment", "Invalid type dropdown: " + selectedText);
                 return null;

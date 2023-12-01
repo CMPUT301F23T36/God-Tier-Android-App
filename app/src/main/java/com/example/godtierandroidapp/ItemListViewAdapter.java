@@ -1,5 +1,8 @@
 package com.example.godtierandroidapp;
 
+import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -112,6 +115,8 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             }
             else {
                 Intent intent = new Intent(context, ItemDetailsView.class);
+                intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 intent.putExtra("item", item);
                 intent.putExtra("item idx", position);
                 intent.putExtra("tag_list", itemListView.tags);

@@ -1,21 +1,41 @@
 package com.example.godtierandroidapp;
 
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+
+import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Pair;
+
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.Manifest;
 
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+
+import android.util.Log;
+import android.widget.Toast;
+
+
+ import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,8 +51,12 @@ import java.util.List;
 public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
+  
     private ArrayList<Item> itemArrayList;
     private ArrayList<Tag> listOfTagObjects;
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     private EditText description_field;
     private TextView date_of_purchase_field;
     private EditText estimated_value_field;
@@ -42,7 +66,18 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     private TextView tags_field;
     private Button item_details_confirm;
     private Button item_details_delete;
+    private ImageView edit_item_photo;
+    private ImageView item_photo;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private ViewPager viewPager;
+    private PagerAdapter myPagerAdapter;
+    private static final String TAG = "ItemDetailsView";
+
     private Button item_add_tag;
+    private Button item_add_photo;
+    int ACTIVITY_REQUEST_CODE = 1;
+    Button item_scan_barcode;
+    ImageView iv;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -58,6 +93,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details_view);
+
+        ActivityCompat.requestPermissions(ItemDetailsView.this,
+                new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
 
         item_details_delete = findViewById(R.id.item_detail_delete);
 
@@ -83,9 +122,18 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         serial_no_field = findViewById(R.id.serial_no_field);
         tags_field = findViewById(R.id.tags_field);
         item_details_confirm = findViewById(R.id.item_detail_confirm);
-        item_add_tag = findViewById(R.id.add_tags);
-        updateFields();
+        edit_item_photo = findViewById(R.id.edit_photo);
+        item_photo = findViewById(R.id.item_photo);
 
+        item_add_tag = findViewById(R.id.add_tags);
+        item_add_photo = findViewById(R.id.add_photo);
+        item_scan_barcode = findViewById(R.id.scan_barcode);
+        updateFields();
+      
+        // temp attempt at displaying photos
+        iv = findViewById(R.id.item_photo);
+        //updatePhoto();
+      
         tags_field.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +143,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             }
         });
 
+       
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +151,21 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 AddTagFragment fragment = new AddTagFragment();
 
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
+            }
+        });
+
+        // Set click listener for add photo button
+        item_add_photo.setOnClickListener(new View.OnClickListener()  {
+            /**
+             *
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
+                i.putExtra("Edit", item.photos().size() > 0);
+                i.putParcelableArrayListExtra("photoUri", item.photos());
+                addPhotoLauncher.launch(i);
             }
         });
 
@@ -123,7 +187,14 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 retIntent.putExtra("new item", item);
                 retIntent.putExtra("new tag list", listOfTagObjects);
                 setResult(Activity.RESULT_OK, retIntent);
-                finish();
+                try {
+                    // Your code here
+                    finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Error in onClick: " + e.getMessage());
+
+                }
             }
         });
 
@@ -137,6 +208,110 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 finish();
             }
         });
+
+        if (item.photos().size() != 0) {
+            item_photo.setVisibility(View.GONE);
+        }
+
+        // open gallery to get data of the image
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+
+                            // Handle the result
+                            Intent data = result.getData();
+                            if (data != null) {
+                                Uri selectedImageUri = data.getData();
+                                if (selectedImageUri != null) {
+                                    // TO ensure the permission exist for later needs.
+                                    getContentResolver().takePersistableUriPermission(
+                                            selectedImageUri,
+                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    );
+
+                                    // Set the selected image URI to the second ImageView
+                                    item.addPhoto(selectedImageUri);
+                                    myPagerAdapter.notifyDataSetChanged();
+                                    updateImages();
+                                }
+
+                            }
+                        }
+                    }
+                });
+
+        // Set OnClickListener for the second ImageView to open the gallery
+        edit_item_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item_photo.setVisibility(View.GONE);
+                openGallery();
+//                // Check if the READ_EXTERNAL_STORAGE permission is granted
+//                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    // Permission is not granted, request it
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else {
+//                    // Permission is already granted, proceed with opening the gallery
+//                    openGallery();
+//                }
+            }
+        });
+
+        item_scan_barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        viewPager = findViewById(R.id.viewPager);
+        myPagerAdapter = new PagerAdapter(this, item);
+        viewPager.setAdapter(myPagerAdapter);
+    }
+
+    public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent i = result.getData();
+                        assert i != null;
+                        item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
+                        myPagerAdapter.notifyDataSetChanged();
+                        updateImages();
+                    // item.photosSet(getIntent().getParcelableArrayListExtra("updatedPhotoUri"));
+                    }
+                });
+
+
+    // Call this method when you want to update the data set
+    private void updateImages() {
+        // New image resources
+        ArrayList<Uri> newImageResources = item.photos();
+
+        // Update the adapter's data set
+        myPagerAdapter.updateData(newImageResources);
+    }
+
+    private void openGallery() {
+        // Create an intent to pick an image from the gallery
+        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        galleryIntent.setType("image/*");
+
+        // Launch the gallery activity with the intent using the ActivityResultLauncher
+        galleryLauncher.launch(galleryIntent);
     }
 
     /**
@@ -169,9 +344,17 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         else { tags_field.setText(stringBuilder.toString()); }
         // set text on textView
     }
+  
     public Item getItem(){
         return item;
     }
+
+    //protected void updatePhoto() {
+    //    Uri uri = item.getPhoto(photo_index);
+    //    if (uri != null) {
+    //        iv.setImageBitmap(uri);
+    //    }
+    //}
 
     @Override
     public void onConfirmPressed(Tag newTag){

@@ -128,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (password.equals(passwordFromDB)) {
                         loginUsername.setError(null);
                         Intent intent = new Intent(LoginActivity.this, ItemListView.class);
+                        intent.putExtra("username", username);
                         startActivity(intent);
                     }
                     else {
