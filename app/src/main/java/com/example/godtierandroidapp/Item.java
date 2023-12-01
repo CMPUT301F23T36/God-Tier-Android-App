@@ -26,8 +26,8 @@ public class Item implements Serializable {
     private String serialNumber;
     private double estimatedValue;
     private String comment;
-    private List<Tag> tags;
-    public transient List<Uri> photo;
+    private ArrayList<Tag> tags;
+    public transient ArrayList<Uri> photo;
 
     public Item() {
         this.dateOfAcquisition = new Date();
@@ -67,7 +67,7 @@ public class Item implements Serializable {
     public Item(
         String description,
         double estimatedValue,
-        List<Tag> tags
+        ArrayList<Tag> tags
     ) {
         this.dateOfAcquisition = new Date();
         this.description = description;
@@ -82,7 +82,12 @@ public class Item implements Serializable {
 
     // database returns data in hashmap format
     public Item(HashMap map) {
-        // TODO image uri
+        photo = new ArrayList<>();
+        ArrayList<String> uris = (ArrayList<String>) map.get("uriStrings");
+        for (String uri : uris) {
+            photo.add(Uri.parse(uri));
+        }
+
         Log.d("ITEM", String.valueOf(map));
         estimatedValue = ((Number) map.get("estimatedValue")).doubleValue();
         serialNumber = (String) map.get("serialNumber");
@@ -117,9 +122,10 @@ public class Item implements Serializable {
         out.defaultWriteObject();
 
         // Convert Uri objects to strings and store them
-        List<String> uriStrings = new ArrayList<>();
+        ArrayList<byte[]> uriStrings = new ArrayList<>();
         for (Uri uri : photo) {
-            uriStrings.add(uri.toString());
+            Log.d("uri", uri.toString());
+            uriStrings.add(uri.toString().getBytes());
         }
         out.writeObject(uriStrings);
     }
@@ -131,10 +137,13 @@ public class Item implements Serializable {
         photo = new ArrayList<>();
 
         // Reconstruct Uri objects from stored strings
-        List<String> uriStrings = (List<String>) in.readObject();
-        for (String uriString : uriStrings) {
-            photo.add(Uri.parse(uriString));
+        ArrayList<byte[]> uriStrings = (ArrayList<byte[]>) in.readObject();
+        for (byte[] uriString : uriStrings) {
+            try {
+                photo.add(Uri.parse(uriString.toString()));
+            } catch (Exception e) {}
         }
+        //photo = (ArrayList<Uri>) in.readObject();
     }
 
 
@@ -145,17 +154,32 @@ public class Item implements Serializable {
         photo.add(newPhoto);
     }
 
-    public List<Uri> getUri() {
+    public ArrayList<String> getUriStrings() {
+        ArrayList<String> uris = new ArrayList<>();
+        for (Uri uri : photo) {
+            uris.add(uri.toString());
+        }
+        return uris;
+    }
+
+    public void setUriStrings(ArrayList<String> uris) {
+        photo = new ArrayList<>();
+        for (String uri : uris) {
+            photo.add(Uri.parse(uri));
+        }
+    }
+
+    public ArrayList<Uri> photos() {
         return photo;
     }
-    public void setUri(List<Uri> photo) {
+    public void photosSet(ArrayList<Uri> photo) {
         this.photo = photo;
     }
     public void addTag(Tag tag) {
         tags.add(tag);
     }
 
-    public List<Tag> getTags() {
+    public ArrayList<Tag> getTags() {
         return tags;
     }
 
@@ -226,21 +250,5 @@ public class Item implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public ArrayList<Bitmap> getPhoto() { return photo; }
-
-    public void setPhoto(ArrayList<Bitmap> photo) { this.photo = photo; }
-
-    public void addPhoto(Bitmap photo) { this.photo.add(photo); }
-
-    public Bitmap getPhoto(int index) {
-        try {
-            Log.d("GET PHOTO", "Retrieving photo at index" + index);
-            return photo.get(index);
-        } catch (Exception e) {
-            return null;
-            // Toast.makeText(this, "Failure: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 }

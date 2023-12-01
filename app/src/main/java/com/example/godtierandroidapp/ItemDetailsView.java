@@ -121,7 +121,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
         // temp attempt at displaying photos
         iv = findViewById(R.id.item_photo);
-        updatePhoto();
+        //updatePhoto();
 
 
         // Set click listener for add tag button
@@ -187,7 +187,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             }
         });
 
-        if (item.getUri().size() != 0) {
+        if (item.photos().size() != 0) {
             item_photo.setVisibility(View.GONE);
         }
 
@@ -262,7 +262,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     // Call this method when you want to update the data set
     private void updateImages() {
         // New image resources
-        List<Uri> newImageResources = item.getUri();
+        ArrayList<Uri> newImageResources = item.photos();
 
         // Update the adapter's data set
         myPagerAdapter.updateData(newImageResources);
@@ -303,12 +303,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
     }
 
-    protected void updatePhoto() {
-        Bitmap bm = item.getPhoto(photo_index);
-        if (bm != null) {
-            iv.setImageBitmap(bm);
-        }
-    }
+    //protected void updatePhoto() {
+    //    Uri uri = item.getPhoto(photo_index);
+    //    if (uri != null) {
+    //        iv.setImageBitmap(uri);
+    //    }
+    //}
 
     @Override
     public void onConfirmPressed(ArrayList<Tag> tag_list) {

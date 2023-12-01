@@ -5,6 +5,11 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;
 
@@ -40,8 +47,8 @@ public class ItemList {
     private Comparator<Item> sortCriteria;
     private FilterCriteria filterCriteria;
 
-    private List<Item> baseItemList;
-    private List<Item> itemListSortedFiltered;
+    private ArrayList<Item> baseItemList;
+    private ArrayList<Item> itemListSortedFiltered;
 
     DatabaseReference database;
 
@@ -70,13 +77,20 @@ public class ItemList {
         this.database = database;
         database.get().addOnSuccessListener((DataSnapshot data) -> {
             baseItemList = new ArrayList<>();
-            Object items = data.getValue();
-            if (items != null) {
-                ArrayList l = (ArrayList) data.getValue();
-                for (int i = 0; i < l.size(); ++i) {
-                    baseItemList.add(new Item((HashMap) l.get(i)));
+            try {
+                Object value = data.getValue();
+                if (value != null) {
+                    ArrayList<HashMap> items = (ArrayList<HashMap>) value;
+                    Log.d("Database items", items.toString());
+
+                    for (HashMap item : items) {
+                        baseItemList.add(new Item(item));
+                    }
+
+                    remakeSortedFilteredList();
                 }
-                remakeSortedFilteredList();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             if (onFinish != null) {
@@ -258,12 +272,16 @@ public class ItemList {
     private void updateDatabase() {
         if (database != null) {
             Log.d("ItemList", "Updated database");
-            database.setValue((List<Item>) baseItemList)
-                    .addOnSuccessListener((Void v) -> {
-                        Log.d("ItemList", "write items success");
-                    }).addOnFailureListener((Exception e) -> {
-                        Log.d("ItemList", e.getMessage());
-                    });
+            try {
+                database.setValue(baseItemList)
+                        .addOnSuccessListener((Void v) -> {
+                            Log.d("ItemList", "write items success");
+                        }).addOnFailureListener((Exception e) -> {
+                            Log.d("ItemList", e.getMessage());
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 }

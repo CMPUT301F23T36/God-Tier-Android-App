@@ -26,7 +26,7 @@ public class PagerAdapter extends androidx.viewpager.widget.PagerAdapter {
         View itemView = inflater.inflate(R.layout.item_image, container, false);
 
         ImageView item_image = itemView.findViewById(R.id.item_photo);
-        item_image.setImageURI(item.getUri().get(position));
+        item_image.setImageURI(item.photos().get(position));
 
         container.addView(itemView);
         return itemView;
@@ -38,7 +38,7 @@ public class PagerAdapter extends androidx.viewpager.widget.PagerAdapter {
     }
     @Override
     public int getCount() {
-        return item.getUri().size();
+        return item.photos().size();
     }
 
     @Override
@@ -46,8 +46,8 @@ public class PagerAdapter extends androidx.viewpager.widget.PagerAdapter {
         return view == object;
     }
 
-    public void updateData(List<Uri> newImageResources) {
-        item.setUri(newImageResources);
+    public void updateData(ArrayList<Uri> newImageResources) {
+        item.photosSet(newImageResources);
         notifyDataSetChanged();
     }
 }
