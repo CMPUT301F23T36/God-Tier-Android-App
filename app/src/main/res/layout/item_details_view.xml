@@ -306,12 +306,14 @@
         android:id="@+id/scan_barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:text="Scan Barcode"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_photo"
-        app:layout_constraintStart_toEndOf="@+id/add_tags" />
+        app:layout_constraintStart_toEndOf="@+id/add_tags"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.975" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

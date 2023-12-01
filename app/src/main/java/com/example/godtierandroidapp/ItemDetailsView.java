@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,7 +32,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-import com.bumptech.glide.Glide;
+ import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -68,9 +69,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
     private Button item_add_tag;
     private Button item_add_photo;
+    int ACTIVITY_REQUEST_CODE = 1;
     Button item_scan_barcode;
     ImageView iv;
-    int photo_index = 0;
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
@@ -143,8 +144,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
-                i.putExtra("Edit", true);
-                startActivity(i);
+                i.putExtra("Edit", item.photos().size() > 0);
+                i.putParcelableArrayListExtra("photoUri", item.photos());
+                addPhotoLauncher.launch(i);
             }
         });
 
@@ -257,6 +259,19 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         myPagerAdapter = new PagerAdapter(this, item);
         viewPager.setAdapter(myPagerAdapter);
     }
+
+    public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent i = result.getData();
+                        assert i != null;
+                        item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
+                        myPagerAdapter.notifyDataSetChanged();
+                        updateImages();
+                    // item.photosSet(getIntent().getParcelableArrayListExtra("updatedPhotoUri"));
+                    }
+                });
 
 
     // Call this method when you want to update the data set
