@@ -46,12 +46,15 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.getItem(position);
+        holder.itemView.setBackgroundColor(item.getColor());
         itemListView.findViewById(R.id.clear_item_button).setOnClickListener(v -> {
             for(int i=0;i<views.size();++i){
                 ItemViewHolder views1 = views.get(i);
                 views1.itemView.setBackgroundColor(Color.TRANSPARENT);
+                item.setColor(Color.TRANSPARENT);
             }
             itemListView.clearList(selectedItems);
+            selectedItems.clear();
             isSelectMode = false;
             itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
             itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
@@ -69,10 +72,12 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
                 itemListView.findViewById(R.id.add_tags_button).setVisibility(View.VISIBLE);
                 if (selectedItems.contains(item)) {
                     holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                    item.setColor(Color.TRANSPARENT);
                     views.remove(holder);
                     selectedItems.remove(item);
                 } else {
                     holder.itemView.setBackgroundColor(Color.GRAY);
+                    item.setColor(Color.GRAY);
                     views.add(holder);
                     selectedItems.add(item);
                 }
@@ -89,10 +94,12 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             if (isSelectMode) {
                 if (selectedItems.contains(item)) {
                     holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                    item.setColor(Color.TRANSPARENT);
                     views.remove(holder);
                     selectedItems.remove(item);
                 } else {
                     holder.itemView.setBackgroundColor(Color.GRAY);
+                    item.setColor(Color.GRAY);
                     views.add(holder);
                     selectedItems.add(item);
                 }

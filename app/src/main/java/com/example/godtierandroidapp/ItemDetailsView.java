@@ -5,6 +5,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,10 +31,8 @@ import java.util.List;
 public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
-    private ArrayList<Pair> tagPairList;
+    private ArrayList<Item> itemArrayList;
     private ArrayList<Tag> listOfTagObjects;
-    private boolean[] selectedTags;
-
     private EditText description_field;
     private TextView date_of_purchase_field;
     private EditText estimated_value_field;
@@ -72,15 +71,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_idx = intent.getIntExtra("item idx", -1);
 
         this.listOfTagObjects = (ArrayList<Tag>) getIntent().getSerializableExtra("tag_list");
-        this.tagPairList = new ArrayList<>();
-        for(int i = 0; i< this.listOfTagObjects.size(); ++i){
-            if(item.hasTag(this.listOfTagObjects.get(i))){
-                this.tagPairList.add(new Pair<Tag,Boolean>(this.listOfTagObjects.get(i), TRUE));
-            } else {
-                this.tagPairList.add(new Pair<Tag,Boolean>(this.listOfTagObjects.get(i), FALSE));
-            }
-
-        }
+        this.itemArrayList = new ArrayList<>();
+        this.itemArrayList.add(item);
 
         //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
@@ -96,61 +88,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
         tags_field.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                // Initialize alert dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetailsView.this);
+            public void onClick(View view) {
+                SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) listOfTagObjects, (Serializable) itemArrayList);
 
-                // set title
-                builder.setTitle("Select Tags");
-
-                // set dialog non cancelable
-                builder.setCancelable(false);
-                String[] choices = new String[listOfTagObjects.size()];
-                selectedTags = new boolean[listOfTagObjects.size()];
-                int iter=0;
-                for(Pair tagPair : tagPairList){
-                    choices[iter] = ((Tag)tagPair.first).getName();
-                    selectedTags[iter] = ((Boolean) tagPair.second).booleanValue();
-                    ++iter;
-                }
-                builder.setMultiChoiceItems(choices,selectedTags,new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        if (b) {
-                            tagPairList.set(i,new Pair<>(listOfTagObjects.get(i), TRUE));
-
-                        } else {
-                            tagPairList.set(i,new Pair<>(listOfTagObjects.get(i), FALSE));
-                        }
-                    }
-                });
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        updateTagField();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // dismiss dialog
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // use for loop
-                        for (int j = 0; j < listOfTagObjects.size(); j++) {
-                            // clear language list
-                            tagPairList.set(j,new Pair(listOfTagObjects.get(j),FALSE));
-                        }
-                        // clear text view value
-                        tags_field.setText("");
-                    }
-                });
-                // show dialog
-                builder.show();
+                fragment.show(getSupportFragmentManager(), "Select Tags");
             }
         });
 
@@ -176,13 +117,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 item.setMake(make_field.getText().toString());
                 item.setModel(model_field.getText().toString());
                 item.setSerialNumber(serial_no_field.getText().toString());
-                ArrayList<Tag> newTags = new ArrayList<>();
-                for(Pair p : tagPairList){
-                    if((boolean)p.second) {
-                        newTags.add((Tag) p.first);
-                    }
-                }
-                item.setTags(newTags);
 
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
@@ -235,26 +169,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         else { tags_field.setText(stringBuilder.toString()); }
         // set text on textView
     }
-    /*
-    protected void updateTagField(){
-        // Initialize string builder
-        boolean isEmpty = true;
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("| ");
-        // use for loop
-        for (int j = 0; j < tagPairList.size(); j++) {
-            // concat array value
-            if((boolean)tagPairList.get(j).second){
-                stringBuilder.append(((Tag)tagPairList.get(j).first).getName());
-                stringBuilder.append(" | ");
-                isEmpty = false;
-            }
-        }
-        if(isEmpty){ tags_field.setText(""); }
-        else { tags_field.setText(stringBuilder.toString()); }
-        // set text on textView
-    }
-     */
     public Item getItem(){
         return item;
     }
@@ -263,7 +177,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     public void onConfirmPressed(Tag newTag){
         listOfTagObjects.add(newTag);
         item.addTag(newTag);
-        tagPairList.add(new Pair(newTag,true));
         updateTagField();
 
     }

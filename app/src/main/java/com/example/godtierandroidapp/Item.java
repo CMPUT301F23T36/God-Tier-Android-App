@@ -1,6 +1,7 @@
 package com.example.godtierandroidapp;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Item implements Serializable {
     private String comment;
     private List<Tag> tags;
     private List<Bitmap> photo;
+    private int color = Color.TRANSPARENT;
 
     public Item() {
         this.dateOfAcquisition = new Date();
@@ -68,6 +70,14 @@ public class Item implements Serializable {
         this.comment = "";
         this.tags = tags;
         this.photo = new ArrayList<>();
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 
     public void addTag(Tag tag) {

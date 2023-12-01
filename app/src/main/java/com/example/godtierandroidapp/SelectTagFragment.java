@@ -90,6 +90,7 @@ public class SelectTagFragment extends DialogFragment {
                 if(context.getClass() == ItemListView.class){
                     ItemListView itemListView = (ItemListView) context;
                     itemListView.updateTags(listOfItemObjects);
+
                 }
                 if(context.getClass() == ItemDetailsView.class) {
                     ItemDetailsView itemDetailsView = (ItemDetailsView) context;
@@ -112,6 +113,10 @@ public class SelectTagFragment extends DialogFragment {
                     for (Item item : listOfItemObjects) {
                         item.removeTag(tag);
                     }
+                }
+                if (context.getClass() == ItemListView.class){
+                    ItemListView itemListView = (ItemListView) context;
+                    itemListView.updateTags(listOfItemObjects);
                 }
                 // clear text view value if in itemDetailsView
                 if (context.getClass() == ItemDetailsView.class) {
