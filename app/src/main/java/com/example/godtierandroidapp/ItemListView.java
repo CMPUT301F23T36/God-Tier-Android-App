@@ -45,11 +45,17 @@ public class ItemListView extends AppCompatActivity {
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
     private TextView totalValue;
-    private ArrayList<Tag> tags = new ArrayList<>(Arrays.asList(
+    public ArrayList<Tag> tags = new ArrayList<Tag>(Arrays.asList(
             new Tag("tag1"),
             new Tag("tag2"),
             new Tag("tag3")
     ));
+
+
+    public void updateTagList(ArrayList<Tag> newTagList) {
+        tags = newTagList;
+    }
+
 
     /**
      * Updates list view adapter with changes in item list
@@ -184,7 +190,7 @@ public class ItemListView extends AppCompatActivity {
 
         findViewById(R.id.add_item_button).setOnClickListener(v -> {
             Intent intent = new Intent(this, ItemDetailsView.class);
-            intent.putExtra("tag_list",(Serializable) tags);
+            intent.putExtra("tag_list", tags);
             itemEditLauncher.launch(intent);
         });
     }
@@ -195,6 +201,13 @@ public class ItemListView extends AppCompatActivity {
     public void clearList(ArrayList<Item> itemsToRemove) {
         for (Item i : itemsToRemove){
             itemList.removeItem(i);
+        }
+        updateList();
+    }
+
+    public void updateTags(ArrayList<Item> itemsToChange) {
+        for (Item i : itemsToChange){
+            itemList.updateTags(i);
         }
         updateList();
     }
@@ -227,6 +240,7 @@ public class ItemListView extends AppCompatActivity {
                 Intent intent = result.getData();
                 int oldItemIdx = intent.getIntExtra("old item idx", -1);
                 Item newItem = (Item) intent.getSerializableExtra("new item");
+                updateTagList((ArrayList<Tag>) intent.getSerializableExtra("new tag list"));
 
                 if (newItem == null) {
                     if (oldItemIdx == -1) {

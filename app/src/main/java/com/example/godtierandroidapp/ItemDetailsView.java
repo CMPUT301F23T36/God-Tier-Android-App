@@ -1,5 +1,7 @@
 package com.example.godtierandroidapp;
 
+
+
 import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -35,8 +38,8 @@ import android.widget.Toast;
  import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
@@ -48,7 +51,10 @@ import java.util.ArrayList;
 public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
     private Item item;
     private int item_idx;
-    private ArrayList<Tag> tag_list;
+  
+    private ArrayList<Item> itemArrayList;
+    private ArrayList<Tag> listOfTagObjects;
+
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private EditText description_field;
@@ -103,6 +109,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         }
         item_idx = intent.getIntExtra("item idx", -1);
 
+        this.listOfTagObjects = (ArrayList<Tag>) getIntent().getSerializableExtra("tag_list");
+        this.itemArrayList = new ArrayList<>();
+        this.itemArrayList.add(item);
+
         //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
@@ -119,18 +129,27 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_add_photo = findViewById(R.id.add_photo);
         item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
-
+      
         // temp attempt at displaying photos
         iv = findViewById(R.id.item_photo);
         //updatePhoto();
+      
+        tags_field.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) listOfTagObjects, (Serializable) itemArrayList);
 
+                fragment.show(getSupportFragmentManager(), "Select Tags");
+            }
+        });
 
+       
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Tag> tag_list = (ArrayList<Tag>) intent.getExtras().getSerializable("tag_list");
-                AddTagFragment fragment = AddTagFragment.newInstance((Serializable) tag_list);
+                AddTagFragment fragment = new AddTagFragment();
+
                 fragment.show(getSupportFragmentManager(), "ADD TAG");
             }
         });
@@ -166,6 +185,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
+                retIntent.putExtra("new tag list", listOfTagObjects);
                 setResult(Activity.RESULT_OK, retIntent);
                 try {
                     // Your code here
@@ -304,18 +324,29 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         serial_no_field.setText(item.getSerialNumber());
+        updateTagField();
+    }
 
-        // TODO
-        StringBuilder tags = new StringBuilder(new String());
-        if (item.getTags().size() > 0) {
-            tags.append(item.getTags().get(0).getName());
+    protected void updateTagField(){
+        // Initialize string builder
+        boolean isEmpty = true;
+        List<Tag> tagList = item.getTags();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("| ");
+        // use for loop
+        for (int j = 0; j < tagList.size(); j++) {
+            // concat array value
+            stringBuilder.append(tagList.get(j).getName());
+            stringBuilder.append(" | ");
+            isEmpty = false;
         }
-        for (int i = 1; i < item.getTags().size(); ++i) {
-            tags.append(" ").append(item.getTags().get(i).getName());
-        }
-        tags_field.setText(tags.toString());
-
-
+        if(isEmpty){ tags_field.setText(""); }
+        else { tags_field.setText(stringBuilder.toString()); }
+        // set text on textView
+    }
+  
+    public Item getItem(){
+        return item;
     }
 
     //protected void updatePhoto() {
@@ -326,9 +357,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     //}
 
     @Override
-    public void onConfirmPressed(ArrayList<Tag> tag_list) {
+    public void onConfirmPressed(Tag newTag){
+        listOfTagObjects.add(newTag);
+        item.addTag(newTag);
+        updateTagField();
 
     }
-
-    public void onConfirmPressed(){}
 }

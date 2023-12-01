@@ -4,6 +4,7 @@ package com.example.godtierandroidapp;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,8 @@ public class Item implements Serializable {
     private String serialNumber;
     private double estimatedValue;
     private String comment;
-    private ArrayList<Tag> tags;
+    private List<Tag> tags;
+    private int color = Color.TRANSPARENT;
     public transient ArrayList<Uri> photo;
 
     public Item() {
@@ -78,6 +81,14 @@ public class Item implements Serializable {
         this.comment = "";
         this.tags = tags;
         this.photo = new ArrayList<>();
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 
     // database returns data in hashmap format
@@ -175,11 +186,21 @@ public class Item implements Serializable {
     public void photosSet(ArrayList<Uri> photo) {
         this.photo = photo;
     }
+  
     public void addTag(Tag tag) {
         tags.add(tag);
     }
 
-    public ArrayList<Tag> getTags() {
+    public void setTags(List<Tag> newTags){
+        tags = newTags;
+    }
+    public void removeTag(Tag tag) {
+        if(tags.contains(tag)){
+            tags.remove(tag);
+        }
+    }
+
+    public List<Tag> getTags() {
         return tags;
     }
 

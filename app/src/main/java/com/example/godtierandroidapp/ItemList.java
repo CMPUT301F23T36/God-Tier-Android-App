@@ -152,6 +152,15 @@ public class ItemList {
     }
 
     /**
+     * Updates tags for provided item from both base, and sorted and filtered list
+     * @param item item to have its tags updated
+     */
+    public void updateTags(Item item){
+        baseItemList.get(baseItemList.indexOf(item)).setTags(item.getTags());
+        itemListSortedFiltered.get(itemListSortedFiltered.indexOf(item)).setTags(item.getTags());
+    }
+
+    /**
      * Removes item from both base, and sorted and filtered list
      * @param item item to be removed
      */

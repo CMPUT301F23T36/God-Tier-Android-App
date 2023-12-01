@@ -31,6 +31,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     private ItemList itemList;
     private boolean isSelectMode = false;
     private ArrayList<Item> selectedItems = new ArrayList<>();
+    private ArrayList<ItemViewHolder> views = new ArrayList<>();
 
     public ItemListViewAdapter(ItemListView context, ItemList itemList) {
         this.context = context;
@@ -48,28 +49,46 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.getItem(position);
-
+        holder.itemView.setBackgroundColor(item.getColor());
         itemListView.findViewById(R.id.clear_item_button).setOnClickListener(v -> {
+            for(int i=0;i<views.size();++i){
+                ItemViewHolder views1 = views.get(i);
+                views1.itemView.setBackgroundColor(Color.TRANSPARENT);
+                item.setColor(Color.TRANSPARENT);
+            }
             itemListView.clearList(selectedItems);
+            selectedItems.clear();
             isSelectMode = false;
             itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+            itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
+        });
+        itemListView.findViewById(R.id.add_tags_button).setOnClickListener(v -> {
+            SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) itemListView.tags,(Serializable) selectedItems);
+
+            fragment.show(itemListView.getSupportFragmentManager(), "Select Tags");
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 isSelectMode = true;
                 itemListView.findViewById(R.id.clear_item_button).setVisibility(View.VISIBLE);
+                itemListView.findViewById(R.id.add_tags_button).setVisibility(View.VISIBLE);
                 if (selectedItems.contains(item)) {
                     holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                    item.setColor(Color.TRANSPARENT);
+                    views.remove(holder);
                     selectedItems.remove(item);
                 } else {
                     holder.itemView.setBackgroundColor(Color.GRAY);
+                    item.setColor(Color.GRAY);
+                    views.add(holder);
                     selectedItems.add(item);
                 }
 
                 if (selectedItems.size() == 0) {
                     isSelectMode = false;
                     itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+                    itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
                 };
                 return true;
             }
@@ -78,15 +97,20 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             if (isSelectMode) {
                 if (selectedItems.contains(item)) {
                     holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+                    item.setColor(Color.TRANSPARENT);
+                    views.remove(holder);
                     selectedItems.remove(item);
                 } else {
                     holder.itemView.setBackgroundColor(Color.GRAY);
+                    item.setColor(Color.GRAY);
+                    views.add(holder);
                     selectedItems.add(item);
                 }
 
                 if (selectedItems.size() == 0){
                     isSelectMode = false;
                     itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
+                    itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
                 }
             }
             else {
@@ -95,6 +119,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
                 intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 intent.putExtra("item", item);
                 intent.putExtra("item idx", position);
+                intent.putExtra("tag_list", itemListView.tags);
                 itemListView.itemEditLauncher.launch(intent);
             }
         });

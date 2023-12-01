@@ -244,14 +244,18 @@
 
             <TextView
                 android:id="@+id/tags_field"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:hint="Select Tags"
+                android:padding="12dp"
                 android:layout_weight="1"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
-                android:text="n/a"
                 android:textDirection="rtl"
                 android:textSize="20sp" />
         </LinearLayout>
