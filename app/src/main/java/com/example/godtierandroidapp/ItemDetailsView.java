@@ -279,7 +279,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item_scan_barcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(ItemDetailsView.this, ScannerActivity.class);
+                i.putExtra("Edit", true);
+                scanLauncher.launch(i);
             }
         });
 
@@ -319,11 +321,24 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                         item_photo.setVisibility(View.GONE);
                     }
 //                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
+                    }
+                });
+
+    public ActivityResultLauncher<Intent> scanLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent i = result.getData();
+                    assert i != null;
+                    if (item.photos().size() == 0) {
+                        item_photo.setVisibility(View.GONE);
+                    }
+//                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
                     item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
                     myPagerAdapter.notifyDataSetChanged();
                     updateImages();
-                    }
-                });
+                }
+            });
 
 
     // Call this method when you want to update the data set
