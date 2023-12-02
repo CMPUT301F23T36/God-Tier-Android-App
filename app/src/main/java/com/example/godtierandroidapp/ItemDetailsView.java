@@ -41,7 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- * Contains an expaned detailed view of the item including all its properties
+ * Contains an expanded detailed view of the item including all its properties
  *
  * @author Alex
  * @version 1.0
@@ -330,13 +330,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
                     assert i != null;
-                    if (item.photos().size() == 0) {
-                        item_photo.setVisibility(View.GONE);
-                    }
-//                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
-                    item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
-                    myPagerAdapter.notifyDataSetChanged();
-                    updateImages();
+                    item.setSerialNumber(i.getStringExtra("serial number"));
+                    updateFields();
                 }
             });
 
