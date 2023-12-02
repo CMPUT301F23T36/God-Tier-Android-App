@@ -66,8 +66,10 @@ public class SelectTagFragment extends DialogFragment {
                 everyItemHasTag = item.getTags().contains(tag);
                 if (!everyItemHasTag) { break; }
             }
+            if(everyItemHasTag) { tagsToAdd.add(tag); }
             choices[tagIter] = tag.getName();
             selectedTags[tagIter] = everyItemHasTag;
+
             ++tagIter;
         }
         builder.setMultiChoiceItems(choices, selectedTags, new DialogInterface.OnMultiChoiceClickListener() {
@@ -75,29 +77,16 @@ public class SelectTagFragment extends DialogFragment {
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
                 if (b) {
                     tagsToAdd.add(listOfTagObjects.get(i));
-//                    for(Item item : listOfItemObjects) {
-//                        Tag newtag = listOfTagObjects.get(i);
-//                        if(!item.getTags().contains(newtag)){  // item does not have tag
-//                            item.addTag(newtag);
-//                        }
-//                    }
                 } else {
                     tagsToAdd.remove(listOfTagObjects.get(i));
-//                    for (Item item : listOfItemObjects) {
-//                        item.removeTag(listOfTagObjects.get(i));
-//                    }
                 }
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                for (Tag tag : tagsToAdd) {
-                    for (Item item : listOfItemObjects) {
-                        if (!item.hasTag(tag)) {
-                            item.addTag(tag);
-                        }
-                    }
+                for (Item item : listOfItemObjects) {
+                    item.setTags(tagsToAdd);
                 }
 
                 if(context.getClass() == ItemListView.class){
