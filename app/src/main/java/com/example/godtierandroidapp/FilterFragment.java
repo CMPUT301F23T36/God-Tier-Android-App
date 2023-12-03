@@ -1,21 +1,29 @@
 package com.example.godtierandroidapp;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
-* Represents a DialogFragment that applys filters to an ItemListView
+* Represents a DialogFragment that applies filters to an ItemListView
 *
 * @author Alex
 * @version 1.0
 * @since 2023-11-09
  */
-public class FilterFragment extends DialogFragment {
+public class FilterFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     /**
 
      * The filter function for this item associated with tag, description, and make
@@ -25,6 +33,8 @@ public class FilterFragment extends DialogFragment {
         private Tag tag;
         private String descString;
         private String makeString;
+        private Date fromDate;
+        private Date toDate;
 
         /**
          * Creates a new filter function with specified tag, description, and/or make
@@ -32,10 +42,12 @@ public class FilterFragment extends DialogFragment {
          * @param desc word(s) in item description for filtering
          * @param make = item make for filtering
          */
-        FilterFunction(Tag tag, String desc, String make) {
+        FilterFunction(Tag tag, String desc, String make, Date from, Date to) {
             this.tag = tag;
             this.descString = desc.trim().toLowerCase();
             this.makeString = make.trim().toLowerCase();
+            this.fromDate = from;
+            this.toDate = to;
         }
 
         /**
@@ -57,6 +69,17 @@ public class FilterFragment extends DialogFragment {
                     return false;
                 }
             }
+            if (fromDate != null && item.getDateOfAcquisition().compareTo(fromDate) < 0) {
+                return false;
+            }
+            if (toDate != null) {
+                toDate.setHours(23);
+                toDate.setMinutes(59);
+                toDate.setSeconds(59);
+                if (item.getDateOfAcquisition().compareTo(toDate) > 0) {
+                    return false;
+                }
+            }
 
             return true;
         }
@@ -68,6 +91,11 @@ public class FilterFragment extends DialogFragment {
 
     View dialogView;
     ItemListView itemListView;
+    TextView fromDateTextView;
+    Date fromDate;
+    TextView toDateTextView;
+    Date toDate;
+    int fromToFlag; // 0 = fromDate, 1 = toDate
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -85,6 +113,24 @@ public class FilterFragment extends DialogFragment {
                     itemListView.setFilter(null);
                 });
 
+        fromDateTextView = (TextView) dialogView.findViewById(R.id.fromDateText);
+        fromDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fromToFlag = 0;
+                showDatePicker();
+            }
+        });
+
+        toDateTextView = (TextView) dialogView.findViewById(R.id.toDateText);
+        toDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fromToFlag = 1;
+                showDatePicker();
+            }
+        });
+
         return builder.create();
     }
 
@@ -101,6 +147,49 @@ public class FilterFragment extends DialogFragment {
             tag = new Tag(tagText);
         }
 
-        return new FilterFunction(tag, descText, makeText);
+        return new FilterFunction(tag, descText, makeText, fromDate, toDate);
+    }
+
+    private void showDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    private String dateToString(Date date) {
+        StringBuilder str = new StringBuilder();
+
+        int month = date.getMonth() + 1;
+        int day = date.getDate();
+        int year = date.getYear() + 1900;
+
+        str.append(month);
+        str.append("/");
+        str.append(day);
+        str.append("/");
+        str.append(year);
+
+        return str.toString();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Date newDate = new Date(year - 1900, month, dayOfMonth);
+        if (fromToFlag == 0) {
+            fromDate = newDate;
+            StringBuilder str = new StringBuilder("From: ");
+            str.append(dateToString(fromDate));
+            fromDateTextView.setText(str.toString());
+        } else {
+            toDate = newDate;
+            StringBuilder str = new StringBuilder("To: ");
+            str.append(dateToString(toDate));
+            toDateTextView.setText(str.toString());
+        }
     }
 }
