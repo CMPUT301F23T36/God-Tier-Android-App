@@ -5,8 +5,7 @@ package com.example.godtierandroidapp;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.util.Log;
-import android.widget.Toast;
+
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,9 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Item implements Serializable {
     private Date dateOfAcquisition;
@@ -28,6 +25,7 @@ public class Item implements Serializable {
     private String comment;
     private List<Tag> tags;
     public transient List<Uri> photo;
+
 
     public Item() {
         this.dateOfAcquisition = new Date();
@@ -50,8 +48,8 @@ public class Item implements Serializable {
         String serialNumber,
         double estimatedValue,
         String comment,
-        ArrayList<Tag> tags,
-        ArrayList<Uri> photo
+        List<Tag> tags,
+        List<Uri> photo
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -78,39 +76,6 @@ public class Item implements Serializable {
         this.comment = "";
         this.tags = tags;
         this.photo = new ArrayList<>();
-    }
-
-    // database returns data in hashmap format
-    public Item(HashMap map) {
-        // TODO image uri
-        Log.d("ITEM", String.valueOf(map));
-        estimatedValue = ((Number) map.get("estimatedValue")).doubleValue();
-        serialNumber = (String) map.get("serialNumber");
-        description = (String) map.get("description");
-        comment = (String) map.get("comment");
-        model = (String) map.get("model");
-
-        tags = new ArrayList<>();
-        long tagCount = (long) map.get("tagCount");
-        if (tagCount != 0) {
-            ArrayList tagsMap = (ArrayList) map.get("tags");
-            for (int i = 0; i < tagCount; ++i) {
-                HashMap tagsStruct = (HashMap) tagsMap.get(i);
-                tags.add(new Tag((String) tagsStruct.get("name")));
-            }
-        }
-
-        HashMap<String, Object> dateAq = (HashMap<String, Object>) map.get("dateOfAcquisition");
-        long date = (long) dateAq.get("date");
-        long hours = (long) dateAq.get("hours");
-        long seconds = (long) dateAq.get("seconds");
-        long month = (long) dateAq.get("month");
-        long year = (long) dateAq.get("year");
-        long minutes = (long) dateAq.get("minutes");
-
-        dateOfAcquisition = new Date((int)year, (int)month, (int)date,
-                (int)hours, (int)minutes, (int)seconds);
-        make = (String) map.get("make");
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -158,8 +123,6 @@ public class Item implements Serializable {
     public List<Tag> getTags() {
         return tags;
     }
-
-    public int getTagCount() { return tags.size(); }
 
     public boolean hasTag(Tag tag) {
         return tags.contains(tag);
@@ -226,21 +189,5 @@ public class Item implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public ArrayList<Bitmap> getPhoto() { return photo; }
-
-    public void setPhoto(ArrayList<Bitmap> photo) { this.photo = photo; }
-
-    public void addPhoto(Bitmap photo) { this.photo.add(photo); }
-
-    public Bitmap getPhoto(int index) {
-        try {
-            Log.d("GET PHOTO", "Retrieving photo at index" + index);
-            return photo.get(index);
-        } catch (Exception e) {
-            return null;
-            // Toast.makeText(this, "Failure: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 }

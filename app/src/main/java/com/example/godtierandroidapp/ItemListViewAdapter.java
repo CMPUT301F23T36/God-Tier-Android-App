@@ -5,7 +5,6 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -21,21 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
 
-    private ItemListView itemListView;
-    private Context context;
+    private ItemListView context;
     private ItemList itemList;
-    private boolean isSelectMode = false;
-    private ArrayList<Item> selectedItems = new ArrayList<>();
 
     public ItemListViewAdapter(ItemListView context, ItemList itemList) {
         this.context = context;
         this.itemList = itemList;
-        itemListView = (ItemListView)context;
     }
 
     @NonNull
@@ -49,54 +42,13 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.getItem(position);
 
-        itemListView.findViewById(R.id.clear_item_button).setOnClickListener(v -> {
-            itemListView.clearList(selectedItems);
-            isSelectMode = false;
-            itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                isSelectMode = true;
-                itemListView.findViewById(R.id.clear_item_button).setVisibility(View.VISIBLE);
-                if (selectedItems.contains(item)) {
-                    holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-                    selectedItems.remove(item);
-                } else {
-                    holder.itemView.setBackgroundColor(Color.GRAY);
-                    selectedItems.add(item);
-                }
-
-                if (selectedItems.size() == 0) {
-                    isSelectMode = false;
-                    itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
-                };
-                return true;
-            }
-        });
-        holder.itemView.setOnClickListener((view) -> {
-            if (isSelectMode) {
-                if (selectedItems.contains(item)) {
-                    holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-                    selectedItems.remove(item);
-                } else {
-                    holder.itemView.setBackgroundColor(Color.GRAY);
-                    selectedItems.add(item);
-                }
-
-                if (selectedItems.size() == 0){
-                    isSelectMode = false;
-                    itemListView.findViewById(R.id.clear_item_button).setVisibility(View.INVISIBLE);
-                }
-            }
-            else {
-                Intent intent = new Intent(context, ItemDetailsView.class);
-                intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-                intent.putExtra("item", item);
-                intent.putExtra("item idx", position);
-                itemListView.itemEditLauncher.launch(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ItemDetailsView.class);
+            intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            intent.putExtra("item", item);
+            intent.putExtra("item idx", position);
+            context.itemEditLauncher.launch(intent);
         });
 
         // Bind data to the TextViews in the list item layout
@@ -119,6 +71,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
 
         public ItemViewHolder(Context context, View itemView) {
             super(itemView);
+
             // Initialize the RecyclerView
             tagViewList = itemView.findViewById(R.id.tagList);
             tagViewList.setLayoutManager(new LinearLayoutManager(

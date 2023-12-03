@@ -5,7 +5,6 @@
         <item>description</item>
         <item>make</item>
         <item>value</item>
-        <item>tag</item>
     </string-array>
     <string-array name="sort_order_entries">
         <item>ascending</item>

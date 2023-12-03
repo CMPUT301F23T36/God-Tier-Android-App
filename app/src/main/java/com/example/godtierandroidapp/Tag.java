@@ -2,12 +2,6 @@ package com.example.godtierandroidapp;
 
 import java.io.Serializable;
 
-/**
- *
- * @author Alex
- * @version 1.0
- * @since 2023-11-06
- */
 public class Tag implements Serializable {
     private String name;
 

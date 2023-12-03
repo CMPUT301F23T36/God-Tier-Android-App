@@ -8,41 +8,19 @@ import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 
-/**
-* Represents a DialogFragment that applys filters to an ItemListView
-*
-* @author Alex
-* @version 1.0
-* @since 2023-11-09
- */
 public class FilterFragment extends DialogFragment {
-    /**
-
-     * The filter function for this item associated with tag, description, and make
-
-     */
     public class FilterFunction implements ItemList.FilterCriteria {
         private Tag tag;
         private String descString;
         private String makeString;
 
-        /**
-         * Creates a new filter function with specified tag, description, and/or make
-         * @param tag item tag for filtering
-         * @param desc word(s) in item description for filtering
-         * @param make = item make for filtering
-         */
+
         FilterFunction(Tag tag, String desc, String make) {
             this.tag = tag;
             this.descString = desc.trim().toLowerCase();
             this.makeString = make.trim().toLowerCase();
         }
 
-        /**
-         * Checks if item passes filter
-         * @param item item in list to be checked
-         * @return bool value if item passed or not
-         */
         public boolean passesFilter(Item item) {
             if (tag != null && !item.hasTag(tag)) {
                 return false;
