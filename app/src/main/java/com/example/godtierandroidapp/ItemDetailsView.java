@@ -36,6 +36,7 @@ import com.bumptech.glide.Glide;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains an expaned detailed view of the item including all its properties
