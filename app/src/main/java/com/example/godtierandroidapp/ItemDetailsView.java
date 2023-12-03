@@ -6,6 +6,7 @@ import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,10 +37,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 
- import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ import java.util.List;
  * @version 1.0
  * @since 2023-11-05
  */
-public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener {
+public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
     private Item item;
     private int item_idx;
   
@@ -59,6 +62,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
     private EditText description_field;
     private TextView date_of_purchase_field;
+    private Date date_of_purchase;
     private EditText estimated_value_field;
     private EditText make_field;
     private EditText model_field;
@@ -113,6 +117,8 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         this.itemArrayList = new ArrayList<>();
         this.itemArrayList.add(item);
 
+        date_of_purchase = item.getDateOfAcquisition();
+
         //Initialize fields and update with item's information
         description_field = findViewById(R.id.description_field);
         date_of_purchase_field = findViewById(R.id.date_of_purchase_field);
@@ -143,6 +149,15 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             }
         });
 
+        // Set click listener for date field
+        date_of_purchase_field.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+
+                datePickerFragment.show(getSupportFragmentManager(), "datePickerFragment");
+            }
+        });
        
         // Set click listener for add tag button
         item_add_tag.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +189,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
             @Override
             public void onClick(View v) {
                 item.setDescription(description_field.getText().toString());
+                item.setDateOfAcquisition(date_of_purchase);
                 try{ item.setEstimatedValue(Double.parseDouble(estimated_value_field.getText().toString()));
                 } catch (NumberFormatException e) {
                     // not valid double
@@ -319,12 +335,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
      */
     protected void updateFields() {
         description_field.setText(item.getDescription());
-        date_of_purchase_field.setText(String.valueOf(item.getDateOfAcquisition()));
         estimated_value_field.setText(String.valueOf(item.getEstimatedValue()));
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         serial_no_field.setText(item.getSerialNumber());
         updateTagField();
+        updateDateField();
     }
 
     protected void updateTagField(){
@@ -344,6 +360,10 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         else { tags_field.setText(stringBuilder.toString()); }
         // set text on textView
     }
+
+    protected void updateDateField() {
+        date_of_purchase_field.setText(String.valueOf(date_of_purchase));
+    }
   
     public Item getItem(){
         return item;
@@ -362,5 +382,12 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         item.addTag(newTag);
         updateTagField();
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Date newDate = new Date(year - 1900, month, dayOfMonth);
+        date_of_purchase = newDate;
+        updateDateField();
     }
 }
