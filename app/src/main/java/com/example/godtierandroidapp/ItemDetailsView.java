@@ -287,29 +287,29 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
     }
 
-    private void loadImageView() {
-        if (item.photos() != null && !item.photos().isEmpty()) {
-            album.clear();
-            for (int i = 0; i < item.photos().size(); i++) {
-                Uri photoUri = item.photos().get(i);
-                ImageView imageView = new ImageView(this);
-                album.add(imageView);
-                if (photoUri != null) {
-                    RequestOptions requestOptions = new RequestOptions()
-                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
-                            .error(R.drawable.error_image); // Image to show in case of error
-                    Glide.with(this)
-                            .load(photoUri)
-                            .apply(requestOptions)
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(imageView);
-                    imageView.setVisibility(View.VISIBLE);
-                }
-            }
-            myPagerAdapter.updateData(item.photos());
-            viewPager.setAdapter(myPagerAdapter);
-        }
-    }
+//    private void loadImageView() {
+//        if (item.photos() != null && !item.photos().isEmpty()) {
+//            album.clear();
+//            for (int i = 0; i < item.photos().size(); i++) {
+//                Uri photoUri = item.photos().get(i);
+//                ImageView imageView = new ImageView(this);
+//                album.add(imageView);
+//                if (photoUri != null) {
+//                    RequestOptions requestOptions = new RequestOptions()
+//                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
+//                            .error(R.drawable.error_image); // Image to show in case of error
+//                    Glide.with(this)
+//                            .load(photoUri)
+//                            .apply(requestOptions)
+//                            .transition(DrawableTransitionOptions.withCrossFade())
+//                            .into(imageView);
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//            }
+//            myPagerAdapter.updateData(item.photos());
+//            viewPager.setAdapter(myPagerAdapter);
+//        }
+//    }
 
     public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -319,6 +319,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                     assert i != null;
                     if (item.photos().size() == 0) {
                         item_photo.setVisibility(View.GONE);
+                        item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
                     }
 //                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
                     }
@@ -330,7 +331,19 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
                     assert i != null;
-                    item.setSerialNumber(i.getStringExtra("serial number"));
+                    if (i.getBooleanExtra("edit serial number", true)) {
+                        item.setSerialNumber(i.getStringExtra("serial number"));
+                    } else if (i.getBooleanExtra("edit info", true)) {
+                        if (i.getBooleanExtra("edit description", true)) {
+                            item.setDescription(i.getStringExtra("description"));
+                        }
+                        if (i.getBooleanExtra("edit make", true)) {
+                            item.setDescription(i.getStringExtra("make"));
+                        }
+                        if (i.getBooleanExtra("edit model", true)) {
+                            item.setDescription(i.getStringExtra("model"));
+                        }
+                    }
                     updateFields();
                 }
             });
