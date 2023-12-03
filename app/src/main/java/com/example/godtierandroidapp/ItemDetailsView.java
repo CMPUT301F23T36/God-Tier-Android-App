@@ -167,17 +167,23 @@ public class ItemDetailsView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 item_photo.setVisibility(View.GONE);
-                // Check if the READ_EXTERNAL_STORAGE permission is granted
-                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // Permission is not granted, request it
-                    ActivityCompat.requestPermissions(ItemDetailsView.this,
-                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
-                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                } else {
-                    // Permission is already granted, proceed with opening the gallery
-                    openGallery();
-                }
+                openGallery();
+//                // Check if the READ_EXTERNAL_STORAGE permission is granted
+//                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    // Permission is not granted, request it
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
+//                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                } else {
+//                    // Permission is already granted, proceed with opening the gallery
+//                    openGallery();
+//                }
             }
         });
 
