@@ -272,11 +272,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/confirm"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/add_photo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_detail_delete"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout"
-        app:layout_constraintBottom_toTopOf="@id/add_photo"
-        />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
     <Button
         android:id="@+id/item_detail_delete"
@@ -284,28 +284,33 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Delete"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/add_tags"
         app:layout_constraintEnd_toStartOf="@id/item_detail_confirm"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout"
-        app:layout_constraintBottom_toTopOf="@id/add_tags"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
     <Button
         android:id="@+id/add_tags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="Add Tags"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/scan_barcode"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_detail_delete"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/item_detail_confirm" />
 
     <Button
         android:id="@+id/add_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="Add Photo"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/scan_barcode"
@@ -315,14 +320,14 @@
         android:id="@+id/scan_barcode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="Scan Barcode"
+        android:text="Scan Code"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_photo"
         app:layout_constraintStart_toEndOf="@+id/add_tags"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.975" />
+        app:layout_constraintTop_toBottomOf="@+id/item_detail_confirm" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

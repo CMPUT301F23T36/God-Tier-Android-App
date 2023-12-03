@@ -72,8 +72,13 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
             if (fromDate != null && item.getDateOfAcquisition().compareTo(fromDate) < 0) {
                 return false;
             }
-            if (toDate != null && item.getDateOfAcquisition().compareTo(toDate) > 0) {
-                return false;
+            if (toDate != null) {
+                toDate.setHours(23);
+                toDate.setMinutes(59);
+                toDate.setSeconds(59);
+                if (item.getDateOfAcquisition().compareTo(toDate) > 0) {
+                    return false;
+                }
             }
 
             return true;
