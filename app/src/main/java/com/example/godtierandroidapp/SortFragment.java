@@ -38,11 +38,11 @@ public class SortFragment extends DialogFragment {
         order.setSelection(0);
 
         builder.setView(dialogView)
-                .setMessage("Enter text:")
-                .setPositiveButton("OK", (dialog, which) -> {
+                .setMessage("Sort By:")
+                .setPositiveButton("Apply", (dialog, which) -> {
                     itemListView.setSort(makeSortComparator());
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
+                .setNegativeButton("Clear", (dialog, which) -> {
                     itemListView.setSort(null);
                 });
 
@@ -59,19 +59,19 @@ public class SortFragment extends DialogFragment {
         Comparator<Item> comparator;
 
         switch (selectedText.toString()) {
-            case "date":
+            case "Date":
                 comparator = Comparator.comparing(Item::getDateOfAcquisition);
                 break;
-            case "description":
+            case "Description":
                 comparator = Comparator.comparing(Item::getDescription);
                 break;
-            case "make":
+            case "Make":
                 comparator = Comparator.comparing(Item::getMake);
                 break;
-            case "value":
+            case "Value":
                 comparator = Comparator.comparing(Item::getEstimatedValue);
                 break;
-            case "tag":
+            case "Tag":
                 comparator = Comparator.comparing(Item::getTagCount).reversed();
                 break;
             default:
@@ -82,9 +82,9 @@ public class SortFragment extends DialogFragment {
         Spinner sortOrderDropdown = dialogView.findViewById(R.id.sort_order_dropdown);
         Object selectedOrder = sortOrderDropdown.getSelectedItem();
         switch (selectedOrder.toString()) {
-            case "ascending":
+            case "Ascending":
                 return comparator;
-            case "descending":
+            case "Descending":
                 return comparator.reversed();
             default:
                 Log.d("SortFragment", "Invalid order dropdown: " + selectedOrder);

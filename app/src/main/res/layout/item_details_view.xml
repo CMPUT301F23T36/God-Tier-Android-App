@@ -78,8 +78,9 @@
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
-                android:textDirection="rtl"
-                android:textSize="20sp" />
+                android:gravity="right"
+                android:textSize="20sp"
+                android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +108,7 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:text="n/a"
-                android:textDirection="rtl"
+                android:gravity="right"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -135,9 +136,10 @@
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
-                android:text="n/a"
-                android:textDirection="rtl"
-                android:textSize="20sp" />
+                android:text="0.00"
+                android:gravity="right"
+                android:textSize="20sp"
+                android:inputType="numberDecimal"/>
         </LinearLayout>
 
         <LinearLayout
@@ -160,12 +162,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:inputType="text"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:text="n/a"
-                android:textDirection="rtl"
+                android:gravity="right"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -194,8 +197,9 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:text="n/a"
-                android:textDirection="rtl"
-                android:textSize="20sp" />
+                android:gravity="right"
+                android:textSize="20sp"
+                android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
@@ -223,8 +227,9 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
                 android:text="n/a"
-                android:textDirection="rtl"
-                android:textSize="20sp" />
+                android:gravity="right"
+                android:textSize="20sp"
+                android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
