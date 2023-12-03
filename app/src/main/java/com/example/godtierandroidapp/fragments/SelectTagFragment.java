@@ -1,19 +1,19 @@
-package com.example.godtierandroidapp;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+package com.example.godtierandroidapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.godtierandroidapp.item.Item;
+import com.example.godtierandroidapp.item.ItemDetailsView;
+import com.example.godtierandroidapp.item.ItemListView;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.tag.Tag;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

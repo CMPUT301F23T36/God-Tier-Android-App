@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.Firebase;
+import com.example.godtierandroidapp.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

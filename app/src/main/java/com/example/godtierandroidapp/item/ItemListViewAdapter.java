@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
@@ -6,23 +6,23 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.fragments.SelectTagFragment;
+import com.example.godtierandroidapp.tag.TagListViewAdapter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
 

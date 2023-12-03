@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -7,6 +7,12 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.godtierandroidapp.item.Item;
+import com.example.godtierandroidapp.item.ItemList;
+import com.example.godtierandroidapp.item.ItemListView;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.tag.Tag;
 
 /**
 * Represents a DialogFragment that applys filters to an ItemListView
@@ -62,7 +68,7 @@ public class FilterFragment extends DialogFragment {
         }
     }
 
-    FilterFragment(ItemListView itemListView) {
+    public FilterFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
     }
 

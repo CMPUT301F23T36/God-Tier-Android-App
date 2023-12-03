@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 
 
@@ -8,7 +8,6 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,18 +25,18 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
-import android.widget.Toast;
 
 
-import com.bumptech.glide.Glide;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.fragments.AddTagFragment;
+import com.example.godtierandroidapp.fragments.DatePickerFragment;
+import com.example.godtierandroidapp.fragments.SelectTagFragment;
+import com.example.godtierandroidapp.tag.Tag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Contains an expaned detailed view of the item including all its properties
+ * Contains an expanded detailed view of the item including all its properties
  *
  * @author Alex
  * @version 1.0
@@ -343,7 +342,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         updateDateField();
     }
 
-    protected void updateTagField(){
+    public void updateTagField(){
         // Initialize string builder
         boolean isEmpty = true;
         List<Tag> tagList = item.getTags();

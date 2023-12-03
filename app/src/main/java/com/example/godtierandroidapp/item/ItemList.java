@@ -1,23 +1,12 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;

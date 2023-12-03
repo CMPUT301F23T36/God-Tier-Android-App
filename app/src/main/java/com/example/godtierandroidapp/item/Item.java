@@ -1,24 +1,21 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 
 
-import android.content.ContentResolver;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.example.godtierandroidapp.tag.Tag;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class Item implements Serializable {
     private Date dateOfAcquisition;
@@ -135,10 +132,10 @@ public class Item implements Serializable {
         out.defaultWriteObject();
 
         // Convert Uri objects to strings and store them
-        ArrayList<byte[]> uriStrings = new ArrayList<>();
+        ArrayList<String> uriStrings = new ArrayList<>();
         for (Uri uri : photo) {
             Log.d("uri", uri.toString());
-            uriStrings.add(uri.toString().getBytes());
+            uriStrings.add(uri.toString());
         }
         out.writeObject(uriStrings);
     }
@@ -150,10 +147,10 @@ public class Item implements Serializable {
         photo = new ArrayList<>();
 
         // Reconstruct Uri objects from stored strings
-        ArrayList<byte[]> uriStrings = (ArrayList<byte[]>) in.readObject();
-        for (byte[] uriString : uriStrings) {
+        ArrayList<String> uriStrings = (ArrayList<String>) in.readObject();
+        for (String uriString : uriStrings) {
             try {
-                photo.add(Uri.parse(uriString.toString()));
+                photo.add(Uri.parse(uriString));
             } catch (Exception e) {}
         }
         //photo = (ArrayList<Uri>) in.readObject();

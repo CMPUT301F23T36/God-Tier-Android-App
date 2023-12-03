@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.godtierandroidapp.item.Item;
+import com.example.godtierandroidapp.item.ItemListView;
+import com.example.godtierandroidapp.R;
 
 import java.util.Comparator;
 
@@ -20,7 +23,7 @@ import java.util.Comparator;
  * @since 2023-11-09
  */
 public class SortFragment extends DialogFragment {
-    SortFragment(ItemListView itemListView) {
+    public SortFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
     }
 

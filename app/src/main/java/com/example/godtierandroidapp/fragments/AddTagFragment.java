@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,13 +12,12 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import android.os.Bundle;
-import android.widget.TextView;
+
+import com.example.godtierandroidapp.item.ItemDetailsView;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.tag.Tag;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class AddTagFragment extends DialogFragment {
     private EditText tag_name;

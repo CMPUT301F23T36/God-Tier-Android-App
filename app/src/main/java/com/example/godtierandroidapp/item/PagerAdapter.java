@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,8 +9,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.example.godtierandroidapp.R;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class PagerAdapter extends androidx.viewpager.widget.PagerAdapter {
     private Context context;

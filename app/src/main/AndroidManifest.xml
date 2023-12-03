@@ -30,7 +30,7 @@
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,20 +39,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUpActivity"
+            android:name=".login.SignUpActivity"
             android:exported="false">
 
         </activity>
         <activity
-            android:name=".ItemListView"
+            android:name=".item.ItemListView"
             android:exported="false">
 
         </activity>
         <activity
-            android:name=".ItemDetailsView"
+            android:name=".item.ItemDetailsView"
             android:exported="false" />
 
-        <activity android:name=".PhotoActivity"
+        <activity android:name=".item.PhotoActivity"
             android:exported="false">
         </activity>
 
