@@ -34,7 +34,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.godtierandroidapp.R;
@@ -79,13 +78,6 @@ public class PhotoActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
@@ -97,12 +89,7 @@ public class PhotoActivity extends AppCompatActivity implements
         this.serialNo = getIntent().getStringExtra("serialNumber");
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
-        ArrayList<String> uri_strings = getIntent().getStringArrayListExtra("photoUri");
-        photo_uri = new ArrayList<>();
-        for (String uri : uri_strings) {
-            photo_uri.add(Uri.parse(uri));
-        }
-        Log.d("PHOTOS", "Number of photos in photo_uri: " + photo_uri.size());
+        this.photo_uri = getIntent().getParcelableArrayListExtra("photoUri");
 
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);
 

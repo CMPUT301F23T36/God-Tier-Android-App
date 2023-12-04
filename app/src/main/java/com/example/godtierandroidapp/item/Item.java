@@ -53,15 +53,15 @@ public class Item implements Serializable {
      * Full constructor.
      */
     public Item(
-        Date dateOfAcquisition,
-        String description,
-        String make,
-        String model,
-        String serialNumber,
-        double estimatedValue,
-        String comment,
-        ArrayList<Tag> tags,
-        ArrayList<Uri> photo
+            Date dateOfAcquisition,
+            String description,
+            String make,
+            String model,
+            String serialNumber,
+            double estimatedValue,
+            String comment,
+            ArrayList<Tag> tags,
+            ArrayList<Uri> photo
     ) {
         this.dateOfAcquisition = dateOfAcquisition;
         this.description = description;
@@ -78,9 +78,9 @@ public class Item implements Serializable {
      * Constructor for common values for testing purposes.
      */
     public Item(
-        String description,
-        double estimatedValue,
-        ArrayList<Tag> tags
+            String description,
+            double estimatedValue,
+            ArrayList<Tag> tags
     ) {
         this.dateOfAcquisition = new Date();
         this.description = description;
@@ -146,7 +146,7 @@ public class Item implements Serializable {
             if (uri != null) {
                 Log.d("uri", uri.toString());
                 uriStrings.add(uri.toString());
-            }
+            } else {continue;}
         }
         out.writeObject(uriStrings);
     }
@@ -164,7 +164,7 @@ public class Item implements Serializable {
             try {
                 if (uriString != null) {
                     photo.add(Uri.parse(uriString));
-                }
+                } else { continue; }
             } catch (Exception e) {}
         }
     }
@@ -212,7 +212,7 @@ public class Item implements Serializable {
     public void photosSet(ArrayList<Uri> photo) {
         this.photo = photo;
     }
-  
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }

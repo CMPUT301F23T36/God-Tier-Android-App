@@ -26,13 +26,6 @@
         android:theme="@style/Theme.GodTierAndroidApp"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="31">
-        <activity
-            android:name=".BarcodeCaptureActivity"
-            android:exported="false" />
-
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
 
         <activity
             android:name=".login.LoginActivity"
