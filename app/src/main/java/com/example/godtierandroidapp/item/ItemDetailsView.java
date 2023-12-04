@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * Contains an expanded, detailed view of the item, including all its properties.
  *
- * @author Alex, Travis, Boris, Vinayan
+ * @author Alex, Travis, Boris, Vinayan, Luke
  */
 public class ItemDetailsView extends AppCompatActivity implements
         AddTagFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener
