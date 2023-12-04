@@ -353,7 +353,19 @@ public class ItemDetailsView extends AppCompatActivity implements
      * Updates the date.
      */
     protected void updateDateField() {
-        date_of_purchase_field.setText(String.valueOf(date_of_purchase));
+        StringBuilder str = new StringBuilder();
+
+        int month = date_of_purchase.getMonth() + 1;
+        int day = date_of_purchase.getDate();
+        int year = date_of_purchase.getYear() + 1900;
+
+        str.append(month);
+        str.append("/");
+        str.append(day);
+        str.append("/");
+        str.append(year);
+
+        date_of_purchase_field.setText(str.toString());
     }
   
     public Item getItem(){
