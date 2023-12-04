@@ -57,7 +57,7 @@
             android:name=".item.ItemDetailsView"
             android:exported="false" />
 
-        <activity android:name=".item.PhotoActivity"
+        <activity android:name=".photo.PhotoActivity"
             android:exported="false">
         </activity>
 
@@ -65,7 +65,7 @@
             android:exported="false">
         </activity>
         <activity
-            android:name=".ScannerActivity"
+            android:name=".photo.ScannerActivity"
             android:exported="false" />
 
         <meta-data

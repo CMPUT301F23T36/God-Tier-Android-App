@@ -10,6 +10,11 @@ import android.widget.Button;
 
 import com.example.godtierandroidapp.R;
 
+/**
+ * Shows the privacy policy.
+ *
+ * @author Luke
+ */
 public class PrivacyPolicyActivity extends AppCompatActivity {
 
     @Override

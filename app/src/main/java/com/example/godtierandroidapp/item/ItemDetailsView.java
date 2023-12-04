@@ -1,16 +1,11 @@
 package com.example.godtierandroidapp.item;
 
-import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
-import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -22,29 +17,25 @@ import android.widget.TextView;
 import android.Manifest;
 
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 
 
 import com.example.godtierandroidapp.R;
-import com.example.godtierandroidapp.ScannerActivity;
+import com.example.godtierandroidapp.photo.PagerAdapter;
+import com.example.godtierandroidapp.photo.PhotoActivity;
+import com.example.godtierandroidapp.photo.ScannerActivity;
 import com.example.godtierandroidapp.fragments.AddTagFragment;
 import com.example.godtierandroidapp.fragments.DatePickerFragment;
 import com.example.godtierandroidapp.fragments.SelectTagFragment;
 import com.example.godtierandroidapp.tag.Tag;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -211,7 +202,7 @@ public class ItemDetailsView extends AppCompatActivity implements
             public void onClick(View v) {
                 Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
                 i.putExtra("Edit", item.photos().size() > 0);
-                i.putParcelableArrayListExtra("photoUri", item.photos());
+                i.putExtra("photoUri", item.getUriStrings());
                 addPhotoLauncher.launch(i);
             }
         });
@@ -374,14 +365,6 @@ public class ItemDetailsView extends AppCompatActivity implements
     }
 
     private void openGallery() {
-//        // Create an intent to pick an image from the gallery
-//        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-//        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-//        galleryIntent.setType("image/*");
-//
-//        // Launch the gallery activity with the intent using the ActivityResultLauncher
-//        galleryLauncher.launch(galleryIntent);
         galleryLauncher.launch("image/*");
     }
 
