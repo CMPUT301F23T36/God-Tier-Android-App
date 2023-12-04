@@ -36,9 +36,13 @@ public class ItemListView extends AppCompatActivity {
     private ItemList itemList;
     private TextView totalValue;
     public ArrayList<Tag> tags = new ArrayList<Tag>(Arrays.asList(
-            new Tag("tag1"),
-            new Tag("tag2"),
-            new Tag("tag3")
+            new Tag("Clothing"),
+            new Tag("Electronics"),
+            new Tag("Furniture"),
+            new Tag("Hardware/Tools"),
+            new Tag("Home Decor"),
+            new Tag("Kitchenware"),
+            new Tag("Sporting Goods")
     ));
 
     public void updateTagList(ArrayList<Tag> newTagList) {
