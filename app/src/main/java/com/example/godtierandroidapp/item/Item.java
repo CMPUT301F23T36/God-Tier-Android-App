@@ -143,8 +143,10 @@ public class Item implements Serializable {
 
         ArrayList<String> uriStrings = new ArrayList<>();
         for (Uri uri : photo) {
-            Log.d("uri", uri.toString());
-            uriStrings.add(uri.toString());
+            if (uri != null) {
+                Log.d("uri", uri.toString());
+                uriStrings.add(uri.toString());
+            } else {continue;}
         }
         out.writeObject(uriStrings);
     }
@@ -160,7 +162,9 @@ public class Item implements Serializable {
         ArrayList<String> uriStrings = (ArrayList<String>) in.readObject();
         for (String uriString : uriStrings) {
             try {
-                photo.add(Uri.parse(uriString));
+                if (uriString != null) {
+                    photo.add(Uri.parse(uriString));
+                } else { continue; }
             } catch (Exception e) {}
         }
     }
