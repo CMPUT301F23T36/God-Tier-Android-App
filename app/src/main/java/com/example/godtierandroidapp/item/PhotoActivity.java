@@ -61,7 +61,7 @@ public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
-    ArrayList<ImageView> album;
+    ArrayList<ImageView> album = new ArrayList<>(4);
     ArrayList<Uri> photo_uri;
     int photo_index = 0, camera_animation;
     TextView curr_photo_count;
@@ -90,6 +90,8 @@ public class PhotoActivity extends AppCompatActivity implements
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
         this.photo_uri = getIntent().getParcelableArrayListExtra("photoUri");
+        Log.d("PHOTOS", "Number of photos in photo_uri: " + photo_uri.size());
+
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);
 
         item_photo_1 = findViewById(R.id.item_photo_1);
@@ -104,6 +106,16 @@ public class PhotoActivity extends AppCompatActivity implements
         item_photo_4 = findViewById(R.id.item_photo_4);
         item_photo_4.setOnClickListener(this);
 
+        album.add(item_photo_1);
+        album.add(item_photo_2);
+        album.add(item_photo_3);
+        album.add(item_photo_4);
+
+        if (existing_photo) {
+            Log.d("PHOTOS", "Loading photos from database");
+            loadPhotos();
+        }
+
         curr_photo_count = findViewById(R.id.photo_count);
         String text = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(text);
@@ -115,11 +127,7 @@ public class PhotoActivity extends AppCompatActivity implements
                 photo_uri.add(i, null);
             }
         }
-        album = new ArrayList<>();
-        album.add(item_photo_1);
-        album.add(item_photo_2);
-        album.add(item_photo_3);
-        album.add(item_photo_4);
+        //album = new ArrayList<>(4);
 
         camera_preview = findViewById(R.id.camera_preview);
         camera_layout = findViewById(R.id.camera_view);
@@ -158,10 +166,6 @@ public class PhotoActivity extends AppCompatActivity implements
                     }
                 });
 
-        if (existing_photo) {
-            Log.d("PHOTOS", "Loading photos from database");
-            loadPhotos();
-        }
     }
 
     private void loadPhotos() {
@@ -174,6 +178,7 @@ public class PhotoActivity extends AppCompatActivity implements
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(album.get(i));
                 }
+                Log.d("PHOTOS LOADED", "photos loaded successfully " + i);
             }
         }
     }
@@ -290,7 +295,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     * Deletes the photos... maybe? - Alex
+     * Deletes a photo and updates photo count
      */
     public void selectDelete() {
         for (int i = photo_index; i < album.size()-1; ++i) {
@@ -308,7 +313,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     * Deletes the photo... maybe? - Alex
+     * Opens delete fragment for the photo
      */
     private void deletePhoto() {
         Bundle bundle = new Bundle();

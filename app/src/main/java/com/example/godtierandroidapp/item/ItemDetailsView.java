@@ -128,9 +128,7 @@ public class ItemDetailsView extends AppCompatActivity implements
         item_add_photo = findViewById(R.id.add_photo);
         item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
-      
-        // temp attempt at displaying photos
-        iv = findViewById(R.id.item_photo);
+
         //updatePhoto();
       
         tags_field.setOnClickListener(new View.OnClickListener() {
