@@ -35,15 +35,7 @@ public class ItemListView extends AppCompatActivity {
     private ItemListViewAdapter itemAdapter;
     private ItemList itemList;
     private TextView totalValue;
-    public ArrayList<Tag> tags = new ArrayList<Tag>(Arrays.asList(
-            new Tag("Clothing"),
-            new Tag("Electronics"),
-            new Tag("Furniture"),
-            new Tag("Hardware/Tools"),
-            new Tag("Home Decor"),
-            new Tag("Kitchenware"),
-            new Tag("Sporting Goods")
-    ));
+    public ArrayList<Tag> tags = new ArrayList<Tag>();
 
     public void updateTagList(ArrayList<Tag> newTagList) {
         tags = newTagList;
@@ -89,7 +81,7 @@ public class ItemListView extends AppCompatActivity {
                     .child(username)
                     .child("items");
 
-            itemList = new ItemList(items, this::updateList);
+            itemList = new ItemList(items,this::onDataBaseRead);
         }
 
 /*
@@ -225,6 +217,17 @@ public class ItemListView extends AppCompatActivity {
     public void setSort(Comparator<Item> sortComparator) {
         itemList.setSort(sortComparator);
         updateList();
+    }
+
+    private void onDataBaseRead(){
+        updateList();
+        for(Item item : itemList.getItems()){
+            for(Tag tag : item.getTags()) {
+                if (!tags.contains(tag)){
+                    tags.add(tag);
+                }
+            }
+        }
     }
 
     /**

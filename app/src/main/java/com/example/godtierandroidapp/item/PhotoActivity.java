@@ -62,7 +62,7 @@ public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
-    ArrayList<ImageView> album;
+    ArrayList<ImageView> album = new ArrayList<>(4);
     ArrayList<Uri> photo_uri;
     int photo_index = 0, camera_animation;
     TextView curr_photo_count;
@@ -91,6 +91,8 @@ public class PhotoActivity extends AppCompatActivity implements
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
         this.photo_uri = getIntent().getParcelableArrayListExtra("photoUri");
+        Log.d("PHOTOS", "Number of photos in photo_uri: " + photo_uri.size());
+
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);
 
         item_photo_1 = findViewById(R.id.item_photo_1);
@@ -105,6 +107,16 @@ public class PhotoActivity extends AppCompatActivity implements
         item_photo_4 = findViewById(R.id.item_photo_4);
         item_photo_4.setOnClickListener(this);
 
+        album.add(item_photo_1);
+        album.add(item_photo_2);
+        album.add(item_photo_3);
+        album.add(item_photo_4);
+
+        if (existing_photo) {
+            Log.d("PHOTOS", "Loading photos from database");
+            loadPhotos();
+        }
+
         curr_photo_count = findViewById(R.id.photo_count);
         String text = countNonEmptyUris(photo_uri) + "/4 Images";
         curr_photo_count.setText(text);
@@ -116,11 +128,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 photo_uri.add(i, null);
             }
         }
-        album = new ArrayList<>();
-        album.add(item_photo_1);
-        album.add(item_photo_2);
-        album.add(item_photo_3);
-        album.add(item_photo_4);
 
         camera_preview = findViewById(R.id.camera_preview);
         camera_layout = findViewById(R.id.camera_view);
@@ -159,10 +166,6 @@ public class PhotoActivity extends AppCompatActivity implements
                     }
                 });
 
-        if (existing_photo) {
-            Log.d("PHOTOS", "Loading photos from database");
-            loadPhotos();
-        }
     }
 
     private void loadPhotos() {
@@ -182,6 +185,7 @@ public class PhotoActivity extends AppCompatActivity implements
                 } else {
                     imageView.setVisibility(View.INVISIBLE);
                 }
+                Log.d("PHOTOS LOADED", "photos loaded successfully " + i);
             }
         }
     }
@@ -212,25 +216,6 @@ public class PhotoActivity extends AppCompatActivity implements
             setResult(Activity.RESULT_OK, retIntent);
             finish();}
 
-//        else if (vID == R.id.save_edit) {
-//
-//            HashMap<String, Object> item_hash = new HashMap<String, Object>();
-//            item_hash.put("dateOfAcquisition",this.date);
-//            item_hash.put("description",this.description);
-//            item_hash.put("make",this.make);
-//            item_hash.put("model",this.model);
-//            item_hash.put("serialNumber",this.serialNo);
-//            item_hash.put("estimatedValue",this.estValue);
-//            item_hash.put("comment",this.comment);
-//            item_hash.put("photo", this.photo_uri);
-//
-//            Intent retIntent = new Intent();
-//            retIntent.putExtra("editedItem", item_hash);
-//            setResult(Activity.RESULT_OK, photo_uriretIntent);
-//            finish();
-
-//            Intent i = new Intent(this, ItemListView.class);
-//            startActivity(i); }
          else if (vID == R.id.capture_photo_button) {
 
             capturePhoto();
@@ -298,7 +283,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     * Deletes the photos... maybe? - Alex
+     * Deletes a photo and updates photo count
      */
     public void selectDelete() {
         for (int i = photo_index; i < album.size()-1; ++i) {
@@ -316,7 +301,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     * Deletes the photo... maybe? - Alex
+     * Opens delete fragment for the photo
      */
     private void deletePhoto() {
         Bundle bundle = new Bundle();

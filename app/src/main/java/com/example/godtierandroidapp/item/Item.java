@@ -165,8 +165,7 @@ public class Item implements Serializable {
                 if (uriString != null) {
                     photo.add(Uri.parse(uriString));
                 }
-            }
-            catch (Exception e) {}
+            } catch (Exception e) {}
         }
     }
 

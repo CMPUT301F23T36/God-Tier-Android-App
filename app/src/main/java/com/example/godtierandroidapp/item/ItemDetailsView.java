@@ -134,9 +134,7 @@ public class ItemDetailsView extends AppCompatActivity implements
         item_add_photo = findViewById(R.id.add_photo);
         item_scan_barcode = findViewById(R.id.scan_barcode);
         updateFields();
-      
-        // temp attempt at displaying photos
-        iv = findViewById(R.id.item_photo);
+
         //updatePhoto();
       
         tags_field.setOnClickListener(new View.OnClickListener() {
@@ -337,13 +335,16 @@ public class ItemDetailsView extends AppCompatActivity implements
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
                     assert i != null;
+
                     if (item.photos().size() == 0) {
                         item_photo.setVisibility(View.GONE);
                         item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
                     }
-//                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
-                    }
-                });
+
+                    myPagerAdapter.notifyDataSetChanged();
+                    updateImages();
+                }
+            });
 
     public ActivityResultLauncher<Intent> scanLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -422,14 +423,18 @@ public class ItemDetailsView extends AppCompatActivity implements
      */
     public void updateTagField() {
         List<Tag> tagList = item.getTags();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("| ");
-        for (int j = 0; j < tagList.size(); j++) {
-            stringBuilder.append(tagList.get(j).getName());
-            stringBuilder.append(" | ");
-        }
+        if(tagList.isEmpty()){
+            tags_field.setText("");
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("| ");
+            for (int j = 0; j < tagList.size(); j++) {
+                stringBuilder.append(tagList.get(j).getName());
+                stringBuilder.append(" | ");
+            }
 
-        tags_field.setText(stringBuilder.toString());
+            tags_field.setText(stringBuilder.toString());
+        }
     }
 
     /**

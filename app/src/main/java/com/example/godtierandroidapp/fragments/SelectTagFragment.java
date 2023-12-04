@@ -120,8 +120,7 @@ public class SelectTagFragment extends DialogFragment {
             itemListView.updateTags(listOfItemObjects);
         } else if (context.getClass() == ItemDetailsView.class) {
             ItemDetailsView itemDetailsView = (ItemDetailsView) context;
-            TextView tags_field = itemDetailsView.findViewById(R.id.tags_field);
-            tags_field.setText("");
+            itemDetailsView.updateTagField();
         }
     }
 }
