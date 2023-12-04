@@ -98,11 +98,21 @@
                 android:layout_gravity="center"/>
 
             <CheckBox
+                android:id="@+id/scheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Services and Privacy Policy."
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginTop="30dp"/>
+
+            <TextView
+                android:id="@+id/signUpDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="55dp"
+                android:textStyle="italic"
+                android:textColor="@color/textColor"
+                android:text="View detail" />
 
             <Button
                 android:id="@+id/btnSignUp"
