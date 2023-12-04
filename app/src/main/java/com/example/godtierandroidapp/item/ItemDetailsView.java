@@ -399,7 +399,7 @@ public class ItemDetailsView extends AppCompatActivity implements
      */
     private void updateNonSerialNumberFields() {
         description_field.setText(item.getDescription());
-        estimated_value_field.setText(String.valueOf(item.getEstimatedValue()));
+        estimated_value_field.setText(String.format("%.2f", item.getEstimatedValue()));
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
         updateTagField();
