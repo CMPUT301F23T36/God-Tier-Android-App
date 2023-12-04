@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ItemListView">
+    tools:context=".item.ItemListView">
 
     <LinearLayout
         android:id="@+id/top_bar"
@@ -17,24 +17,30 @@
 
         <Button
             android:id="@+id/sort_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sort" />
+            android:text="Sort"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/filter_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Filter" />
+            android:text="Filter"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add_item_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Add Item" />
+            android:text="Add Item"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -62,19 +68,24 @@
 
         <Button
             android:id="@+id/clear_item_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:text="Clear Items"
+            android:textSize="18sp"
             android:visibility="invisible" />
+
         <Button
             android:id="@+id/add_tags_button"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:text="Add Tags"
+            android:textSize="18sp"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -82,7 +93,9 @@
         android:id="@+id/totalValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Total value:"
+        android:layout_marginStart="8dp"
+        android:text="Total Value:"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

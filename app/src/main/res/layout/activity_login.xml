@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     android:background="@drawable/login_shape_bk"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_login_bk"/>
+        android:layout_height="120dp"
+        android:background="@drawable/ic_login_bk" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -50,6 +50,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="25dp"
+                android:inputType="text"
                 android:drawableLeft="@drawable/baseline_person_pin_24"
                 android:drawablePadding="8dp"
 
@@ -62,7 +63,7 @@
                 android:layout_marginLeft="25dp"
                 android:text="Password"
                 android:textColor="@color/textColor"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:padding="8dp"/>
 
             <EditText
@@ -80,11 +81,22 @@
 
 
             <CheckBox
+                android:id="@+id/lcheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Services and Privacy Policy."
                 android:layout_marginHorizontal="25dp"
-                android:layout_marginTop="60dp"/>
+                android:layout_marginTop="40dp"/>
+
+            <TextView
+                android:id="@+id/detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="55dp"
+                android:textStyle="italic"
+                android:textColor="@color/textColor"
+                android:text="View detail" />
+
 
             <Button
                 android:id="@+id/btnLogin"
@@ -105,6 +117,7 @@
                 android:text="No Account yet? Sign up"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"/>
 
         </LinearLayout>

@@ -1,23 +1,12 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DataSnapshot;
@@ -28,8 +17,6 @@ import com.google.firebase.database.DataSnapshot;
  * based on filtering and sorting criteria.
  *
  * @author Alex
- * @version 1.0
- * @since 2023-11-06
  */
 public class ItemList {
     /**
@@ -40,6 +27,9 @@ public class ItemList {
         boolean passesFilter(Item item);
     }
 
+    /**
+     * Called after this user's items are read from the database.
+     */
     public interface DatabaseReadFinish {
         void onFinish();
     }
@@ -52,9 +42,8 @@ public class ItemList {
 
     DatabaseReference database;
 
-
     /**
-     * Constructs an ItemList without filter or sort criteria
+     * Constructs an ItemList without an attached database.
      */
     public ItemList() {
         baseItemList = new ArrayList<>();
@@ -65,8 +54,11 @@ public class ItemList {
     }
 
     /**
+     * Constructor with an attached database.
+     * All changes to items will be synced with the database.
      *
-     * @param database a reference to the "Items" database under the current user
+     * @param database a reference to the "Items" database under the current user.
+     * @param onFinish called when the database has been read.
      */
     public ItemList(DatabaseReference database, DatabaseReadFinish onFinish) {
         baseItemList = new ArrayList<>();
@@ -100,8 +92,8 @@ public class ItemList {
     }
 
     /**
-     * Adds an item with specified filters and sorting application
-     * @param item item of interest to be added to list
+     * Adds an item to the list. Updates the filtered and sorted item list accordingly.
+     * @param item item to be added.
      */
     public void addItem(Item item) {
         baseItemList.add(item);
@@ -120,9 +112,9 @@ public class ItemList {
     }
 
     /**
-     * Updates item at index of sorted and filtered list with provided item
-     * @param idx index of item to be updated
-     * @param item new item to update index
+     * Updates item at index of the original list with the provided item.
+     * @param idx index of item to be updated.
+     * @param item new item to update index.
      */
     public void updateItem(int idx, Item item) {
         baseItemList.set(idx, item);
@@ -132,9 +124,9 @@ public class ItemList {
 
 
     /**
-     * Retrieves item at index of sorted and filtered list
+     * Retrieves item at the index of the sorted and filtered list.
      * @param index index of item to  retrieve
-     * @return item at specfied index
+     * @return item at specified index
      */
     public Item getItem(int index) {
         if (index < 0 || index >= itemListSortedFiltered.size()) {
@@ -144,7 +136,7 @@ public class ItemList {
     }
 
     /**
-     * Retrieves the integer size of sorted and filtered list
+     * Retrieves the size of the sorted and filtered list.
      * @return size of list
      */
     public int size() {
@@ -152,17 +144,22 @@ public class ItemList {
     }
 
     /**
-     * Updates tags for provided item from both base, and sorted and filtered list
+     * Updates tags for provided item from both base, and sorted and filtered list.
      * @param item item to have its tags updated
      */
-    public void updateTags(Item item){
+    public void updateTags(Item item) {
         baseItemList.get(baseItemList.indexOf(item)).setTags(item.getTags());
-        itemListSortedFiltered.get(itemListSortedFiltered.indexOf(item)).setTags(item.getTags());
+        int idx = itemListSortedFiltered.indexOf(item);
+        if (idx >= 0) {
+            itemListSortedFiltered.get(idx).setTags(item.getTags());
+        }
+
+        updateDatabase();
     }
 
     /**
-     * Removes item from both base, and sorted and filtered list
-     * @param item item to be removed
+     * Removes an item from the original and sorted and filtered list.
+     * @param item item to be removed.
      */
     public void removeItem(Item item) {
         for (int i = 0; i < baseItemList.size(); ++i) {
@@ -178,12 +175,13 @@ public class ItemList {
                 break;
             }
         }
+
         updateDatabase();
     }
 
   /**
-  * Retrieves sum of value of items in list view
-  * @return total float sum of item values
+  * Retrieves sum of value of sorted and filtered items.
+  * @return total float sum of item values.
   */
     public float getTotalValue() {
         float total = 0.0f;
@@ -195,16 +193,16 @@ public class ItemList {
         return total;
     }
 
-      /**
-     * retrieves the base list of items (no sorting and filtering)
+    /**
+     * retrieves the base list of items (no sorting and filtering).
      * @return list of items
      */
-    public List<Item> getItems(){
+    public List<Item> getItems() {
         return baseItemList;
     }
 
-      /**
-     * Clears both lists of items
+    /**
+     * Clears both lists of items.
      */
     public void clear() {
         baseItemList.clear();
@@ -213,8 +211,8 @@ public class ItemList {
     }
 
     /**
-     * Sets the filtering criteria and updates sorted and filtered list
-     * @param newCriteria new filter criteria
+     * Sets the filtering criteria and updates the sorted and filtered list.
+     * @param newCriteria new filter criteria.
      */
     public void setFilter(FilterCriteria newCriteria) {
         filterCriteria = newCriteria;
@@ -222,8 +220,8 @@ public class ItemList {
     }
 
     /**
-     * Sets the sorting criteria and updates sorted and filtered list
-     * @param newSortBy new sort criteria
+     * Sets the sorting criteria and updates sorted and filtered list.
+     * @param newSortBy new sort criteria.
      */
     public void setSort(Comparator<Item> newSortBy) {
         sortCriteria = newSortBy;
@@ -231,21 +229,21 @@ public class ItemList {
     }
 
     /**
-     * Removes filter criteria
+     * Removes filter criteria.
      */
     public void removeFilter() {
         setFilter(null);
     }
 
     /**
-     * Removes sorting criteria
+     * Removes sorting criteria.
      */
     public void removeSort() {
         setSort(null);
     }
 
     /**
-     * Remakes an existing sorted and filtered list with updated criteria
+     * Remakes an existing sorted and filtered list with updated criteria.
      */
     private void remakeSortedFilteredList() {
         itemListSortedFiltered.clear();
@@ -263,7 +261,7 @@ public class ItemList {
     }
 
     /**
-     * Checks if item passes filter
+     * Checks if an item passes filter.
      * @param item item in list to be checked
      * @return bool value if item passed or not
      */
@@ -276,7 +274,7 @@ public class ItemList {
     }
 
     /**
-     * Update the database if it exists
+     * Updates the database if it exists.
      */
     private void updateDatabase() {
         if (database != null) {

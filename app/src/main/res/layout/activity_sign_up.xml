@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity"
+    tools:context=".login.SignUpActivity"
     android:background="@drawable/login_shape_bk"
     android:orientation="vertical">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:background="@drawable/ic_login_bk"/>
 
     <androidx.cardview.widget.CardView
@@ -49,6 +49,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="25dp"
+                android:inputType="text"
                 android:drawableLeft="@drawable/baseline_person_pin_24"
                 android:drawablePadding="8dp"
 
@@ -61,7 +62,7 @@
                 android:textColor="@color/textColor"
                 android:layout_marginLeft="25dp"
                 android:text="Password"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:padding="8dp"/>
 
             <EditText
@@ -81,7 +82,7 @@
                 android:textSize="18sp"
                 android:text="Re-enter password"
                 android:textColor="@color/textColor"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginLeft="25dp"
                 android:padding="8dp"/>
 
@@ -97,11 +98,21 @@
                 android:layout_gravity="center"/>
 
             <CheckBox
+                android:id="@+id/scheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I agree to the Terms of Services and Privacy Policy."
                 android:layout_marginHorizontal="25dp"
-                android:layout_marginTop="60dp"/>
+                android:layout_marginTop="30dp"/>
+
+            <TextView
+                android:id="@+id/signUpDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="55dp"
+                android:textStyle="italic"
+                android:textColor="@color/textColor"
+                android:text="View detail" />
 
             <Button
                 android:id="@+id/btnSignUp"
@@ -122,6 +133,7 @@
                 android:text="Have an Account? Sign in"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"/>
 
 

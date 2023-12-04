@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,14 +12,19 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import android.os.Bundle;
-import android.widget.TextView;
+
+import com.example.godtierandroidapp.item.ItemDetailsView;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.tag.Tag;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-
+/**
+ * Provides a fragment which allows the user to add tags to an item.
+ * After the user selects a tag, the {@code OnFragmentInteractionListener} callback
+ * is called. It is not called if the user cancels the operation. The context is assumed to
+ * implement {@code OnFragmentInteractionListener}.
+ */
 public class AddTagFragment extends DialogFragment {
     private EditText tag_name;
     private Button tag_clear;

@@ -22,6 +22,24 @@
         android:hint="Make"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/fromDateText"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_below="@id/tagFilter"
+        android:hint="From: (Date)"
+        android:textSize="20sp"
+        android:gravity="bottom"/>
+
+    <TextView
+        android:id="@+id/toDateText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/fromDateText"
+        android:hint="To: (Date)"
+        android:textSize="20sp"
+        android:gravity="bottom"/>
+
     <EditText
         android:id="@+id/tagFilter"
         android:layout_width="match_parent"

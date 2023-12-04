@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.godtierandroidapp.item.ItemListView;
+import com.example.godtierandroidapp.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,14 +26,14 @@ import com.google.firebase.database.ValueEventListener;
  * be checked against Firebase data, to enter and use the main app functionality.
  *
  * @author Luke
- * @version 1.0
- * @since 2023-11-10
  */
 public class LoginActivity extends AppCompatActivity {
 
     EditText loginUsername, loginPassword;
     TextView signupRedirect;
     Button loginButton;
+    TextView privacyDetail;
+    CheckBox checkBoxPrivacyPolicy;
 
     /**
      * Called when app is first opened, or a user logs out. Initializes activity and sets up login
@@ -50,6 +53,17 @@ public class LoginActivity extends AppCompatActivity {
         loginPassword = findViewById(R.id.edtLoginPassword);
         signupRedirect = findViewById(R.id.signupRedirect);
         loginButton = findViewById(R.id.btnLogin);
+        privacyDetail = findViewById(R.id.detail);
+        checkBoxPrivacyPolicy = findViewById(R.id.lcheckBox);
+
+        privacyDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(LoginActivity.this, PrivacyPolicyActivity.class);
+                myIntent.putExtra("SOURCE_ACTIVITY", "LoginActivity");
+                startActivity(myIntent);
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,9 +141,15 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (password.equals(passwordFromDB)) {
                         loginUsername.setError(null);
-                        Intent intent = new Intent(LoginActivity.this, ItemListView.class);
-                        intent.putExtra("username", username);
-                        startActivity(intent);
+                        if (checkBoxPrivacyPolicy.isChecked()) {
+                            // Perform login
+                            Intent intent = new Intent(LoginActivity.this, ItemListView.class);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+                        } else {
+                            // Show a message indicating that the checkbox must be checked
+                            Toast.makeText(LoginActivity.this, "Please agree to the Terms of Services and Privacy Policy", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else {
                         loginPassword.setError("Invalid password");

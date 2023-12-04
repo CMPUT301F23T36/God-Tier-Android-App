@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.Firebase;
+import com.example.godtierandroidapp.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,9 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Application signup screen. Users will create a unique username and then enter a password twice.
  * If password matches confirmed and username unique, user data will be added to the Firestore
  * database.
- * @author Luke
- * @version 1.0
- * @since 2023-11-10
+ * @author Lukes
  */
 public class SignUpActivity extends AppCompatActivity {
 
@@ -29,6 +28,8 @@ public class SignUpActivity extends AppCompatActivity {
     TextView loginRedirection;
     FirebaseDatabase database;
     DatabaseReference reference;
+    TextView privacyDetail;
+    CheckBox checkBoxPrivacyPolicy;
 
     /**
      * Called when activity started through login page. Initializes activity and sets up UI. Sets up
@@ -48,6 +49,17 @@ public class SignUpActivity extends AppCompatActivity {
         signupRePassword = findViewById(R.id.edtSignupRePassword);
         signupButton = findViewById(R.id.btnSignUp);
         loginRedirection = findViewById(R.id.loginRedirect);
+        privacyDetail = findViewById(R.id.signUpDetail);
+        checkBoxPrivacyPolicy = findViewById(R.id.scheckBox);
+
+        privacyDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(SignUpActivity.this, PrivacyPolicyActivity.class);
+                myIntent.putExtra("SOURCE_ACTIVITY", "SignUpActivity");
+                startActivity(myIntent);
+            }
+        });
 
 
         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -62,12 +74,17 @@ public class SignUpActivity extends AppCompatActivity {
                 String userRePassword = signupRePassword.getText().toString();
 
                 if (userPassword.equals(userRePassword)) {
-                    Users user = new Users(username, userPassword);
-                    reference.child(username).setValue(user);
+                    if (checkBoxPrivacyPolicy.isChecked()) {
+                        Users user = new Users(username, userPassword);
+                        reference.child(username).setValue(user);
 
-                    Toast.makeText(SignUpActivity.this, "Sign Up Successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                    startActivity(intent);
+                        Toast.makeText(SignUpActivity.this, "Sign Up Successfully", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // Show a message indicating that the checkbox must be checked
+                        Toast.makeText(SignUpActivity.this, "Please agree to the Terms of Services and Privacy Policy", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
                     signupRePassword.setError("Not match your password");

@@ -1,12 +1,10 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.tag;
 
 import java.io.Serializable;
 
 /**
- *
+ * A tag contained on an Item. Consists of only a String for now.
  * @author Alex
- * @version 1.0
- * @since 2023-11-06
  */
 public class Tag implements Serializable, Comparable<Tag> {
     private String name;
