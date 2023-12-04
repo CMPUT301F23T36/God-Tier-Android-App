@@ -37,6 +37,9 @@ import com.example.godtierandroidapp.fragments.AddTagFragment;
 import com.example.godtierandroidapp.fragments.DatePickerFragment;
 import com.example.godtierandroidapp.fragments.SelectTagFragment;
 import com.example.godtierandroidapp.tag.Tag;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,19 +69,19 @@ public class ItemDetailsView extends AppCompatActivity implements
     private EditText make_field;
     private EditText model_field;
     private EditText serial_no_field;
+    ArrayList<Uri> photo_field;
     private TextView tags_field;
     private Button item_details_confirm;
     private Button item_details_delete;
     private ImageView edit_item_photo;
     private ImageView item_photo;
-    private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<String> galleryLauncher;
     private ViewPager viewPager;
     private PagerAdapter myPagerAdapter;
     private static final String TAG = "ItemDetailsView";
 
     private Button item_add_tag;
     private Button item_add_photo;
-    int ACTIVITY_REQUEST_CODE = 1;
     Button item_scan_barcode;
     ImageView iv;
 
@@ -142,6 +145,19 @@ public class ItemDetailsView extends AppCompatActivity implements
             }
         });
 
+        viewPager = findViewById(R.id.viewPager);
+        myPagerAdapter = new PagerAdapter(this, item);
+        viewPager.setAdapter(myPagerAdapter);
+
+        // temp attempt at displaying photos
+        iv = findViewById(R.id.item_photo);
+
+        if (item.photos().size() != 0) {
+            item_photo.setVisibility(View.GONE);
+            myPagerAdapter.notifyDataSetChanged();
+            updateImages();
+        }
+
         // Set click listener for date field
         date_of_purchase_field.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +203,10 @@ public class ItemDetailsView extends AppCompatActivity implements
                 item.setModel(model_field.getText().toString());
                 item.setSerialNumber(serial_no_field.getText().toString());
 
+//                if (photo_field!=null && !photo_field.isEmpty()) {
+//                    item.photosSet(photo_field);
+//                }
+
                 Intent retIntent = new Intent();
                 retIntent.putExtra("old item idx", item_idx); // will be -1 if new item
                 retIntent.putExtra("new item", item);
@@ -195,7 +215,8 @@ public class ItemDetailsView extends AppCompatActivity implements
                 try {
                     // Your code here
                     finish();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "Error in onClick: " + e.getMessage());
 
@@ -214,40 +235,47 @@ public class ItemDetailsView extends AppCompatActivity implements
             }
         });
 
-        if (item.photos().size() != 0) {
-            item_photo.setVisibility(View.GONE);
-        }
-
         // open gallery to get data of the image
+//        galleryLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                new ActivityResultCallback<ActivityResult>() {
+//                    @Override
+//                    public void onActivityResult(ActivityResult result) {
+//                        if (result.getResultCode() == RESULT_OK) {
+//
+//                            // Handle the result
+//                            Intent data = result.getData();
+//                            if (data != null) {
+//                                Uri selectedImageUri = data.getData();
+//                                if (selectedImageUri != null) {
+//                                    // TO ensure the permission exist for later needs.
+//                                    getContentResolver().takePersistableUriPermission(
+//                                            selectedImageUri,
+//                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                                    );
+//
+//                                    // Set the selected image URI to the second ImageView
+//                                    item.addPhoto(selectedImageUri);
+//                                    myPagerAdapter.notifyDataSetChanged();
+//                                    updateImages();
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                });
+
         galleryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
+                new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
                     @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-
-                            // Handle the result
-                            Intent data = result.getData();
-                            if (data != null) {
-                                Uri selectedImageUri = data.getData();
-                                if (selectedImageUri != null) {
-                                    // TO ensure the permission exist for later needs.
-                                    getContentResolver().takePersistableUriPermission(
-                                            selectedImageUri,
-                                            Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                    );
-
-                                    // Set the selected image URI to the second ImageView
-                                    item.addPhoto(selectedImageUri);
-                                    myPagerAdapter.notifyDataSetChanged();
-                                    updateImages();
-                                }
-
+                    public void onActivityResult(Uri uri) {
+                        if (uri == null) { return; }
+                        item.addPhoto(uri);
+                        myPagerAdapter.notifyDataSetChanged();
+                        updateImages();
                             }
-                        }
-                    }
-                });
-
+                        });
         // Set OnClickListener for the second ImageView to open the gallery
         edit_item_photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,27 +304,74 @@ public class ItemDetailsView extends AppCompatActivity implements
         item_scan_barcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(ItemDetailsView.this, ScannerActivity.class);
+                i.putExtra("Edit", true);
+                scanLauncher.launch(i);
             }
         });
 
-        viewPager = findViewById(R.id.viewPager);
-        myPagerAdapter = new PagerAdapter(this, item);
-        viewPager.setAdapter(myPagerAdapter);
     }
+
+//    private void loadImageView() {
+//        if (item.photos() != null && !item.photos().isEmpty()) {
+//            album.clear();
+//            for (int i = 0; i < item.photos().size(); i++) {
+//                Uri photoUri = item.photos().get(i);
+//                ImageView imageView = new ImageView(this);
+//                album.add(imageView);
+//                if (photoUri != null) {
+//                    RequestOptions requestOptions = new RequestOptions()
+//                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
+//                            .error(R.drawable.error_image); // Image to show in case of error
+//                    Glide.with(this)
+//                            .load(photoUri)
+//                            .apply(requestOptions)
+//                            .transition(DrawableTransitionOptions.withCrossFade())
+//                            .into(imageView);
+//                    imageView.setVisibility(View.VISIBLE);
+//                }
+//            }
+//            myPagerAdapter.updateData(item.photos());
+//            viewPager.setAdapter(myPagerAdapter);
+//        }
+//    }
 
     public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
-                        assert i != null;
+                    assert i != null;
+                    if (item.photos().size() == 0) {
+                        item_photo.setVisibility(View.GONE);
                         item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
-                        myPagerAdapter.notifyDataSetChanged();
-                        updateImages();
-                    // item.photosSet(getIntent().getParcelableArrayListExtra("updatedPhotoUri"));
+                    }
+//                    photo_field = i.getParcelableArrayListExtra("updatedPhotoUri");
                     }
                 });
+
+    public ActivityResultLauncher<Intent> scanLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent i = result.getData();
+                    assert i != null;
+                    if (i.getBooleanExtra("edit serial number", true)) {
+                        item.setSerialNumber(i.getStringExtra("serial number"));
+                    } else if (i.getBooleanExtra("edit info", true)) {
+                        if (i.getBooleanExtra("edit description", true)) {
+                            item.setDescription(i.getStringExtra("description"));
+                        }
+                        if (i.getBooleanExtra("edit make", true)) {
+                            item.setDescription(i.getStringExtra("make"));
+                        }
+                        if (i.getBooleanExtra("edit model", true)) {
+                            item.setDescription(i.getStringExtra("model"));
+                        }
+                    }
+                    updateFields();
+                }
+            });
 
 
     /**
@@ -311,14 +386,15 @@ public class ItemDetailsView extends AppCompatActivity implements
     }
 
     private void openGallery() {
-        // Create an intent to pick an image from the gallery
-        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        galleryIntent.setType("image/*");
-
-        // Launch the gallery activity with the intent using the ActivityResultLauncher
-        galleryLauncher.launch(galleryIntent);
+//        // Create an intent to pick an image from the gallery
+//        Intent galleryIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        galleryIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+//        galleryIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+//        galleryIntent.setType("image/*");
+//
+//        // Launch the gallery activity with the intent using the ActivityResultLauncher
+//        galleryLauncher.launch(galleryIntent);
+        galleryLauncher.launch("image/*");
     }
 
     /**
