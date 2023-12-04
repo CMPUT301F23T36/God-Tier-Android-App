@@ -160,6 +160,7 @@ public class ItemListView extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         itemAdapter = new ItemListViewAdapter(this, itemList);
         recyclerView.setAdapter(itemAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this));
 
         // init button callbacks -------------------------------------------------------------------
 
