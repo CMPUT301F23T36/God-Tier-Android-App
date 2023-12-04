@@ -9,4 +9,4 @@ If you want to test the serial number autofill function, you can enter the seria
 
 ## Future work
 There are a few remaining issues with images that we are aware of. For instance, very occasionally the android empty image will overlap with images,
-and in sometimes images will not update in the gallery. These are very minor and uncommon issues, however.
+and sometimes images will not update in the gallery. These are very minor and uncommon issues, however.
