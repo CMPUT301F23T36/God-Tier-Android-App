@@ -52,7 +52,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -73,11 +75,19 @@ public class ScannerActivity extends AppCompatActivity {
 
     private Button btnCapture;
     private Button btnCancel;
+    HashMap<String, ArrayList<String>> barcodeData = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
+
+        ArrayList<String> item_data = new ArrayList<>();
+        item_data.add("Banana");
+        item_data.add("2009");
+        item_data.add("Blue Java");
+        barcodeData.put("6009832100999", item_data);
 
         imageView = findViewById(R.id.imageView);
         previewView = findViewById(R.id.previewView);
@@ -152,145 +162,31 @@ public class ScannerActivity extends AppCompatActivity {
 
                         String raw = barcode.getRawValue();
                         Log.d(TAG, "Barcode raw value" + raw);
-                        int valueType = barcode.getValueType();
 
-                        switch (valueType) {
-                            case Barcode.TYPE_ISBN:
+                        // int valueType = barcode.getValueType();
 
-                                String sno = barcode.getDisplayValue();
-                                Log.d(TAG, "Barcode value: " + sno);
-                                Intent snoIntent = new Intent();
-                                snoIntent.putExtra("serial number", sno);
-                                snoIntent.putExtra("edit serial number", true);
-                                setResult(Activity.RESULT_OK, snoIntent);
-                                finish();
-                                break;
-
-                            case Barcode.TYPE_URL:
-
-//                                String productBarcodeData = barcode.getDisplayValue();
-                                String url = barcode.getUrl().getUrl();
-                                Log.d(TAG, "URL: " + url);
-                                new ParseTextFileTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-
-//                                String productBarcodeData = parseTextFile(url);
-//                                Log.d(TAG, "Barcode value: " + productBarcodeData);
-//                                ProductData productData = parseProductBarcode(productBarcodeData);
-
-//                                if (productData != null) {
-//                                    Intent infoIntent = new Intent();
-//                                    infoIntent.putExtra("edit info", true);
-//
-//                                    if (!productData.descEmpty()) {
-//                                        String new_description = productData.getDescription();
-//                                        infoIntent.putExtra("edit description", true);
-//                                        infoIntent.putExtra("description", new_description);
-//                                    }
-//
-//                                    if (!productData.makeEmpty()) {
-//                                        String new_make = productData.getMake();
-//                                        infoIntent.putExtra("edit make", true);
-//                                        infoIntent.putExtra("make", new_make);
-//                                    }
-//
-//                                    if (!productData.modelEmpty()) {
-//                                        String new_model = productData.getModel();
-//                                        infoIntent.putExtra("edit model", true);
-//                                        infoIntent.putExtra("model", new_model);
-//                                    }
-//
-//                                    setResult(Activity.RESULT_OK, infoIntent);
-//                                }
-//
-//                                finish();
-                                break;
-
-                            default:
-                                Log.d(TAG, "Barcode not supported");
-                                Toast.makeText(ScannerActivity.this, "Barcode not supported", Toast.LENGTH_SHORT).show();
-                                break;
+                        String sno = barcode.getDisplayValue();
+                        Log.d(TAG, "Barcode value: " + sno);
+                        Intent retIntent = new Intent();
+                        retIntent.putExtra("serial number", sno);
+                        retIntent.putExtra("edit serial number", true);
+                        if (barcodeData.containsKey(sno)) {
+                            ArrayList<String> item_info = barcodeData.get(sno);
+                            if (item_info != null) {
+                                retIntent.putExtra("description", item_info.get(0));
+                                retIntent.putExtra("make", item_info.get(1));
+                                retIntent.putExtra("model", item_info.get(2));
+                            }
                         }
+                        setResult(Activity.RESULT_OK, retIntent);
+                        finish();
+                        break;
+
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Barcode scanning failed", e));
     }
-
-    private static boolean isTextFile(String url) {
-        return url.toLowerCase().endsWith(".txt");
-    }
-
-    private class ParseTextFileTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            return parseTextFile(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Process the result on the main thread
-            handleParsedTextFileResult(result);
-        }
-    }
-
-    private void handleParsedTextFileResult(String result) {
-
-        if (result != null) {
-            ProductData productData = parseProductBarcode(result);
-
-            if (productData != null) {
-                Intent infoIntent = new Intent();
-                infoIntent.putExtra("edit info", true);
-
-                if (!productData.descEmpty()) {
-                    String new_description = productData.getDescription();
-                    infoIntent.putExtra("edit description", true);
-                    infoIntent.putExtra("description", new_description);
-                }
-
-                if (!productData.makeEmpty()) {
-                    String new_make = productData.getMake();
-                    infoIntent.putExtra("edit make", true);
-                    infoIntent.putExtra("make", new_make);
-                }
-
-                if (!productData.modelEmpty()) {
-                    String new_model = productData.getModel();
-                    infoIntent.putExtra("edit model", true);
-                    infoIntent.putExtra("model", new_model);
-                }
-
-                setResult(Activity.RESULT_OK, infoIntent);
-            }
-            finish();
-            }
-        }
-
-
-    private static String parseTextFile(String url) {
-        try {
-            URL textFileUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) textFileUrl.openConnection();
-            connection.setRequestMethod("GET");
-
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-                reader.close();
-                return stringBuilder.toString();
-            } else {
-                System.out.println("Failed to fetch text file data. HTTP response code: " + connection.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
+    
     private File getOutputDirectory() {
         File[] mediaDirs = getExternalMediaDirs();
         if (mediaDirs.length > 0) {
