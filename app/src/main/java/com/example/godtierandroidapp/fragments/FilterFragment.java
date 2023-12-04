@@ -43,7 +43,7 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         /**
          * Creates a new filter function with specified tag, description, make, and/or date range.
          * All parameters may be null.
-         * @param tag item tag string for filtering.
+         * @param tag item tag string for filter.
          * @param desc substring in item description for filtering.
          * @param make item make string for filtering
          * @param from date representing lower bound for filtering
