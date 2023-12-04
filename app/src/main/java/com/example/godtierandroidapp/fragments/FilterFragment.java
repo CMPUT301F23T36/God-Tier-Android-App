@@ -34,21 +34,23 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
      * simply filters over the {@code Item}'s tag, description, and make fields.
      */
     public class FilterFunction implements ItemList.FilterCriteria {
-        private Tag tag;
+        private String tagString;
         private String descString;
         private String makeString;
         private Date fromDate;
         private Date toDate;
 
         /**
-         * Creates a new filter function with specified tag, description, and/or make.
+         * Creates a new filter function with specified tag, description, make, and/or date range.
          * All parameters may be null.
-         * @param tag item tag for filtering.
+         * @param tag item tag string for filtering.
          * @param desc substring in item description for filtering.
-         * @param make = item make for filtering
+         * @param make item make string for filtering
+         * @param from date representing lower bound for filtering
+         * @param to date representing upper bound for filtering
          */
-        FilterFunction(Tag tag, String desc, String make, Date from, Date to) {
-            this.tag = tag;
+        FilterFunction(String tag, String desc, String make, Date from, Date to) {
+            this.tagString = tag.trim().toLowerCase();
             this.descString = desc.trim().toLowerCase();
             this.makeString = make.trim().toLowerCase();
             this.fromDate = from;
@@ -61,8 +63,18 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
          * @return boolean value of whether the item has passed the filter.
          */
         public boolean passesFilter(Item item) {
-            if (tag != null && !item.hasTag(tag)) {
-                return false;
+            if (tagString != null) {
+                if (!tagString.isEmpty()) {
+                    boolean flag = false;
+                    for(Tag tag: item.getTags()) {
+                        if (tag.getName().toLowerCase().contains(tagString)) {
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        return false;
+                    }
+                }
             }
             if (descString != null) {
                 if (!descString.isEmpty() && !item.getDescription().toLowerCase().contains(descString)) {
@@ -155,12 +167,12 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         String descText = descEditText.getText().toString();
         String makeText = makeEditText.getText().toString();
 
-        Tag tag = null;
-        if (!tagText.equals("")) {
-            tag = new Tag(tagText);
-        }
+        //Tag tag = null;
+        //if (!tagText.equals("")) {
+        //    tag = new Tag(tagText);
+        //}
 
-        return new FilterFunction(tag, descText, makeText, fromDate, toDate);
+        return new FilterFunction(tagText, descText, makeText, fromDate, toDate);
     }
 
     private void showDatePicker() {
