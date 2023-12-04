@@ -288,11 +288,10 @@ public class ItemDetailsView extends AppCompatActivity implements
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
-                        assert i != null;
-                        item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
-                        myPagerAdapter.notifyDataSetChanged();
-                        updateImages();
-                    // item.photosSet(getIntent().getParcelableArrayListExtra("updatedPhotoUri"));
+                    assert i != null;
+                    item.photosSet(i.getParcelableArrayListExtra("updatedPhotoUri"));
+                    myPagerAdapter.notifyDataSetChanged();
+                    updateImages();
                     }
                 });
 

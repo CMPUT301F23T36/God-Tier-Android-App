@@ -127,7 +127,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 photo_uri.add(i, null);
             }
         }
-        //album = new ArrayList<>(4);
 
         camera_preview = findViewById(R.id.camera_preview);
         camera_layout = findViewById(R.id.camera_view);
@@ -177,6 +176,7 @@ public class PhotoActivity extends AppCompatActivity implements
                             .load(photoUri)
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(album.get(i));
+                    album.get(i).setVisibility(View.VISIBLE);
                 }
                 Log.d("PHOTOS LOADED", "photos loaded successfully " + i);
             }
@@ -209,25 +209,6 @@ public class PhotoActivity extends AppCompatActivity implements
             setResult(Activity.RESULT_OK, retIntent);
             finish();}
 
-//        else if (vID == R.id.save_edit) {
-//
-//            HashMap<String, Object> item_hash = new HashMap<String, Object>();
-//            item_hash.put("dateOfAcquisition",this.date);
-//            item_hash.put("description",this.description);
-//            item_hash.put("make",this.make);
-//            item_hash.put("model",this.model);
-//            item_hash.put("serialNumber",this.serialNo);
-//            item_hash.put("estimatedValue",this.estValue);
-//            item_hash.put("comment",this.comment);
-//            item_hash.put("photo", this.photo_uri);
-//
-//            Intent retIntent = new Intent();
-//            retIntent.putExtra("editedItem", item_hash);
-//            setResult(Activity.RESULT_OK, photo_uriretIntent);
-//            finish();
-
-//            Intent i = new Intent(this, ItemListView.class);
-//            startActivity(i); }
          else if (vID == R.id.capture_photo_button) {
 
             capturePhoto();
