@@ -336,14 +336,18 @@ public class ItemDetailsView extends AppCompatActivity implements
      */
     public void updateTagField() {
         List<Tag> tagList = item.getTags();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("| ");
-        for (int j = 0; j < tagList.size(); j++) {
-            stringBuilder.append(tagList.get(j).getName());
-            stringBuilder.append(" | ");
-        }
+        if(tagList.isEmpty()){
+            tags_field.setText("");
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("| ");
+            for (int j = 0; j < tagList.size(); j++) {
+                stringBuilder.append(tagList.get(j).getName());
+                stringBuilder.append(" | ");
+            }
 
-        tags_field.setText(stringBuilder.toString());
+            tags_field.setText(stringBuilder.toString());
+        }
     }
 
     /**
