@@ -34,9 +34,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.request.RequestOptions;
 import com.example.godtierandroidapp.R;
 import com.example.godtierandroidapp.fragments.PhotoFragment;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -79,6 +79,13 @@ public class PhotoActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1);
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
@@ -172,18 +179,12 @@ public class PhotoActivity extends AppCompatActivity implements
         if (photo_uri != null && !photo_uri.isEmpty()) {
             for (int i = 0; i < Math.min(album.size(), photo_uri.size()); i++) {
                 Uri photoUri = photo_uri.get(i);
-                ImageView imageView = album.get(i);
                 if (photoUri != null) {
-                    RequestOptions requestOptions = new RequestOptions()
-                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
-                            .error(R.drawable.error_image); // Image to show in case of error
                     Glide.with(this)
                             .load(photoUri)
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(album.get(i));
-                    imageView.setVisibility(View.VISIBLE);
-                } else {
-                    imageView.setVisibility(View.INVISIBLE);
+                    album.get(i).setVisibility(View.VISIBLE);
                 }
                 Log.d("PHOTOS LOADED", "photos loaded successfully " + i);
             }
@@ -216,7 +217,7 @@ public class PhotoActivity extends AppCompatActivity implements
             setResult(Activity.RESULT_OK, retIntent);
             finish();}
 
-         else if (vID == R.id.capture_photo_button) {
+        else if (vID == R.id.capture_photo_button) {
 
             capturePhoto();
             camera_layout.setVisibility(View.GONE);

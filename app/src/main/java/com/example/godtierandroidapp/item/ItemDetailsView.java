@@ -1,13 +1,12 @@
 package com.example.godtierandroidapp.item;
 
-
-
 import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +28,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
@@ -52,7 +52,7 @@ import java.util.List;
 /**
  * Contains an expanded, detailed view of the item, including all its properties.
  *
- * @author Alex, Travis, Boris
+ * @author Alex, Travis, Boris, Vinayan
  */
 public class ItemDetailsView extends AppCompatActivity implements
         AddTagFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener
@@ -100,6 +100,16 @@ public class ItemDetailsView extends AppCompatActivity implements
         ActivityCompat.requestPermissions(ItemDetailsView.this,
                 new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                 MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+
+        ActivityCompat.requestPermissions(ItemDetailsView.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+        ActivityCompat.requestPermissions(ItemDetailsView.this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
 
         item_details_delete = findViewById(R.id.item_detail_delete);
 
@@ -298,23 +308,11 @@ public class ItemDetailsView extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 item_photo.setVisibility(View.GONE);
+                //openGallery();
+                // Check if the READ_EXTERNAL_STORAGE permission is granted
+
+
                 openGallery();
-//                // Check if the READ_EXTERNAL_STORAGE permission is granted
-//                if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//                    // Permission is not granted, request it
-//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
-//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//                } else if (ContextCompat.checkSelfPermission(ItemDetailsView.this, Manifest.permission.READ_MEDIA_IMAGES)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(ItemDetailsView.this,
-//                            new String[]{Manifest.permission.READ_MEDIA_IMAGES},
-//                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//                } else {
-//                    // Permission is already granted, proceed with opening the gallery
-//                    openGallery();
-//                }
             }
         });
 
@@ -413,6 +411,9 @@ public class ItemDetailsView extends AppCompatActivity implements
         if (sno.equals("722510168000")) {
             item.setDescription("O'Keeffe's Working Hands Hand Cream");
             return true;
+        } else if (sno.equals("X002SR9KF5")) {
+            item.setDescription("Gateron Yellow Mechanical Switches");
+            item.setEstimatedValue(15.99f);
         }
 
         return false;
