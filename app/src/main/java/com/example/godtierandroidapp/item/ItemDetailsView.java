@@ -366,6 +366,8 @@ public class ItemDetailsView extends AppCompatActivity implements
         } else if (sno.equals("X002SR9KF5")) {
             item.setDescription("Gateron Yellow Mechanical Switches");
             item.setEstimatedValue(15.99f);
+            item.setMake("Gateron");
+            item.setModel("4000");
             return true;
         }
 
