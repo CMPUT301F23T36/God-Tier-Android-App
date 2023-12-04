@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp.item;
+package com.example.godtierandroidapp.photo;
 
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -97,7 +97,11 @@ public class PhotoActivity extends AppCompatActivity implements
         this.serialNo = getIntent().getStringExtra("serialNumber");
         this.estValue = getIntent().getStringExtra("estimatedValue");
         this.comment = getIntent().getStringExtra("comment");
-        this.photo_uri = getIntent().getParcelableArrayListExtra("photoUri");
+        ArrayList<String> uri_strings = getIntent().getStringArrayListExtra("photoUri");
+        photo_uri = new ArrayList<>();
+        for (String uri : uri_strings) {
+            photo_uri.add(Uri.parse(uri));
+        }
         Log.d("PHOTOS", "Number of photos in photo_uri: " + photo_uri.size());
 
         this.existing_photo = getIntent().getBooleanExtra("Edit",false);

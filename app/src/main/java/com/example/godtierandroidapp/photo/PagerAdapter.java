@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp.item;
+package com.example.godtierandroidapp.photo;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.item.Item;
 
 import java.util.ArrayList;
 

@@ -25,13 +25,7 @@ import com.google.firebase.database.ValueEventListener;
  * Application login screen that starts on app open. Users must enter valid credentials, which will
  * be checked against Firebase data, to enter and use the main app functionality.
  *
-<<<<<<< Updated upstream:app/src/main/java/com/example/godtierandroidapp/login/LoginActivity.java
  * @author Luke
-=======
- * @author George
- * @version 1.0
- * @since 2023-11-10
->>>>>>> Stashed changes:app/src/main/java/com/example/godtierandroidapp/LoginActivity.java
  */
 public class LoginActivity extends AppCompatActivity {
 
