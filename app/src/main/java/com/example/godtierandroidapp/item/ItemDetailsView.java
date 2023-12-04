@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
 
 
@@ -8,7 +8,6 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,18 +25,18 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
-import android.widget.Toast;
 
 
-import com.bumptech.glide.Glide;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.fragments.AddTagFragment;
+import com.example.godtierandroidapp.fragments.DatePickerFragment;
+import com.example.godtierandroidapp.fragments.SelectTagFragment;
+import com.example.godtierandroidapp.tag.Tag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,13 +44,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Contains an expaned detailed view of the item including all its properties
+ * Contains an expanded, detailed view of the item, including all its properties.
  *
- * @author Alex
- * @version 1.0
- * @since 2023-11-05
+ * @author Alex, Travis, Boris
  */
-public class ItemDetailsView extends AppCompatActivity implements AddTagFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener {
+public class ItemDetailsView extends AppCompatActivity implements
+        AddTagFragment.OnFragmentInteractionListener, DatePickerDialog.OnDateSetListener
+{
     private Item item;
     private int item_idx;
   
@@ -85,13 +84,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
     /**
      * Called when an item is selected to show its detailed view with all fields. Initializes
-     * activity, and then retrieves the selected item and updates it with all its field info. Sets
-     * up confirm and delete buttons.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     * activity, and then retrieves the selected item and updates it with all its field info.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +136,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         tags_field.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) listOfTagObjects, (Serializable) itemArrayList);
+                SelectTagFragment fragment = new SelectTagFragment(listOfTagObjects, itemArrayList);
 
                 fragment.show(getSupportFragmentManager(), "Select Tags");
             }
@@ -171,10 +164,6 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
 
         // Set click listener for add photo button
         item_add_photo.setOnClickListener(new View.OnClickListener()  {
-            /**
-             *
-             * @param v
-             */
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ItemDetailsView.this, PhotoActivity.class);
@@ -310,7 +299,9 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
                 });
 
 
-    // Call this method when you want to update the data set
+    /**
+     * Updates the shown images.
+     */
     private void updateImages() {
         // New image resources
         ArrayList<Uri> newImageResources = item.photos();
@@ -331,7 +322,7 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     }
 
     /**
-     * Updates item fields
+     * Updates shown item fields.
      */
     protected void updateFields() {
         description_field.setText(item.getDescription());
@@ -343,24 +334,24 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
         updateDateField();
     }
 
-    protected void updateTagField(){
-        // Initialize string builder
-        boolean isEmpty = true;
+    /**
+     * Updates the shown tags.
+     */
+    public void updateTagField() {
         List<Tag> tagList = item.getTags();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("| ");
-        // use for loop
         for (int j = 0; j < tagList.size(); j++) {
-            // concat array value
             stringBuilder.append(tagList.get(j).getName());
             stringBuilder.append(" | ");
-            isEmpty = false;
         }
-        if(isEmpty){ tags_field.setText(""); }
-        else { tags_field.setText(stringBuilder.toString()); }
-        // set text on textView
+
+        tags_field.setText(stringBuilder.toString());
     }
 
+    /**
+     * Updates the date.
+     */
     protected void updateDateField() {
         StringBuilder str = new StringBuilder();
 
@@ -388,12 +379,14 @@ public class ItemDetailsView extends AppCompatActivity implements AddTagFragment
     //    }
     //}
 
+    /**
+     * On confirm for adding a Tag.
+     */
     @Override
-    public void onConfirmPressed(Tag newTag){
+    public void onConfirmPressed(Tag newTag) {
         listOfTagObjects.add(newTag);
         item.addTag(newTag);
         updateTagField();
-
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -16,18 +16,22 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.example.godtierandroidapp.item.Item;
+import com.example.godtierandroidapp.item.ItemList;
+import com.example.godtierandroidapp.item.ItemListView;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.tag.Tag;
+
 /**
-* Represents a DialogFragment that applies filters to an ItemListView
-*
-* @author Alex
-* @version 1.0
-* @since 2023-11-09
+ * Provides a {@code DialogFragment} that applies filters to an {@code ItemListView}.
+ * Also provides {@code FilterFunction} which allows filtering over various {@code Item} fields.
+ *
+ * @author Alex
  */
 public class FilterFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     /**
-
-     * The filter function for this item associated with tag, description, and make
-
+     * A basic implementor of {@code ItemList.FilterCriteria},
+     * simply filters over the {@code Item}'s tag, description, and make fields.
      */
     public class FilterFunction implements ItemList.FilterCriteria {
         private Tag tag;
@@ -37,9 +41,10 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         private Date toDate;
 
         /**
-         * Creates a new filter function with specified tag, description, and/or make
-         * @param tag item tag for filtering
-         * @param desc word(s) in item description for filtering
+         * Creates a new filter function with specified tag, description, and/or make.
+         * All parameters may be null.
+         * @param tag item tag for filtering.
+         * @param desc substring in item description for filtering.
          * @param make = item make for filtering
          */
         FilterFunction(Tag tag, String desc, String make, Date from, Date to) {
@@ -51,9 +56,9 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         }
 
         /**
-         * Checks if item passes filter
-         * @param item item in list to be checked
-         * @return bool value if item passed or not
+         * Checks if an item passes filter.
+         * @param item item to be checked.
+         * @return boolean value of whether the item has passed the filter.
          */
         public boolean passesFilter(Item item) {
             if (tag != null && !item.hasTag(tag)) {
@@ -85,7 +90,10 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         }
     }
 
-    FilterFragment(ItemListView itemListView) {
+    /**
+     * @param itemListView The itemListView that this fragment filters over.
+     */
+    public FilterFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
     }
 
@@ -104,6 +112,7 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         dialogView = inflater.inflate(R.layout.item_filter_fragment, null);
 
+        // automatically sets the filter on the passed ItemListView.
         builder.setView(dialogView)
                 .setMessage("Filter By:")
                 .setPositiveButton("Apply", (dialog, which) -> {
@@ -134,6 +143,10 @@ public class FilterFragment extends DialogFragment implements DatePickerDialog.O
         return builder.create();
     }
 
+    /**
+     * Creates a {@code FilterFunction} from the fragment.
+     * @return An implementor of {@code ItemList.FilterCriteria} that may be applied to an {@code ItemListView}.
+     */
     private ItemList.FilterCriteria makeFilterFunction() {
         EditText tagEditText = dialogView.findViewById(R.id.tagFilter);
         EditText descEditText = dialogView.findViewById(R.id.descriptionFilter);

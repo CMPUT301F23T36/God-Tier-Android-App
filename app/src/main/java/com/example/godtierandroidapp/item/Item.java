@@ -1,25 +1,27 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 
-
-
-import android.content.ContentResolver;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.example.godtierandroidapp.tag.Tag;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
+/**
+ * Represents an item in the user's list.
+ * Contains a date of acquisition, description, make, model, serial number, estimated value,
+ * comment, a list of tags, and a list of photos.
+ *
+ * @author Alex, Boris, Travis, George, Vinayan
+ */
 public class Item implements Serializable {
     private Date dateOfAcquisition;
     private String description;
@@ -32,6 +34,9 @@ public class Item implements Serializable {
     private int color = Color.TRANSPARENT;
     public transient ArrayList<Uri> photo;
 
+    /**
+     * Default constructor.
+     */
     public Item() {
         this.dateOfAcquisition = new Date();
         this.description = "";
@@ -44,7 +49,9 @@ public class Item implements Serializable {
         this.photo = new ArrayList<>();
     }
 
-    // Constructor
+    /**
+     * Full constructor.
+     */
     public Item(
         Date dateOfAcquisition,
         String description,
@@ -67,6 +74,9 @@ public class Item implements Serializable {
         this.photo = photo;
     }
 
+    /**
+     * Constructor for common values for testing purposes.
+     */
     public Item(
         String description,
         double estimatedValue,
@@ -83,15 +93,9 @@ public class Item implements Serializable {
         this.photo = new ArrayList<>();
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    // database returns data in hashmap format
+    /**
+     * Constructor for the Item Hashmap returned by Firebase.
+     */
     public Item(HashMap map) {
         photo = new ArrayList<>();
         ArrayList<String> uris = (ArrayList<String>) map.get("uriStrings");
@@ -131,34 +135,43 @@ public class Item implements Serializable {
         make = (String) map.get("make");
     }
 
+    /**
+     * Simple serialization writer. Photo URIs are converted to strings before being serialized.
+     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
 
-        // Convert Uri objects to strings and store them
-        ArrayList<byte[]> uriStrings = new ArrayList<>();
+        ArrayList<String> uriStrings = new ArrayList<>();
         for (Uri uri : photo) {
             Log.d("uri", uri.toString());
-            uriStrings.add(uri.toString().getBytes());
+            uriStrings.add(uri.toString());
         }
         out.writeObject(uriStrings);
     }
 
+    /**
+     * Simple serialization reader. Photo URIs are parsed from deserialized strings.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
 
-        // Initialize the transient field after deserialization
         photo = new ArrayList<>();
 
-        // Reconstruct Uri objects from stored strings
-        ArrayList<byte[]> uriStrings = (ArrayList<byte[]>) in.readObject();
-        for (byte[] uriString : uriStrings) {
+        ArrayList<String> uriStrings = (ArrayList<String>) in.readObject();
+        for (String uriString : uriStrings) {
             try {
-                photo.add(Uri.parse(uriString.toString()));
+                photo.add(Uri.parse(uriString));
             } catch (Exception e) {}
         }
-        //photo = (ArrayList<Uri>) in.readObject();
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
+    }
 
     public void addPhoto(Uri newPhoto) {
         if (photo == null) {
@@ -182,9 +195,16 @@ public class Item implements Serializable {
         }
     }
 
+    /**
+     * Not a `get` method to prevent firebase from trying to directly serialize these URIs.
+     */
     public ArrayList<Uri> photos() {
         return photo;
     }
+
+    /**
+     * Not a `set` method to prevent firebase from trying to directly deserialize URIs.
+     */
     public void photosSet(ArrayList<Uri> photo) {
         this.photo = photo;
     }
@@ -193,26 +213,25 @@ public class Item implements Serializable {
         tags.add(tag);
     }
 
-    public void setTags(List<Tag> newTags){
+    public void setTags(List<Tag> newTags) {
         tags = newTags;
     }
     public void removeTag(Tag tag) {
-        if(tags.contains(tag)){
-            tags.remove(tag);
-        }
+        tags.remove(tag);
     }
 
     public List<Tag> getTags() {
         return tags;
     }
 
-    public int getTagCount() { return tags.size(); }
+    public int getTagCount() {
+        return tags.size();
+    }
 
     public boolean hasTag(Tag tag) {
         return tags.contains(tag);
     }
 
-    // Getter and Setter methods for dateOfAcquisition
     public Date getDateOfAcquisition() {
         return dateOfAcquisition;
     }
@@ -221,7 +240,6 @@ public class Item implements Serializable {
         this.dateOfAcquisition = dateOfAcquisition;
     }
 
-    // Getter and Setter methods for description
     public String getDescription() {
         return description;
     }
@@ -230,7 +248,6 @@ public class Item implements Serializable {
         this.description = description;
     }
 
-    // Getter and Setter methods for make
     public String getMake() {
         return make;
     }
@@ -239,7 +256,6 @@ public class Item implements Serializable {
         this.make = make;
     }
 
-    // Getter and Setter methods for model
     public String getModel() {
         return model;
     }
@@ -248,7 +264,6 @@ public class Item implements Serializable {
         this.model = model;
     }
 
-    // Getter and Setter methods for serialNumber
     public String getSerialNumber() {
         return serialNumber;
     }

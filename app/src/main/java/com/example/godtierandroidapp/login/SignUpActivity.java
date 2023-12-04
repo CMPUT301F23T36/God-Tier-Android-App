@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.Firebase;
+import com.example.godtierandroidapp.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,9 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Application signup screen. Users will create a unique username and then enter a password twice.
  * If password matches confirmed and username unique, user data will be added to the Firestore
  * database.
- * @author Luke
- * @version 1.0
- * @since 2023-11-10
+ * @author Lukes
  */
 public class SignUpActivity extends AppCompatActivity {
 

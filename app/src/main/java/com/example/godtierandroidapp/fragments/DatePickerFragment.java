@@ -1,4 +1,4 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

@@ -1,43 +1,33 @@
-package com.example.godtierandroidapp;
+package com.example.godtierandroidapp.item;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.fragments.FilterFragment;
+import com.example.godtierandroidapp.fragments.SortFragment;
+import com.example.godtierandroidapp.tag.Tag;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Date;
 
 /**
- * AppCompatActivity of a list view of items. Allows for users to view, add, and manage items,
- * alongside sorting and filtering functionality.
+ * Activity of a list view of items. Allows for users to view, add, select, delete,
+ * and manage items, with sorting and filtering functionality.
  *
  * @author Alex
- * @version 1.0
- * @since 2023-11-06
  */
 public class ItemListView extends AppCompatActivity {
 
@@ -51,14 +41,13 @@ public class ItemListView extends AppCompatActivity {
             new Tag("tag3")
     ));
 
-
     public void updateTagList(ArrayList<Tag> newTagList) {
         tags = newTagList;
     }
 
 
     /**
-     * Updates list view adapter with changes in item list
+     * Updates list view adapter with changes in item list.
      */
     public void updateList() {
         if (itemAdapter != null) {
@@ -196,7 +185,7 @@ public class ItemListView extends AppCompatActivity {
     }
 
     /**
-     * Clears item list and updates list view
+     * Clears item list and updates the list view.
      */
     public void clearList(ArrayList<Item> itemsToRemove) {
         for (Item i : itemsToRemove){
@@ -205,6 +194,10 @@ public class ItemListView extends AppCompatActivity {
         updateList();
     }
 
+    /**
+     * Updates the tag list and the list view.
+     * @param itemsToChange the items with changed tags.
+     */
     public void updateTags(ArrayList<Item> itemsToChange) {
         for (Item i : itemsToChange){
             itemList.updateTags(i);
@@ -213,7 +206,7 @@ public class ItemListView extends AppCompatActivity {
     }
 
     /**
-     * Sets filter criteria for items and updates list with filtered list
+     * Sets filter criteria for items and shows filtered list.
      * @param filterFunction filter criteria
      */
     public void setFilter(ItemList.FilterCriteria filterFunction) {
@@ -222,7 +215,7 @@ public class ItemListView extends AppCompatActivity {
     }
 
     /**
-     * Sets sort criteria for items and updates list with sorted list
+     * Sets sort criteria for items and shows sorted list.
      * @param sortComparator sort criteria
      */
     public void setSort(Comparator<Item> sortComparator) {
@@ -231,7 +224,13 @@ public class ItemListView extends AppCompatActivity {
     }
 
     /**
-     * Launches activity result when adding or editing items in list.
+     * Callback for returning from item details. Updates item here, since they aren't passed
+     * between activities.
+     *
+     * The returned values are:
+     * "old item idx": the index of the changed item. If this is -1 then a new item is added.
+     * "new item": the values of the item changed in the item detail view. If null, the item is deleted.
+     * "new tag list": the list of updated tags
      */
     public ActivityResultLauncher<Intent> itemEditLauncher = registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
