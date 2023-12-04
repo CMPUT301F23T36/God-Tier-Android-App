@@ -20,6 +20,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Provides a fragment that allows the user to select tags from a list of existing tags,
+ * and apply them to a list of items.
+ *
+ * Currently looks at the context's class to update the tag list. This should be fixed to either:
+ * - explicitly pass in the ItemList to update.
+ * - return the list of updated items.
+ *
+ * @author Boris
+ */
 public class SelectTagFragment extends DialogFragment {
     private ArrayList<Tag> listOfTagObjects;
     private ArrayList<Item> listOfItemObjects;
@@ -34,14 +44,15 @@ public class SelectTagFragment extends DialogFragment {
         this.context = context;
     }
 
-    public static SelectTagFragment newInstance(Serializable tag_list, Serializable item_array) {
+    /**
+     * @param tag_list list of tags to pick from.
+     * @param item_array list of items to apply the picked tags to.
+     */
+    public SelectTagFragment(ArrayList<Tag> tag_list, ArrayList<Item> item_array) {
         Bundle args = new Bundle();
         args.putSerializable("item_array", item_array);
         args.putSerializable("tag_list", tag_list);
-
-        SelectTagFragment fragment = new SelectTagFragment();
-        fragment.setArguments(args);
-        return fragment;
+        setArguments(args);
     }
 
     @NonNull
@@ -52,11 +63,11 @@ public class SelectTagFragment extends DialogFragment {
         tagsToAdd = new ArrayList<>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // set title
         builder.setTitle("Select Tags");
 
-        // set dialog non cancelable
         builder.setCancelable(false);
+
+        // remove tag from choices if all items contain that tag, I think... - Alex.
         String[] choices = new String[listOfTagObjects.size()];
         selectedTags = new boolean[listOfTagObjects.size()];
         int tagIter = 0;
@@ -66,69 +77,51 @@ public class SelectTagFragment extends DialogFragment {
                 everyItemHasTag = item.getTags().contains(tag);
                 if (!everyItemHasTag) { break; }
             }
-            if(everyItemHasTag) { tagsToAdd.add(tag); }
+            if (everyItemHasTag) { tagsToAdd.add(tag); }
             choices[tagIter] = tag.getName();
             selectedTags[tagIter] = everyItemHasTag;
 
             ++tagIter;
         }
-        builder.setMultiChoiceItems(choices, selectedTags, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                if (b) {
-                    tagsToAdd.add(listOfTagObjects.get(i));
-                } else {
-                    tagsToAdd.remove(listOfTagObjects.get(i));
-                }
+
+        builder.setMultiChoiceItems(choices, selectedTags, (dialogInterface, i, selected) -> {
+            if (selected) {
+                tagsToAdd.add(listOfTagObjects.get(i));
+            } else {
+                tagsToAdd.remove(listOfTagObjects.get(i));
             }
         });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setPositiveButton("OK", (dialogInterface, i) -> {
+            for (Item item : listOfItemObjects) {
+                item.setTags(tagsToAdd);
+            }
+
+            UpdateTagsOnContext();
+        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setNeutralButton("Clear All", (dialogInterface, i) -> {
+            for (Tag tag : listOfTagObjects) {
                 for (Item item : listOfItemObjects) {
-                    item.setTags(tagsToAdd);
+                    item.removeTag(tag);
                 }
+            }
 
-                if(context.getClass() == ItemListView.class){
-                    ItemListView itemListView = (ItemListView) context;
-                    itemListView.updateTags(listOfItemObjects);
-
-                }
-                if(context.getClass() == ItemDetailsView.class) {
-                    ItemDetailsView itemDetailsView = (ItemDetailsView) context;
-                    itemDetailsView.updateTagField();
-                }
-            }
+            UpdateTagsOnContext();
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // dismiss dialog
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // use for loop
-                for (Tag tag : listOfTagObjects) {
-                    for (Item item : listOfItemObjects) {
-                        item.removeTag(tag);
-                    }
-                }
-                if (context.getClass() == ItemListView.class){
-                    ItemListView itemListView = (ItemListView) context;
-                    itemListView.updateTags(listOfItemObjects);
-                }
-                // clear text view value if in itemDetailsView
-                if (context.getClass() == ItemDetailsView.class) {
-                    ItemDetailsView itemDetailsView = (ItemDetailsView) context;
-                    TextView tags_field = itemDetailsView.findViewById(R.id.tags_field);
-                    tags_field.setText("");
-                }
-            }
-        });
-        // show dialog
         return builder.create();
+    }
+
+    /**
+     * Update the context's tags.
+     */
+    private void UpdateTagsOnContext() {
+        if (context.getClass() == ItemListView.class) {
+            ItemListView itemListView = (ItemListView) context;
+            itemListView.updateTags(listOfItemObjects);
+        } else if (context.getClass() == ItemDetailsView.class) {
+            ItemDetailsView itemDetailsView = (ItemDetailsView) context;
+            TextView tags_field = itemDetailsView.findViewById(R.id.tags_field);
+            tags_field.setText("");
+        }
     }
 }

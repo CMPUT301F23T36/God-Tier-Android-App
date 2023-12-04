@@ -18,9 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Application signup screen. Users will create a unique username and then enter a password twice.
  * If password matches confirmed and username unique, user data will be added to the Firestore
  * database.
- * @author Luke
- * @version 1.0
- * @since 2023-11-10
+ * @author Lukes
  */
 public class SignUpActivity extends AppCompatActivity {
 

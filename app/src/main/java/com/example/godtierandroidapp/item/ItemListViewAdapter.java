@@ -24,6 +24,9 @@ import com.example.godtierandroidapp.tag.TagListViewAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Adapter that shows the items of an {@code ItemList} into an {@code ItemViewHolder}.
+ */
 public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapter.ItemViewHolder> {
 
     private ItemListView itemListView;
@@ -33,10 +36,15 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
     private ArrayList<Item> selectedItems = new ArrayList<>();
     private ArrayList<ItemViewHolder> views = new ArrayList<>();
 
+    /**
+     * Constructor.
+     * @param context The ItemListView to update.
+     * @param itemList The ItemList to read from.
+     */
     public ItemListViewAdapter(ItemListView context, ItemList itemList) {
         this.context = context;
         this.itemList = itemList;
-        itemListView = (ItemListView)context;
+        this.itemListView = context;
     }
 
     @NonNull
@@ -46,6 +54,12 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
         return new ItemViewHolder(context, view);
     }
 
+    /**
+     * Updates the item with the required click and long click callbacks.
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemList.getItem(position);
@@ -63,7 +77,7 @@ public class ItemListViewAdapter extends RecyclerView.Adapter<ItemListViewAdapte
             itemListView.findViewById(R.id.add_tags_button).setVisibility(View.INVISIBLE);
         });
         itemListView.findViewById(R.id.add_tags_button).setOnClickListener(v -> {
-            SelectTagFragment fragment = SelectTagFragment.newInstance((Serializable) itemListView.tags,(Serializable) selectedItems);
+            SelectTagFragment fragment = new SelectTagFragment(itemListView.tags, selectedItems);
 
             fragment.show(itemListView.getSupportFragmentManager(), "Select Tags");
         });

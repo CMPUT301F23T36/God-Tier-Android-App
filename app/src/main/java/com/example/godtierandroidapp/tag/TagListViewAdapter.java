@@ -15,10 +15,8 @@ import com.example.godtierandroidapp.R;
 import java.util.ArrayList;
 
 /**
- *
+ * Very straightforward class that adapts a list of tags into a view.
  * @author Alex
- * @version 1.0
- * @since 2023-11-06
  */
 public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.TagViewHolder> {
     private Context context;
@@ -48,7 +46,6 @@ public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.
         if (item != null) {
             Tag tag = item.getTags().get(position);
 
-            // Bind data to the TextViews in the list item layout
             holder.textViewTagName.setText(tag.getName());
         } else {
             holder.textViewTagName.setText("ERROR: null item");
@@ -64,6 +61,9 @@ public class TagListViewAdapter extends RecyclerView.Adapter<TagListViewAdapter.
         }
     }
 
+    /**
+     * A container view for the adapted list of Tags.
+     */
     public class TagViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTagName;
 

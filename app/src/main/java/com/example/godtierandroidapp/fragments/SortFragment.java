@@ -17,18 +17,21 @@ import com.example.godtierandroidapp.R;
 import java.util.Comparator;
 
 /**
+ * Provides a fragment that allows the user to select a method to sort an {@code ItemListView} by.
  *
  * @author Alex
- * @version 1.0
- * @since 2023-11-09
  */
 public class SortFragment extends DialogFragment {
+
+    /**
+     * @param itemListView The attached {@code ItemListView}.
+     */
     public SortFragment(ItemListView itemListView) {
         this.itemListView = itemListView;
     }
 
-    View dialogView;
-    ItemListView itemListView;
+    private View dialogView;
+    private ItemListView itemListView;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -52,6 +55,10 @@ public class SortFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Creates a {@code Comparator<Item>} from the selected sort method.
+     * @return A comparator for sorting the items.
+     */
     private Comparator<Item> makeSortComparator() {
         Spinner sortTypeDropdown = dialogView.findViewById(R.id.sort_type_dropdown);
         Object selectedText = sortTypeDropdown.getSelectedItem();
@@ -78,7 +85,7 @@ public class SortFragment extends DialogFragment {
                 comparator = Comparator.comparing(Item::getTagCount).reversed();
                 break;
             default:
-                Log.d("SortFragment", "Invalid type dropdown: " + selectedText);
+                Log.e("SortFragment", "Invalid type dropdown: " + selectedText);
                 return null;
         };
 
@@ -90,7 +97,7 @@ public class SortFragment extends DialogFragment {
             case "Descending":
                 return comparator.reversed();
             default:
-                Log.d("SortFragment", "Invalid order dropdown: " + selectedOrder);
+                Log.e("SortFragment", "Invalid order dropdown: " + selectedOrder);
                 return null;
         }
     }

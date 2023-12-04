@@ -1,11 +1,12 @@
 package com.example.godtierandroidapp.login;
 
+/**
+ * A small class representing entered user credentials.
+ * @author Luke
+ */
 public class Users {
     private String username;
     private String pwd;
-
-    public Users() {
-    }
 
     public Users(String username, String pwd) {
         this.username = username;

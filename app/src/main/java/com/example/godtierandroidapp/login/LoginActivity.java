@@ -25,8 +25,6 @@ import com.google.firebase.database.ValueEventListener;
  * be checked against Firebase data, to enter and use the main app functionality.
  *
  * @author Luke
- * @version 1.0
- * @since 2023-11-10
  */
 public class LoginActivity extends AppCompatActivity {
 

@@ -13,11 +13,22 @@ import android.view.View;
 
 import com.example.godtierandroidapp.R;
 
+/**
+ * Provides a fragment that allows the user to delete a photo, or add an image from the user's
+ * gallery or take a photo from the camera.
+ * If instantiated with the boolean "image" argument as true, then it allows the user to delete the image.
+ * Otherwise it does not, and instead prompts to choose between the gallery or the camera.
+ *
+ * @author Travis
+ */
 public class PhotoFragment extends DialogFragment {
 
     View v;
     private OnFragmentInteractionListener listener;
 
+    /**
+     * Callbacks for the various cases - On camera open, on image deletion, and on gallery open.
+     */
     public interface OnFragmentInteractionListener {
         void startCamera();
         void selectDelete();
@@ -40,7 +51,8 @@ public class PhotoFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         if (!img) {
-            this.v = getLayoutInflater().inflate(R.layout.add_photo_fragment,null);
+            // Choose between Camera and Gallery
+            v = getLayoutInflater().inflate(R.layout.add_photo_fragment,null);
             return builder.setView(v)
                     .setNegativeButton("Camera", new DialogInterface.OnClickListener() {
                         @Override
@@ -56,8 +68,9 @@ public class PhotoFragment extends DialogFragment {
                     })
                     .setNeutralButton("Cancel", null)
                     .create();
-        }else {
-            this.v = getLayoutInflater().inflate(R.layout.delete_photo_fragment,null);
+        } else {
+            // Prompt image deletion
+            v = getLayoutInflater().inflate(R.layout.delete_photo_fragment,null);
             return builder
                     .setView(v)
                     .setCancelable(true)

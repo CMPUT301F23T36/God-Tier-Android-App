@@ -52,6 +52,11 @@ import java.util.concurrent.ExecutionException;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
+/**
+ * An activity that allows the user to capture a photo.
+ *
+ * @author Vinayan
+ */
 public class PhotoActivity extends AppCompatActivity implements
         PhotoFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks, View.OnClickListener {
@@ -71,10 +76,6 @@ public class PhotoActivity extends AppCompatActivity implements
     String date, description, make, model, serialNo, estValue, comment;
     ActivityResultLauncher<String> gallery;
 
-    /**
-     *
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -178,8 +179,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
-     * @param v
+     * Handles delete, capture, save, and exit button clicks from the activity
      */
     @Override
     public void onClick(View v) {
@@ -218,7 +218,7 @@ public class PhotoActivity extends AppCompatActivity implements
 //
 //            Intent retIntent = new Intent();
 //            retIntent.putExtra("editedItem", item_hash);
-//            setResult(Activity.RESULT_OK, retIntent);
+//            setResult(Activity.RESULT_OK, photo_uriretIntent);
 //            finish();
 
 //            Intent i = new Intent(this, ItemListView.class);
@@ -232,6 +232,7 @@ public class PhotoActivity extends AppCompatActivity implements
             camera_layout.setVisibility(View.GONE);
             controlCameraView(false);
         }
+
         if (v.getVisibility() != View.INVISIBLE) {
             if (vID == R.id.item_photo_1) {
 
@@ -252,15 +253,13 @@ public class PhotoActivity extends AppCompatActivity implements
             }
         }
     }
-    /**
-     *
-     */
+
     @Override
     public void selectGallery() { gallery.launch("image/*"); }
 
     /**
-     *
-     * @param photoUri
+     * Adds a new photo to the album.
+     * @param photoUri The photo to add
      */
     private void addPhotoToAlbum(Uri photoUri) {
         ImageView image = album.get(photo_index);
@@ -275,6 +274,11 @@ public class PhotoActivity extends AppCompatActivity implements
         curr_photo_count.setText(text);
     }
 
+    /**
+     * Returns the number of non-null entries in the passed URI list.
+     * @param uris The list of URIs.
+     * @return The number of non-null entries.
+     */
     private int countNonEmptyUris(List<Uri> uris) {
         int count = 0;
         for (Uri uri : uris) {
@@ -286,11 +290,10 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * Deletes the photos... maybe? - Alex
      */
     public void selectDelete() {
         for (int i = photo_index; i < album.size()-1; ++i) {
-
             if (album.get(i+1).getVisibility() == View.INVISIBLE) {
                 album.get(i).setVisibility(View.INVISIBLE);
                 photo_uri.set(i, null);
@@ -305,7 +308,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * Deletes the photo... maybe? - Alex
      */
     private void deletePhoto() {
         Bundle bundle = new Bundle();
@@ -316,7 +319,7 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * Starts the camera.
      */
     @Override
     public void startCamera() {
@@ -342,9 +345,10 @@ public class PhotoActivity extends AppCompatActivity implements
             EasyPermissions.requestPermissions(this, "This feature requires access to camera", CAMERA_REQUEST_CODE, camera_permission);
         }
     }
+
     /**
-     *
-     * @param cameraProvider
+     * Selects the back-facing camera.
+     * @param cameraProvider The provided cameras.
      */
     private void selectCamera(ProcessCameraProvider cameraProvider) {
 
@@ -362,15 +366,11 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * Captures a photo with the current camera.
      */
     private void capturePhoto() {
         if (ic == null) return;
         ic.takePicture(ContextCompat.getMainExecutor(getBaseContext()), new ImageCapture.OnImageCapturedCallback() {
-            /**
-             * @param image
-             *
-             */
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
                 super.onCaptureSuccess(image);
@@ -382,12 +382,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 savePhotoItem(rotatedBitmap);
                 controlCameraView(false);
             }
-
-            /**
-             *
-             * @param exception An {@link ImageCaptureException} that contains the type of error, the
-             *                  error message and the throwable that caused it.
-             */
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
                 super.onError(exception);
@@ -399,8 +393,8 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
-     * @param image_bit
+     * Saves a bitmap image to a file, and sets photo_uri to the URI of the file.
+     * @param image_bit The bitmap to save.
      */
     private void savePhotoItem(Bitmap image_bit) {
         Uri photoUri = getImageUri(this, image_bit);
@@ -421,7 +415,8 @@ public class PhotoActivity extends AppCompatActivity implements
     }
 
     /**
-     *
+     * Start the animation between camera view and gallery view.
+     * @param opening if true, animate from camera to gallery, otherwise animate gallery to camera.
      */
     private void controlCameraView(boolean opening) {
         View open;
@@ -454,9 +449,6 @@ public class PhotoActivity extends AppCompatActivity implements
                 });
     }
 
-    /**
-     *
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -466,6 +458,12 @@ public class PhotoActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Get the image URI by saving the passed bitmap.
+     * @param context The context.
+     * @param bitmap The Bitmap to save
+     * @return The URI of the saved file.
+     */
     private Uri getImageUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -475,8 +473,7 @@ public class PhotoActivity extends AppCompatActivity implements
 
     /**
      *
-     * @param requestCode The request code passed in {@link #requestPermissions(
-     * android.app.Activity, String[], int)}
+     * @param requestCode The request code.
      * @param permissions The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions
      *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
