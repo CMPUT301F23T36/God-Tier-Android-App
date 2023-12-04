@@ -59,6 +59,10 @@
         <activity android:name=".item.PhotoActivity"
             android:exported="false">
         </activity>
+
+        <activity android:name=".login.PrivacyPolicyActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".ScannerActivity"
             android:exported="false" />
