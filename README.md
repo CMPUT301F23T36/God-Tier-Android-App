@@ -8,5 +8,5 @@ You can alternatively the username "1" and password "1" to log in to the debug a
 If you want to test the serial number autofill function, you can enter the serial number "X002SR9KF5".
 
 ## Future work
-There are a few remaining issues with images that we are aware of. For instance, occasionally the android empty image will overlap with images,
-and in sometimes images will not update in the gallery. These are minor issues, however.
+There are a few remaining issues with images that we are aware of. For instance, very occasionally the android empty image will overlap with images,
+and in sometimes images will not update in the gallery. These are very minor and uncommon issues, however.
