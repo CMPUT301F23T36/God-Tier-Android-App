@@ -224,6 +224,14 @@ public class Item implements Serializable {
         return tags;
     }
 
+    public String getTagsAsString() {
+        StringBuilder str = new StringBuilder("");
+        for (Tag tag: tags) {
+            str.append(tag.getName());
+        }
+        return str.toString();
+    }
+
     public int getTagCount() {
         return tags.size();
     }
