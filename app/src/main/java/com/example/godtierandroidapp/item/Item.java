@@ -145,8 +145,8 @@ public class Item implements Serializable {
         for (Uri uri : photo) {
             if (uri != null) {
                 Log.d("uri", uri.toString());
-                uriStrings.add(uri.toString().getBytes());
-            } else { continue; }
+                uriStrings.add(uri.toString());
+            }
         }
         out.writeObject(uriStrings);
     }
@@ -164,8 +164,6 @@ public class Item implements Serializable {
             try {
                 if (uriString != null) {
                     photo.add(Uri.parse(uriString));
-                } else {
-                    continue;
                 }
             }
             catch (Exception e) {}

@@ -61,7 +61,7 @@
         </activity>
         <activity
             android:name=".ScannerActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

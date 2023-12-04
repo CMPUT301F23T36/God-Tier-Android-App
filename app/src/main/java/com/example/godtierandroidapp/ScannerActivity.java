@@ -75,19 +75,12 @@ public class ScannerActivity extends AppCompatActivity {
 
     private Button btnCapture;
     private Button btnCancel;
-    HashMap<String, ArrayList<String>> barcodeData = new HashMap<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
-
-        ArrayList<String> item_data = new ArrayList<>();
-        item_data.add("Banana");
-        item_data.add("2009");
-        item_data.add("Blue Java");
-        barcodeData.put("6009832100999", item_data);
 
         imageView = findViewById(R.id.imageView);
         previewView = findViewById(R.id.previewView);
@@ -157,31 +150,16 @@ public class ScannerActivity extends AppCompatActivity {
         scanner.process(image)
                 .addOnSuccessListener(barcodes -> {
                     for (Barcode barcode : barcodes) {
-                        Rect bounds = barcode.getBoundingBox();
-                        Point[] corners = barcode.getCornerPoints();
-
                         String raw = barcode.getRawValue();
                         Log.d(TAG, "Barcode raw value" + raw);
-
-                        // int valueType = barcode.getValueType();
 
                         String sno = barcode.getDisplayValue();
                         Log.d(TAG, "Barcode value: " + sno);
                         Intent retIntent = new Intent();
                         retIntent.putExtra("serial number", sno);
-                        retIntent.putExtra("edit serial number", true);
-                        if (barcodeData.containsKey(sno)) {
-                            ArrayList<String> item_info = barcodeData.get(sno);
-                            if (item_info != null) {
-                                retIntent.putExtra("description", item_info.get(0));
-                                retIntent.putExtra("make", item_info.get(1));
-                                retIntent.putExtra("model", item_info.get(2));
-                            }
-                        }
                         setResult(Activity.RESULT_OK, retIntent);
                         finish();
                         break;
-
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Barcode scanning failed", e));

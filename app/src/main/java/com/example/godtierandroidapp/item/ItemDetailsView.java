@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -33,6 +35,7 @@ import android.util.Log;
 
 
 import com.example.godtierandroidapp.R;
+import com.example.godtierandroidapp.ScannerActivity;
 import com.example.godtierandroidapp.fragments.AddTagFragment;
 import com.example.godtierandroidapp.fragments.DatePickerFragment;
 import com.example.godtierandroidapp.fragments.SelectTagFragment;
@@ -178,6 +181,22 @@ public class ItemDetailsView extends AppCompatActivity implements
             }
         });
 
+        serial_no_field.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                item.setSerialNumber(s.toString());
+                if (checkMatchingSerialNumber()) {
+                    updateNonSerialNumberFields();
+                }
+            }
+        });
+
         // Set click listener for add photo button
         item_add_photo.setOnClickListener(new View.OnClickListener()  {
             @Override
@@ -312,30 +331,6 @@ public class ItemDetailsView extends AppCompatActivity implements
 
     }
 
-//    private void loadImageView() {
-//        if (item.photos() != null && !item.photos().isEmpty()) {
-//            album.clear();
-//            for (int i = 0; i < item.photos().size(); i++) {
-//                Uri photoUri = item.photos().get(i);
-//                ImageView imageView = new ImageView(this);
-//                album.add(imageView);
-//                if (photoUri != null) {
-//                    RequestOptions requestOptions = new RequestOptions()
-//                            .placeholder(R.drawable.ic_android_black_24dp) // Placeholder image while loading
-//                            .error(R.drawable.error_image); // Image to show in case of error
-//                    Glide.with(this)
-//                            .load(photoUri)
-//                            .apply(requestOptions)
-//                            .transition(DrawableTransitionOptions.withCrossFade())
-//                            .into(imageView);
-//                    imageView.setVisibility(View.VISIBLE);
-//                }
-//            }
-//            myPagerAdapter.updateData(item.photos());
-//            viewPager.setAdapter(myPagerAdapter);
-//        }
-//    }
-
     public ActivityResultLauncher<Intent> addPhotoLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -356,19 +351,13 @@ public class ItemDetailsView extends AppCompatActivity implements
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent i = result.getData();
                     assert i != null;
-                    if (i.getBooleanExtra("edit serial number", true)) {
-                        item.setSerialNumber(i.getStringExtra("serial number"));
-                    } else if (i.getBooleanExtra("edit info", true)) {
-                        if (i.getBooleanExtra("edit description", true)) {
-                            item.setDescription(i.getStringExtra("description"));
-                        }
-                        if (i.getBooleanExtra("edit make", true)) {
-                            item.setDescription(i.getStringExtra("make"));
-                        }
-                        if (i.getBooleanExtra("edit model", true)) {
-                            item.setDescription(i.getStringExtra("model"));
+                    String scannedSerialNumber = i.getStringExtra("serial number");
+                    if (scannedSerialNumber != null) {
+                        if (!scannedSerialNumber.equals("")) {
+                            item.setSerialNumber(scannedSerialNumber);
                         }
                     }
+                    checkMatchingSerialNumber();
                     updateFields();
                 }
             });
@@ -401,13 +390,31 @@ public class ItemDetailsView extends AppCompatActivity implements
      * Updates shown item fields.
      */
     protected void updateFields() {
+        serial_no_field.setText(item.getSerialNumber());
+        updateNonSerialNumberFields();
+    }
+
+    /**
+     * Because we are watching the value of the serial number field, it can cause an infinite loop
+     * with watching/updating/changing the field in some circumstances.
+     */
+    private void updateNonSerialNumberFields() {
         description_field.setText(item.getDescription());
         estimated_value_field.setText(String.valueOf(item.getEstimatedValue()));
         make_field.setText(item.getMake());
         model_field.setText(item.getModel());
-        serial_no_field.setText(item.getSerialNumber());
         updateTagField();
         updateDateField();
+    }
+
+    private boolean checkMatchingSerialNumber() {
+        String sno = item.getSerialNumber();
+        if (sno.equals("722510168000")) {
+            item.setDescription("O'Keeffe's Working Hands Hand Cream");
+            return true;
+        }
+
+        return false;
     }
 
     /**

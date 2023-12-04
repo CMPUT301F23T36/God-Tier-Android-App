@@ -36,6 +36,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.example.godtierandroidapp.R;
 import com.example.godtierandroidapp.fragments.PhotoFragment;
 import com.google.common.util.concurrent.ListenableFuture;
