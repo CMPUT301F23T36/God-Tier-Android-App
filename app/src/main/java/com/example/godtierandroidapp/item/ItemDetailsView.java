@@ -389,6 +389,10 @@ public class ItemDetailsView extends AppCompatActivity implements
         updateDateField();
     }
 
+    /**
+     * @return if the item's serial number matches any predefined values
+     * and fields of the item have been updated, this returns true.
+     */
     private boolean checkMatchingSerialNumber() {
         String sno = item.getSerialNumber();
         if (sno.equals("722510168000")) {
