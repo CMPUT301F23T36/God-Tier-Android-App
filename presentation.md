@@ -39,9 +39,11 @@ boris
 ## Filtering / Sorting
 travis
 - reopen with his prepopulated account
-- filter by one of the tags
+- filter stuff
+- sort stuff
 - clear filter
-- sort by estimated value
+- clear sort
+- whatever else
 
 ## Selection
 jilewis
