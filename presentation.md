@@ -1,4 +1,4 @@
-# Presentation Script
+b# Presentation Script
 - talk a bit about our app, introduce ourselves
 - show them our vibe
 - then BAM: a joke to loosen em up. 
@@ -21,6 +21,7 @@ Alex
 - item list view page
 - make a simple item
 - crowd, take a picture of the crowd, "$10 estimated value"
+- delete photo, delete item
 
 ## Scanning
 vinayan
