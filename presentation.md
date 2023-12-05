@@ -41,5 +41,15 @@ travis
 - clear filter
 - sort by estimated value
 
-## Exit app completely
+## Database saving
+- exit app completely
 - reopen, see that everything is saved
+
+## Testing
+jilewis if he's here
+- open android studio
+- run tests
+- talk about architecture??
+
+## End
+idk
