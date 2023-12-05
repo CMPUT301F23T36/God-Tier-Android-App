@@ -47,6 +47,7 @@ travis
 
 ## Selection
 jilewis
+- select items, mass add tags
 - select items, delete them
 - delete everything gradually
 
