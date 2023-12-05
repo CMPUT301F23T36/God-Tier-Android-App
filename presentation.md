@@ -35,21 +35,22 @@ boris
 - add a few tags
 - go back to other items, add tags to them too
 
+
 ## Filtering / Sorting
 travis
+- reopen with his prepopulated account
 - filter by one of the tags
 - clear filter
 - sort by estimated value
 
+## Selection
+jilewis
+- select items, delete them
+- delete everything gradually
+
 ## Database saving
 - exit app completely
-- reopen, see that everything is saved
-
-## Testing
-jilewis if he's here
-- open android studio
-- run tests
-- talk about architecture??
+- reopen with created account, see that everything is saved
 
 ## End
 idk
